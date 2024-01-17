@@ -24,15 +24,15 @@
     ...
   } @ inputs: let
     inherit (self) outputs;
+    lib = nixpkgs.lib;
   in {
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = {
-      # FIXME replace with your hostname
-      your-hostname = nixpkgs.lib.nixosSystem {
+      # Personal laptop
+      hermes = lib.nixosSystem {
+        modules = [ ./hosts/hermes ];
         specialArgs = {inherit inputs outputs;};
-        # > Our main nixos configuration file <
-        modules = [./nixos/configuration.nix];
       };
     };
 
