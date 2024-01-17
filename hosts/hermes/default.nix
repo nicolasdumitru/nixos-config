@@ -99,6 +99,10 @@
     libinput.enable = true;
 
   };
+
+  # Enable slock
+  programs.slock.enable = true;
+
   };
 
   environment.systemPackages = with pkgs; [
@@ -154,7 +158,6 @@
     xsel
     pulseaudio
     pulsemixer
-    slock
     sqlite
     bat
   ];
