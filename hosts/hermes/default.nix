@@ -147,6 +147,21 @@
     bat
   ];
 
+  fonts.packages = with pkgs; [
+    #nerdfonts
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    jetbrains-mono
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    fira-code-symbols
+    mplus-outline-fonts.githubRelease
+    dina-font
+    proggyfonts
+  ];
+
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";
 }
