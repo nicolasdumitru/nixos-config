@@ -70,6 +70,9 @@
     extraGroups = [ "wheel" "networkmanager" ];
   };
 
+  # Enable ZSH
+  programs.zsh.enable = true;
+
   # X11, LightDM, AwesomeWM
   services.xserver = {
     # Enable X11
