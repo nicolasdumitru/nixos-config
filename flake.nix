@@ -1,13 +1,9 @@
 {
-  description = "Your new nix config";
+  description = "Nick's NixOS";
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
-
-    # Home manager
-    home-manager.url = "github:nix-community/home-manager/release-23.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
 
     # TODO: Add any other flake you might need
     # hardware.url = "github:nixos/nixos-hardware";
