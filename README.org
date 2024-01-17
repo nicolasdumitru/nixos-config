@@ -1,0 +1,1 @@
+WIP NixOS config based on the [[https://github.com/Misterio77/nix-starter-configs.git][Misterio77/nix-starter-configs]] template
