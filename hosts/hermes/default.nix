@@ -98,6 +98,63 @@
       PasswordAuthentication = false;
     };
   };
+  environment.systemPackages = with pkgs; [
+    zsh
+
+    picom
+    dmenu
+
+    alacritty
+    librewolf
+    neovim
+
+    ripgrep
+    fd
+    git
+    curl
+    wget
+
+    xorg.xmodmap
+    lightdm
+
+    gcc
+    clang
+    rustup
+    go
+
+    glibc
+
+    bear
+
+    clang-tools
+    lua-language-server
+    nil
+    nixfmt
+
+    networkmanagerapplet
+    feh
+    fzf
+    emacs
+    newsboat
+
+    dunst
+    libnotify
+
+    pass
+    keepassxc
+    btop
+    pinentry-curses
+    gnupg
+    lshw
+    xdotool
+    xclip
+    xsel
+    pulseaudio
+    pulsemixer
+    slock
+    sqlite
+    bat
+  ];
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";
