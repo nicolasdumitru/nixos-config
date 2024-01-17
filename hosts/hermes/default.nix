@@ -72,14 +72,21 @@
 
   # X11, LightDM, AwesomeWM
   services.xserver = {
+    # Enable X11
     enable = true;
 
+    # Keymap
+    xkb.layout = "us";
+    xkb.variant = "";
+
+    # Enable lightdm
     displayManager = {
       lightdm.enable = true;
       defaultSession = "none+awesome";
 
     };
 
+    # Enable AwesomeWM
     windowManager.awesome = {
       enable = true;
       luaModules = with pkgs.luaPackages; [
@@ -87,6 +94,11 @@
         luadbi-mysql # Database abstraction layer
       ];
     };
+
+    # Enable touchpad support
+    libinput.enable = true;
+
+  };
   };
 
   environment.systemPackages = with pkgs; [
