@@ -62,7 +62,12 @@
     auto-optimise-store = true;
   };
 
-  # FIXME: Add the rest of your current configuration
+  # User
+  users.users.nick = {
+    isNormalUser = true;
+    shell = pkgs.zsh;
+    extraGroups = [ "wheel" "networkmanager" ];
+  };
 
   # TODO: Set your hostname
   networking.hostName = "hermes";
@@ -82,8 +87,6 @@
       openssh.authorizedKeys.keys = [
         # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
       ];
-      # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
-      extraGroups = ["wheel"];
     };
   };
 
