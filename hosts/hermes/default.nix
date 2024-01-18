@@ -76,8 +76,20 @@
     extraGroups = [ "wheel" "networkmanager" ];
   };
 
-  # Enable ZSH
-  programs.zsh.enable = true;
+  # Enable/set up programs:
+  programs = {
+    # ZSH
+    zsh.enable = true;
+
+    # GnuPG agent
+    gnupg.agent = {
+      enable = true;
+      pinentryFlavor = "tty";
+    };
+
+    # Enable slock
+    slock.enable = true;
+  };
 
   # X11, LightDM, AwesomeWM
   services.xserver = {
@@ -108,9 +120,6 @@
     libinput.enable = true;
 
   };
-
-  # Enable slock
-  programs.slock.enable = true;
 
   # Enable sound with pipewire.
   sound.enable = true;
@@ -172,7 +181,7 @@
     pass
     keepassxc
     btop
-    pinentry-curses
+    #pinentry
     gnupg
     lshw
     xdotool
@@ -182,6 +191,7 @@
     pulsemixer
     sqlite
     bat
+    pstree
   ];
 
   fonts.packages = with pkgs; [
