@@ -123,6 +123,10 @@
     pulse.enable = true;
   };
 
+  # Add ~/.local/bin/ to $PATH
+  environment.localBinInPath = true;
+
+  # Define system packages
   environment.systemPackages = with pkgs; [
     zsh
 
