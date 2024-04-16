@@ -139,22 +139,35 @@
   environment.systemPackages = with pkgs; [
     zsh
 
-    picom
     dmenu
 
     alacritty
     librewolf
     chromium
     neovim
+    emacs
+    newsboat
+    fzf
 
     ripgrep
     fd
     git
     curl
     wget
+    pstree
+	rsync
+    bat
+	lsof
 
-    xorg.xmodmap
     lightdm
+    picom
+    xorg.xmodmap
+	arandr
+    xclip
+    xsel
+	maim
+	xcolor
+    feh
 
     gcc
     clang
@@ -167,13 +180,15 @@
 
     clang-tools
     lua-language-server
+	# bash-language-server
+	shellcheck
     nil
 
+	gdb
+
+	# direnv
+
     networkmanagerapplet
-    feh
-    fzf
-    emacs
-    newsboat
 
     dunst
     libnotify
@@ -183,15 +198,25 @@
     btop
     #pinentry
     gnupg
-    lshw
     xdotool
-    xclip
-    xsel
     pulseaudio
     pulsemixer
     sqlite
-    bat
-    pstree
+	syncthing
+	mpd
+	ncmpcpp
+	mpv
+	nsxiv
+	zathura
+	isync
+	msmtp
+
+    lshw
+	usbutils
+	exfat
+	exfatprogs
+
+	plan9port
   ];
 
   fonts.packages = with pkgs; [
