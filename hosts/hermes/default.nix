@@ -77,6 +77,7 @@
   };
 
   # Enable/set up programs:
+  services.displayManager.defaultSession = "none+awesome";
   programs = {
     # ZSH
     zsh.enable = true;
@@ -84,7 +85,7 @@
     # GnuPG agent
     gnupg.agent = {
       enable = true;
-      pinentryFlavor = "tty";
+      pinentryPackage = pkgs.pinentry-curses;
     };
 
     # Enable slock
@@ -103,7 +104,6 @@
     # Enable lightdm
     displayManager = {
       lightdm.enable = true;
-      defaultSession = "none+awesome";
 
     };
 
@@ -144,6 +144,7 @@
 
     alacritty
     librewolf
+    chromium
     neovim
 
     ripgrep
@@ -167,7 +168,6 @@
     clang-tools
     lua-language-server
     nil
-    nixfmt
 
     networkmanagerapplet
     feh
