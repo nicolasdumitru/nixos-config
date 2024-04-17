@@ -155,9 +155,11 @@
     curl
     wget
     pstree
-	rsync
+    rsync
     bat
-	lsof
+    lsof
+
+    lf
 
     lightdm
     picom
@@ -172,7 +174,6 @@
     gcc
     clang
     rustup
-    go
 
     glibc
 
