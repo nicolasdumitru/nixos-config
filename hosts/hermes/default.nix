@@ -76,6 +76,9 @@
     extraGroups = [ "wheel" "networkmanager" ];
   };
 
+  # SSD performance options
+  fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
+
   # Enable OpenGL
   hardware.opengl = {
 	enable = true;
