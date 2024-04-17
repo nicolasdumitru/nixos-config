@@ -137,91 +137,43 @@
 
   # Define system packages
   environment.systemPackages = with pkgs; [
+    gcc glibc gdb clang libcxx
     zsh
-
-    dmenu
-
+    lightdm picom
+    pulseaudio
     alacritty
-    librewolf
+    neovim emacs
     chromium
-    neovim
-    emacs
-    newsboat
-    fzf
-
-    ripgrep
-    fd
-    git
-    curl
-    wget
-    pstree
-    rsync
-    bat
-    lsof
-
     lf
-
-    lightdm
-    picom
+    newsboat
+    dmenu fzf
+    gnupg keepassxc pass
+    git
+    ripgrep fd
+	eza bat
+    rsync
+    clang-tools bear
+    lua-language-server
+    nil
+	shellcheck nodePackages.bash-language-server
+    curl wget
+	mpv mpd ncmpcpp
+	zathura
+	nsxiv maim feh
+    xdotool
     xorg.xmodmap
 	arandr
-    xclip
-    xsel
-	maim
-	xcolor
-    feh
-
-    gcc
-    clang
-    rustup
-
-    glibc
-
-    bear
-
-    clang-tools
-    lua-language-server
-	# bash-language-server
-	shellcheck
-    nil
-
-	gdb
-
-	# direnv
-
-    networkmanagerapplet
-
-    dunst
-    libnotify
-
-    pass
-    keepassxc
-    btop
-    #pinentry
-    gnupg
-    xdotool
-    pulseaudio
     pulsemixer
-    sqlite
-	syncthing
-	mpd
-	ncmpcpp
-	mpv
-	nsxiv
-	zathura
-	isync
-	msmtp
-
-    lshw
-	usbutils
-	exfat
-	exfatprogs
-
-	plan9port
+    networkmanagerapplet
+    xclip xsel
+    dunst libnotify
+    btop
+    lsof
+    lshw usbutils
+	exfat exfatprogs
   ];
 
   fonts.packages = with pkgs; [
-    #nerdfonts
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     jetbrains-mono
     noto-fonts
