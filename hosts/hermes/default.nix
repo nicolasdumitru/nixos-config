@@ -76,6 +76,47 @@
     extraGroups = [ "wheel" "networkmanager" ];
   };
 
+  # Enable OpenGL
+  hardware.opengl = {
+	enable = true;
+	driSupport = true;
+    driSupport32Bit = true;
+  };
+
+  # Load nvidia driver for Xorg and Wayland
+  services.xserver.videoDrivers = ["nvidia"];
+
+  hardware.nvidia = {
+    # Modesetting is required.
+    modesetting.enable = true;
+
+    # Nvidia power management.
+    powerManagement.enable = false;
+
+    # Fine-grained power management. Turns off GPU when not in use.
+    # Experimental and only works on modern Nvidia GPUs (Turing or newer).
+    powerManagement.finegrained = false;
+
+    # Use the Nvidia open source kernel module.
+    open = true;
+
+    # Enable the Nvidia settings menu.
+    nvidiaSettings = true;
+
+    # Driver version.
+    package = config.boot.kernelPackages.nvidiaPackages.production;
+  };
+
+  hardware.nvidia.prime = {
+	offload = {
+		enable = true;
+		enableOffloadCmd = true;
+	};
+    # These have to match the Bus ID values of the system!
+    intelBusId = "PCI:0:2:0";
+    nvidiaBusId = "PCI:1:0:0";
+  };
+
   # Enable/set up programs:
   services.displayManager.defaultSession = "none+awesome";
   programs = {
