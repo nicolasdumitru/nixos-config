@@ -192,8 +192,9 @@
     newsboat
     dmenu fzf
     gnupg keepassxc pass
+	thunderbird
     git
-    ripgrep fd
+    ripgrep ripgrep-all fd
 	eza bat
     rsync
     clang-tools bear
