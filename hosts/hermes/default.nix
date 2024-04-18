@@ -81,8 +81,8 @@
 
   # Enable OpenGL
   hardware.opengl = {
-	enable = true;
-	driSupport = true;
+    enable = true;
+    driSupport = true;
     driSupport32Bit = true;
   };
 
@@ -111,10 +111,10 @@
   };
 
   hardware.nvidia.prime = {
-	offload = {
-		enable = true;
-		enableOffloadCmd = true;
-	};
+    offload = {
+      enable = true;
+      enableOffloadCmd = true;
+    };
     # These have to match the Bus ID values of the system!
     intelBusId = "PCI:0:2:0";
     nvidiaBusId = "PCI:1:0:0";
@@ -192,22 +192,22 @@
     newsboat
     dmenu fzf
     gnupg keepassxc pass
-	thunderbird
+    thunderbird
     git
     ripgrep ripgrep-all fd
-	eza bat
+    eza bat
     rsync
     clang-tools bear
     lua-language-server
     nil
-	shellcheck nodePackages.bash-language-server
+    shellcheck nodePackages.bash-language-server
     curl wget
-	mpv mpd ncmpcpp
-	zathura
-	nsxiv maim feh
+    mpv mpd ncmpcpp
+    zathura
+    nsxiv maim feh
     xdotool
     xorg.xmodmap
-	xorg.xrandr arandr autorandr
+    xorg.xrandr arandr autorandr
     pulsemixer
     networkmanagerapplet
     xclip xsel
@@ -215,7 +215,7 @@
     btop
     lsof
     lshw usbutils
-	exfat exfatprogs
+    exfat exfatprogs
   ];
 
   fonts.packages = with pkgs; [
