@@ -206,7 +206,7 @@
 	nsxiv maim feh
     xdotool
     xorg.xmodmap
-	arandr
+	xorg.xrandr arandr autorandr
     pulsemixer
     networkmanagerapplet
     xclip xsel
