@@ -188,15 +188,14 @@
     alacritty
     neovim emacs
     chromium
-    lf
-    newsboat
-    dmenu fzf
     gnupg keepassxc pass
-    thunderbird
-    git
+    git rsync
+    lf rename
     ripgrep ripgrep-all fd
+    dmenu fzf
     eza bat
-    rsync
+    thunderbird
+    newsboat
     clang-tools bear
     lua-language-server
     nil
