@@ -181,26 +181,30 @@
 
   # Define system packages
   environment.systemPackages = with pkgs; [
-    gcc glibc gdb clang libcxx
-    zsh
+    bash zsh
+    coreutils-full eza bat
+    neovim emacs
+    gcc glibc clang libcxx
+    gnumake
+    gnupg keepassxc pass
+    diffutils git
+    findutils fd
+    gnugrep ripgrep ripgrep-all
+    rsync
+    curl wget
     lightdm picom
     pulseaudio
     alacritty
-    neovim emacs
     chromium
-    gnupg keepassxc pass
-    git rsync
-    lf rename
-    ripgrep ripgrep-all fd
-    dmenu fzf
-    eza bat
     thunderbird
     newsboat
+    lf rename
+    dmenu fzf
+    gdb
     clang-tools bear
     lua-language-server
     nil
     shellcheck nodePackages.bash-language-server
-    curl wget
     mpv mpd ncmpcpp
     zathura
     nsxiv maim feh
