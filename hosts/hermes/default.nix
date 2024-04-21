@@ -200,7 +200,7 @@
     chromium
     thunderbird
     newsboat
-    lf rename
+    lf rename conceal
     dmenu fzf
     gdb
     clang-tools bear
