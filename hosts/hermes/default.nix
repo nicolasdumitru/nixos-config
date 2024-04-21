@@ -182,14 +182,16 @@
   # Define system packages
   environment.systemPackages = with pkgs; [
     bash zsh
-    coreutils-full gawk eza bat
+    coreutils-full eza bat
+    diffutils
+    findutils fd
+    gnugrep ripgrep ripgrep-all
+    gawk gnused
     neovim emacs
     gcc glibc clang libcxx
     gnumake
     gnupg keepassxc pass
-    diffutils git
-    findutils fd
-    gnugrep ripgrep ripgrep-all
+    git
     rsync
     curl wget
     lightdm picom
