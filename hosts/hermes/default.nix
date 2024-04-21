@@ -182,7 +182,7 @@
   # Define system packages
   environment.systemPackages = with pkgs; [
     bash zsh
-    coreutils-full eza bat
+    coreutils-full gawk eza bat
     neovim emacs
     gcc glibc clang libcxx
     gnumake
