@@ -190,10 +190,11 @@
     neovim emacs
     gcc glibc clang libcxx
     gnumake
-    gnupg keepassxc pass
     git
-    rsync
+    gnutar gzip xz zip unzip p7zip
     curl wget
+    rsync
+    gnupg keepassxc pass
     lightdm picom
     pulseaudio
     alacritty
