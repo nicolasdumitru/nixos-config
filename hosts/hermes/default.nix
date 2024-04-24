@@ -222,6 +222,7 @@
     lsof
     lshw usbutils
     exfat exfatprogs
+    (callPackage ../../pkgs/gummy {})
   ];
 
   fonts.packages = with pkgs; [
