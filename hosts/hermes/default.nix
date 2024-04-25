@@ -192,7 +192,7 @@
     findutils fd
     gnugrep ripgrep ripgrep-all
     gawk gnused
-    neovim emacs
+    neovim emacs tree-sitter
     gcc glibc clang libcxx
     gnumake
     git
