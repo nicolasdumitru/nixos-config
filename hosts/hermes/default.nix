@@ -121,7 +121,6 @@
   };
 
   # Enable/set up programs:
-  services.displayManager.defaultSession = "none+awesome";
   programs = {
     # ZSH
     zsh.enable = true;
@@ -137,6 +136,7 @@
   };
 
   # X11, LightDM, AwesomeWM
+  services.displayManager.defaultSession = "none+awesome";
   services.xserver = {
     # Enable X11
     enable = true;
@@ -148,7 +148,6 @@
     # Enable lightdm
     displayManager = {
       lightdm.enable = true;
-
     };
 
     # Enable AwesomeWM
@@ -162,7 +161,6 @@
 
     # Enable touchpad support
     libinput.enable = true;
-
   };
 
   # Enable sound with pipewire.
@@ -174,6 +172,13 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+  };
+
+  # Laptop lid switch behavior
+  services.logind = {
+    lidSwitch = "suspend";
+    lidSwitchExternalPower = "suspend";
+    lidSwitchDocked = "ignore";
   };
 
   # Add ~/.local/bin/ to $PATH
