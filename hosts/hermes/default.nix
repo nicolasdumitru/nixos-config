@@ -230,6 +230,7 @@
     lsof
     lshw usbutils
     exfat exfatprogs
+    nodejs
   ];
 
   fonts.packages = with pkgs; [
