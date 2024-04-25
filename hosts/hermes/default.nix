@@ -212,13 +212,16 @@
     clang-tools bear
     lua-language-server
     nil
+    texlab
     shellcheck nodePackages.bash-language-server
     mpv mpd ncmpcpp
-    zathura
     nsxiv maim feh
+    zathura
+    texliveFull
     xdotool
     xorg.xmodmap
     xorg.xrandr arandr autorandr
+    (callPackage ../../pkgs/gummy {})
     pulsemixer
     networkmanagerapplet
     xclip xsel
@@ -227,7 +230,6 @@
     lsof
     lshw usbutils
     exfat exfatprogs
-    (callPackage ../../pkgs/gummy {})
   ];
 
   fonts.packages = with pkgs; [
