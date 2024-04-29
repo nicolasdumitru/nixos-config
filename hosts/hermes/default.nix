@@ -184,6 +184,12 @@
   # Add ~/.local/bin/ to $PATH
   environment.localBinInPath = true;
 
+  # Enable printing with CUPS
+  services.printing.enable = true;
+
+  # Add printer drivers
+  services.printing.drivers = [ pkgs.hplip ];
+
   # Define system packages
   environment.systemPackages = with pkgs; [
     bash zsh
@@ -232,6 +238,8 @@
     exfat exfatprogs
     pandoc
     nodejs
+    cups
+    system-config-printer
   ];
 
   fonts.packages = with pkgs; [
