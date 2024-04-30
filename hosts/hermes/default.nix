@@ -212,7 +212,7 @@
     chromium
     thunderbird
     newsboat
-    lf rename conceal
+    lf rename trash-cli
     dmenu fzf
     gdb
     clang-tools bear
@@ -236,7 +236,7 @@
     lsof
     lshw usbutils
     exfat exfatprogs
-    pandoc
+    pandoc libreoffice
     nodejs
     cups
     system-config-printer
