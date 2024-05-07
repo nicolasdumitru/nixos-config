@@ -158,10 +158,10 @@
         luadbi-mysql # Database abstraction layer
       ];
     };
-
-    # Enable touchpad support
-    libinput.enable = true;
   };
+
+  # Enable touchpad support
+  services.libinput.enable = true;
 
   # Enable sound with pipewire.
   sound.enable = true;
