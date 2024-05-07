@@ -240,6 +240,7 @@
     nodejs
     cups
     system-config-printer
+    obs-studio
   ];
 
   fonts.packages = with pkgs; [
