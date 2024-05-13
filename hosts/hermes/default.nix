@@ -174,11 +174,14 @@
     pulse.enable = true;
   };
 
-  # Laptop lid switch behavior
+  # systemd-logind configuration
   services.logind = {
+    # Laptop lid switch behavior
     lidSwitch = "suspend";
     lidSwitchExternalPower = "suspend";
     lidSwitchDocked = "ignore";
+
+    extraConfig = "IdleAction=ignore";
   };
 
   # Add ~/.local/bin/ to $PATH
