@@ -217,6 +217,7 @@
     newsboat
     lf rename trash-cli
     dmenu fzf
+    rustup
     gdb
     clang-tools bear
     lua-language-server
