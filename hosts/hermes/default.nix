@@ -184,6 +184,9 @@
     extraConfig = "IdleAction=ignore";
   };
 
+  # Use systemd-coredump for core dumps
+  systemd.coredump.enable = true;
+
   # Add ~/.local/bin/ to $PATH
   environment.localBinInPath = true;
 
