@@ -14,7 +14,7 @@
   boot.extraModulePackages = [ ];
   boot.supportedFilesystems = [ "btrfs" ];
 
-  boot.initrd.luks.devices."luks-102a6224-10fc-4dbf-a6ad-138a2be2fd2d".device = "dev/disk/by-label/luksdev";
+  boot.initrd.luks.devices.luksdev.device = "dev/disk/by-label/luksdev";
 
   fileSystems."/" =
     { device = "/dev/disk/by-label/nixos";
