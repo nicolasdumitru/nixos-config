@@ -12,23 +12,27 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
+  boot.supportedFilesystems = [ "btrfs" ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/6f5c11d8-6ff5-4043-bd72-0cd4c7e4efe7";
-      fsType = "ext4";
+    { device = "/dev/disk/by-label/nixos";
+      fsType = "btrfs";
+      neededForBoot = true;
     };
 
-  boot.initrd.luks.devices."luks-9c89dcf5-c27f-4e7b-8542-734ac9fb3f6d".device = "/dev/disk/by-uuid/9c89dcf5-c27f-4e7b-8542-734ac9fb3f6d";
-
   fileSystems."/boot" =
-    { device = "/dev/nvme0n1p1";
+    { device = "/dev/disk/by-label/boot";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
   swapDevices = [ {
-	  device = "/dev/nvme0n1p3";
-	  randomEncryption.enable = true;
+    device = "/dev/disk/by-label/swap";
+    randomEncryption = {
+      cipher = "aes-xts-plain64";
+      enable = true;
+      source = "/dev/urandom";
+    };
   } ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
