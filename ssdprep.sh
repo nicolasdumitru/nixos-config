@@ -16,7 +16,7 @@ parted "${DISK}" -- mkpart swap linux-swap -32GB 100%
 mkdir -p /mnt
 
 # Encrypt root
-cryptsetup --verify-passphrase luksFormat "${DISK}p2"
+cryptsetup --label luksdev --verify-passphrase luksFormat "${DISK}p2"
 cryptsetup open "${DISK}p2" encrypted
 
 mkfs.btrfs -L nixos "${LUKS_DEVICE}"
@@ -52,7 +52,7 @@ mkswap -L swap "${DISK}p3"
 mkfs.vfat -F 32 -n BOOT "${DISK}p1" &&
     mkdir -p /mnt/boot && sleep 1 &&
     while [ ! -e /dev/disk/by-label/BOOT ]; do sleep 1; done &&
-    mount -o umask=077 /dev/disk/by-label/BOOT /mnt/boot
+    mount -o umask=022 /dev/disk/by-label/BOOT /mnt/boot
 
 echo "SSD prepared SUCCESSFULLY"
 echo "Proceed with the next installation steps."
