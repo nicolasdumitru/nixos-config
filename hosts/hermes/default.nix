@@ -224,12 +224,11 @@
     clang-tools bear
     lua-language-server
     nil
-    texlab
     shellcheck nodePackages.bash-language-server
     mpv mpd ncmpcpp
     nsxiv maim feh
     zathura
-    texliveFull
+    texliveFull texlab rubber
     xdotool
     xorg.xmodmap
     xorg.xrandr arandr autorandr
