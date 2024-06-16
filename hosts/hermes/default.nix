@@ -136,7 +136,6 @@
   };
 
   # X11, LightDM, AwesomeWM
-  services.displayManager.defaultSession = "none+awesome";
   services.xserver = {
     # Enable X11
     enable = true;
