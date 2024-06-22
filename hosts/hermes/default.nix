@@ -76,9 +76,6 @@
     extraGroups = [ "wheel" "networkmanager" ];
   };
 
-  # SSD performance options
-  fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
-
   # Enable hardware acceleration
   hardware.graphics.enable = true;
 
