@@ -79,12 +79,8 @@
   # SSD performance options
   fileSystems."/".options = [ "noatime" "nodiratime" "discard" ];
 
-  # Enable OpenGL
-  hardware.opengl = {
-    enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
-  };
+  # Enable hardware acceleration
+  hardware.graphics.enable = true;
 
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = ["nvidia"];
