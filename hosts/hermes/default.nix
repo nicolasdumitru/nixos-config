@@ -225,7 +225,7 @@
     xdotool
     xorg.xmodmap
     xorg.xrandr arandr autorandr
-    (callPackage ../../pkgs/gummy {})
+    gummy
     pulsemixer
     networkmanagerapplet
     xclip xsel
