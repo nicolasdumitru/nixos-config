@@ -198,7 +198,7 @@
     gawk gnused
     neovim emacs tree-sitter
     gcc glibc clang libcxx
-    gnumake
+    gnumake cmake
     git
     gnutar gzip xz zip unzip p7zip
     curl wget
