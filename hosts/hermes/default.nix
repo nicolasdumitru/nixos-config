@@ -215,7 +215,7 @@
     gdb
     clang-tools bear
     lua-language-server
-    nil
+    nil nixfmt-rfc-style
     shellcheck nodePackages.bash-language-server
     mpv mpd ncmpcpp
     nsxiv maim feh
