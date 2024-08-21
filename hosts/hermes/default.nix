@@ -1,6 +1,13 @@
 # This is your system's configuration file.
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-{ inputs, lib, config, pkgs, ... }: {
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}:
+{
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules from other flakes (such as nixos-hardware):
@@ -51,8 +58,9 @@
 
   # This will add each flake input as a registry
   # To make nix3 commands consistent with your flake
-  nix.registry = (lib.mapAttrs (_: flake: { inherit flake; }))
-    ((lib.filterAttrs (_: lib.isType "flake")) inputs);
+  nix.registry = (lib.mapAttrs (_: flake: { inherit flake; })) (
+    (lib.filterAttrs (_: lib.isType "flake")) inputs
+  );
 
   # This will additionally add your inputs to the system's legacy channels
   # Making legacy nix commands consistent as well, awesome!
@@ -73,14 +81,17 @@
   users.users.nick = {
     isNormalUser = true;
     shell = pkgs.zsh;
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+    ];
   };
 
   # Enable hardware acceleration
   hardware.graphics.enable = true;
 
   # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
     # Modesetting is required.
@@ -189,51 +200,92 @@
 
   # Define system packages
   environment.systemPackages = with pkgs; [
-    bash zsh
-    coreutils-full eza bat
+    bash
+    zsh
+    coreutils-full
+    eza
+    bat
     diffutils
-    findutils fd
-    gnugrep ripgrep ripgrep-all
-    gawk gnused
-    neovim emacs tree-sitter
-    gcc glibc clang libcxx
-    gnumake cmake
+    findutils
+    fd
+    gnugrep
+    ripgrep
+    ripgrep-all
+    gawk
+    gnused
+    neovim
+    emacs
+    tree-sitter
+    gcc
+    glibc
+    clang
+    libcxx
+    gnumake
+    cmake
     git
-    gnutar gzip xz zip unzip p7zip
-    curl wget
+    gnutar
+    gzip
+    xz
+    zip
+    unzip
+    p7zip
+    curl
+    wget
     rsync
-    gnupg keepassxc pass
-    lightdm picom
+    gnupg
+    keepassxc
+    pass
+    lightdm
+    picom
     pulseaudio
     alacritty
     chromium
     thunderbird
     newsboat
-    lf rename trash-cli
-    dmenu fzf
+    lf
+    rename
+    trash-cli
+    dmenu
+    fzf
     rustup
     gdb
-    clang-tools bear
+    clang-tools
+    bear
     lua-language-server
-    nil nixfmt-rfc-style
-    shellcheck nodePackages.bash-language-server
-    mpv mpd ncmpcpp
-    nsxiv maim feh
+    nil
+    nixfmt-rfc-style
+    shellcheck
+    nodePackages.bash-language-server
+    mpv
+    mpd
+    ncmpcpp
+    nsxiv
+    maim
+    feh
     zathura
-    texliveFull texlab rubber
+    texliveFull
+    texlab
+    rubber
     xdotool
     xorg.xmodmap
-    xorg.xrandr arandr autorandr
+    xorg.xrandr
+    arandr
+    autorandr
     gummy
     pulsemixer
     networkmanagerapplet
-    xclip xsel
-    dunst libnotify
+    xclip
+    xsel
+    dunst
+    libnotify
     btop
     lsof
-    lshw usbutils
-    exfat exfatprogs
-    pandoc libreoffice
+    lshw
+    usbutils
+    exfat
+    exfatprogs
+    pandoc
+    libreoffice
     nodejs
     cups
     system-config-printer
