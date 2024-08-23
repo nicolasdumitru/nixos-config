@@ -287,6 +287,7 @@
     nodejs
     cups
     system-config-printer
+    transmission_4-gtk
   ];
 
   fonts.packages = with pkgs; [
