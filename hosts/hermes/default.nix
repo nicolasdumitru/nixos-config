@@ -257,6 +257,8 @@
     shellcheck
     nodePackages.bash-language-server
     mpv
+    mpd
+    ncmpcpp
     nsxiv
     maim
     feh
