@@ -7,6 +7,9 @@
   pkgs,
   ...
 }:
+let
+  userName = "nick";
+in
 {
   # You can import other NixOS modules here
   imports = [
@@ -79,6 +82,9 @@
 
   # User
   users.users.nick = {
+    name = userName;
+    uid = 1000;
+    home = "/home/${userName}";
     isNormalUser = true;
     shell = pkgs.zsh;
     extraGroups = [
