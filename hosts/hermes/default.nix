@@ -271,7 +271,6 @@ in
     newsboat
     lf
     rename
-    trash-cli
     dmenu
     fzf
     rustup
