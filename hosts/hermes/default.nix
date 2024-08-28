@@ -214,9 +214,9 @@ in
       audio_output {
         type "pipewire"
         name "PipeWire Sound Server"
-        auto_update "yes"
-        restore_paused "yes"
       }
+      auto_update "yes"
+      restore_paused "yes"
     '';
   };
   systemd.services.mpd.environment = {
