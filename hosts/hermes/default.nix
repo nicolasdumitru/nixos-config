@@ -172,15 +172,17 @@ in
   # Enable touchpad support
   services.libinput.enable = true;
 
-  # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  # Enable sound with PipeWire.
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
+    # Enable PulseAudio server emulation
     pulse.enable = true;
   };
+  # Disable PulseAudio
+  hardware.pulseaudio.enable = false;
 
   # systemd-logind configuration
   services.logind = {
@@ -264,7 +266,6 @@ in
     pass
     lightdm
     picom
-    pulseaudio
     alacritty
     chromium
     thunderbird
