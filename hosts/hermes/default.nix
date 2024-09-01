@@ -251,6 +251,7 @@ in
     libcxx
     gnumake
     cmake
+    just
     git
     gnutar
     gzip
