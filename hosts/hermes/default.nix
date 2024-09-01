@@ -299,7 +299,6 @@ in
     xorg.xrandr
     arandr
     autorandr
-    gummy
     pulsemixer
     networkmanagerapplet
     xclip
