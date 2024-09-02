@@ -290,7 +290,6 @@ in
     ncmpcpp
     nsxiv
     maim
-    feh
     zathura
     texliveFull
     texlab
