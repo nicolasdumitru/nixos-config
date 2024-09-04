@@ -289,7 +289,7 @@ in
     mpc-cli
     ncmpcpp
     nsxiv
-    maim
+    kdePackages.spectacle
     zathura
     texliveFull
     texlab
