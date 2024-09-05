@@ -80,6 +80,14 @@ in
     auto-optimise-store = true;
   };
 
+  # Enable automatic Nix garbage collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    persistent = true;
+    options = "--delete-older-than 7d";
+  };
+
   # User
   users.users.nick = {
     name = userName;
