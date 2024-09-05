@@ -14,3 +14,6 @@ update: (_update "--commit-lock-file")
 # Rebuild the system
 switch:
     nixos-rebuild --use-remote-sudo --flake "{{flake}}#hermes" switch
+
+format:
+    nixfmt $(fd "." --full-path "$(git rev-parse --show-toplevel)")
