@@ -141,7 +141,12 @@ in
   # Enable/set up programs:
   programs = {
     # ZSH
-    zsh.enable = true;
+    zsh = {
+      enable = true;
+      syntaxHighlighting.enable = true;
+      autosuggestions.enable = true;
+      enableCompletion = true;
+    };
 
     # GnuPG agent
     gnupg.agent = {
