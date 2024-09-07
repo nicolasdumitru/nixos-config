@@ -205,9 +205,6 @@ in
   # Use systemd-coredump for core dumps
   systemd.coredump.enable = true;
 
-  # Add ~/.local/bin/ to $PATH
-  environment.localBinInPath = true;
-
   # Enable printing with CUPS
   services.printing.enable = true;
 
