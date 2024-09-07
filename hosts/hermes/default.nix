@@ -306,6 +306,8 @@ in
     texliveFull
     texlab
     rubber
+    pandoc
+    libreoffice
     xorg.xmodmap
     xorg.xrandr
     arandr
@@ -316,22 +318,20 @@ in
     xsel
     dunst
     btop
-    lsof
-    lshw
-    usbutils
-    exfat
-    exfatprogs
-    pandoc
-    libreoffice
     nodejs
     cups
     system-config-printer
     transmission_4-gtk
+    exfat
+    exfatprogs
     udisks
     gnome-disk-utility
     gnome.gvfs
     libmtp
     nautilus
+    lsof
+    lshw
+    usbutils
   ];
 
   fonts.packages = with pkgs; [
