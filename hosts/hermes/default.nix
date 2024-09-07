@@ -306,7 +306,6 @@ in
     texliveFull
     texlab
     rubber
-    xdotool
     xorg.xmodmap
     xorg.xrandr
     arandr
@@ -316,7 +315,6 @@ in
     xclip
     xsel
     dunst
-    libnotify
     btop
     lsof
     lshw
