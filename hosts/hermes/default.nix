@@ -219,7 +219,10 @@ in
   # Enable udisks2, GNOME Disks and GVfs
   services.udisks2.enable = true;
   programs.gnome-disks.enable = true;
-  services.gvfs.enable = true;
+  services.gvfs = {
+    enable = true;
+    package = pkgs.gnome.gvfs;
+  };
   # Udev rules for mounting Android phones
   services.udev.packages = [ pkgs.libmtp ];
 
@@ -247,7 +250,6 @@ in
   # Define system packages
   environment.systemPackages = with pkgs; [
     bash
-    zsh
     coreutils-full
     eza
     bat
@@ -279,10 +281,8 @@ in
     curl
     wget
     rsync
-    gnupg
     keepassxc
     pass
-    lightdm
     picom
     alacritty
     chromium
@@ -302,7 +302,6 @@ in
     shellcheck
     nodePackages.bash-language-server
     mpv
-    mpd
     mpc-cli
     ncmpcpp
     nsxiv
@@ -329,9 +328,6 @@ in
     transmission_4-gtk
     exfat
     exfatprogs
-    udisks
-    gnome-disk-utility
-    gnome.gvfs
     libmtp
     nautilus
     lsof
