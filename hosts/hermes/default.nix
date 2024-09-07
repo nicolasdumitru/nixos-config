@@ -214,6 +214,13 @@ in
   # Add printer drivers
   services.printing.drivers = [ pkgs.hplip ];
 
+  # Enable udisks2, GNOME Disks and GVfs
+  services.udisks2.enable = true;
+  programs.gnome-disks.enable = true;
+  services.gvfs.enable = true;
+  # Udev rules for mounting Android phones
+  services.udev.packages = [ pkgs.libmtp ];
+
   # Configure MPD
   services.mpd = {
     enable = true;
@@ -325,6 +332,11 @@ in
     cups
     system-config-printer
     transmission_4-gtk
+    udisks
+    gnome-disk-utility
+    gnome.gvfs
+    libmtp
+    nautilus
   ];
 
   fonts.packages = with pkgs; [
