@@ -2,18 +2,13 @@
 list:
     @just --list
 
-flake := justfile_directory()
-
-# Update the lockfile
-_update args="":
-    nix flake update {{flake}} {{args}}
-
 # Update the lockfile and commit it
-update: (_update "--commit-lock-file")
+update:
+    nix flake update --commit-lock-file
 
 # Rebuild the system
 switch:
-    nixos-rebuild --use-remote-sudo --flake "{{flake}}#hermes" switch
+    nixos-rebuild --use-remote-sudo --flake ".#hermes" switch
 
 format:
     nixfmt $(fd "." --full-path "$(git rev-parse --show-toplevel)")
