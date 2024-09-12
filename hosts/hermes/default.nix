@@ -282,7 +282,6 @@ in
     wget
     rsync
     keepassxc
-    pass
     picom
     alacritty
     chromium
