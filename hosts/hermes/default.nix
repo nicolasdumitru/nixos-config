@@ -151,7 +151,7 @@ in
     # GnuPG agent
     gnupg.agent = {
       enable = true;
-      pinentryPackage = pkgs.pinentry-curses;
+      pinentryPackage = pkgs.pinentry-gnome3;
     };
 
     # Enable slock
