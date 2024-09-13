@@ -303,7 +303,7 @@ in
     mpv
     mpc-cli
     ncmpcpp
-    nsxiv
+    loupe
     kdePackages.spectacle
     zathura
     texliveFull
