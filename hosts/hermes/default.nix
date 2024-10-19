@@ -247,6 +247,10 @@ in
     XDG_RUNTIME_DIR = "/run/user/${toString config.users.users.nick.uid}";
   };
 
+  # Enable Virtualbox
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
+
   # Define system packages
   environment.systemPackages = with pkgs; [
     bash
