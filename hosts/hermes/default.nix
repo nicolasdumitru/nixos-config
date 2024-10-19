@@ -336,6 +336,7 @@ in
     lsof
     lshw
     usbutils
+    signal-desktop
   ];
 
   fonts.packages = with pkgs; [
