@@ -281,7 +281,6 @@ in
     xz
     zip
     unzip
-    p7zip
     curl
     wget
     rsync
