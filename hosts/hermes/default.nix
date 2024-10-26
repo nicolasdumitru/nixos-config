@@ -251,6 +251,11 @@ in
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
 
+  # Configure Bluetooth
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+  services.blueman.enable = true; # enable Blueman (graphical Bluetooth Manager)
+
   # Define system packages
   environment.systemPackages = with pkgs; [
     bash
