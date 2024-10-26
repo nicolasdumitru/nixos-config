@@ -169,18 +169,22 @@ in
 
     # Enable lightdm
     displayManager = {
-      lightdm.enable = true;
+      lightdm.enable = false;
     };
 
     # Enable AwesomeWM
     windowManager.awesome = {
-      enable = true;
+      enable = false;
       luaModules = with pkgs.luaPackages; [
         luarocks # is the package manager for Lua modules
         luadbi-mysql # Database abstraction layer
       ];
     };
   };
+
+  # Cosmic Desktop
+  services.desktopManager.cosmic.enable = true;
+  services.displayManager.cosmic-greeter.enable = true;
 
   # Enable touchpad support
   services.libinput.enable = true;

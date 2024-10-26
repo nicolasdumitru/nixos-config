@@ -10,6 +10,9 @@
       url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nixpkgs.follows = "nixos-cosmic/nixpkgs";
+    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
   };
 
   outputs =
@@ -17,6 +20,7 @@
       self,
       nixpkgs,
       lix-module,
+      nixos-cosmic,
       ...
     }@inputs:
     let
@@ -32,6 +36,14 @@
           modules = [
             ./hosts/hermes
             lix-module.nixosModules.default
+
+            {
+              nix.settings = {
+                substituters = [ "https://cosmic.cachix.org/" ];
+                trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
+              };
+            }
+            nixos-cosmic.nixosModules.default
           ];
           specialArgs = {
             inherit inputs outputs;
