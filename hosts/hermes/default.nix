@@ -104,6 +104,7 @@ in
   # Enable hardware acceleration
   hardware.graphics.enable = true;
 
+  # TODO: remove after switching to COSMIC
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = [ "nvidia" ];
 
@@ -158,6 +159,7 @@ in
     slock.enable = true;
   };
 
+  # TODO: remove after switching to COSMIC
   # X11, LightDM, AwesomeWM
   services.xserver = {
     # Enable X11
@@ -259,6 +261,7 @@ in
   # Configure Bluetooth
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+  # TODO: remove after switching to COSMIC
   services.blueman.enable = true; # enable Blueman (graphical Bluetooth Manager)
 
   # Define system packages
@@ -295,7 +298,6 @@ in
     wget
     rsync
     keepassxc
-    picom
     alacritty
     chromium
     thunderbird
@@ -317,22 +319,13 @@ in
     mpc-cli
     ncmpcpp
     loupe
-    kdePackages.spectacle
     zathura
     texliveFull
     texlab
     rubber
     pandoc
     libreoffice
-    xorg.xmodmap
-    xorg.xrandr
-    arandr
-    autorandr
     pulsemixer
-    networkmanagerapplet
-    xclip
-    xsel
-    dunst
     btop
     nodejs
     cups
@@ -346,6 +339,18 @@ in
     lshw
     usbutils
     signal-desktop
+
+    # TODO: remove after switching to COSMIC
+    picom
+    networkmanagerapplet
+    kdePackages.spectacle
+    xorg.xmodmap
+    xorg.xrandr
+    arandr
+    autorandr
+    xclip
+    xsel
+    dunst
   ];
 
   fonts.packages = with pkgs; [
