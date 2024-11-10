@@ -324,7 +324,7 @@ in
     texlab
     rubber
     pandoc
-    libreoffice
+    # libreoffice
     pulsemixer
     btop
     nodejs
