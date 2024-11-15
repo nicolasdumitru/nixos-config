@@ -339,6 +339,7 @@ in
     lshw
     usbutils
     signal-desktop
+    element-desktop
 
     # TODO: remove after switching to COSMIC
     picom
