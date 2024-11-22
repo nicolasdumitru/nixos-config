@@ -33,10 +33,11 @@
       nixosConfigurations = {
         # Personal laptop
         hermes = lib.nixosSystem {
+          system = "x86_64-linux";
+
           modules = [
             ./hosts/hermes
             lix-module.nixosModules.default
-
             {
               nix.settings = {
                 substituters = [
