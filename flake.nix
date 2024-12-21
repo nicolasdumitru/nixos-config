@@ -13,6 +13,11 @@
 
     nixpkgs.follows = "nixos-cosmic/nixpkgs";
     nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+
+    wezterm = {
+      url = "github:wez/wezterm?dir=nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -21,6 +26,7 @@
       nixpkgs,
       lix-module,
       nixos-cosmic,
+      wezterm,
       ...
     }@inputs:
     let
@@ -43,8 +49,12 @@
                 substituters = [
                   "https://cache.nixos.org/"
                   "https://cosmic.cachix.org/"
+                  "https://wezterm.cachix.org"
                 ];
-                trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
+                trusted-public-keys = [
+                  "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
+                  "wezterm.cachix.org-1:kAbhjYUC9qvblTE+s7S+kl5XM1zVa4skO+E/1IDWdH0="
+                ];
               };
             }
             nixos-cosmic.nixosModules.default

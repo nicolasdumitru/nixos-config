@@ -299,6 +299,7 @@ in
     rsync
     keepassxc
     alacritty
+    inputs.wezterm.packages.${pkgs.system}.default
     chromium
     thunderbird
     newsboat
