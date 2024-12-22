@@ -301,7 +301,6 @@ in
     alacritty
     chromium
     thunderbird
-    newsboat
     lf
     rename
     dmenu
