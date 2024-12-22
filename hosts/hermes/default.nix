@@ -217,12 +217,6 @@ in
   # Use systemd-coredump for core dumps
   systemd.coredump.enable = true;
 
-  # Enable printing with CUPS
-  services.printing.enable = true;
-
-  # Add printer drivers
-  services.printing.drivers = [ pkgs.hplip ];
-
   # Enable udisks2, GNOME Disks and GVfs
   services.udisks2.enable = true;
   programs.gnome-disks.enable = true;
@@ -327,8 +321,6 @@ in
     pulsemixer
     btop
     nodejs
-    cups
-    system-config-printer
     transmission_4-gtk
     exfat
     exfatprogs
