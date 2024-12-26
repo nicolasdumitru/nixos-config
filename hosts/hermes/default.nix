@@ -104,7 +104,6 @@ in
   # Enable hardware acceleration
   hardware.graphics.enable = true;
 
-  # TODO: remove after switching to COSMIC
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = [ "nvidia" ];
 
