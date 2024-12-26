@@ -153,38 +153,15 @@ in
       enable = true;
       pinentryPackage = pkgs.pinentry-gnome3;
     };
-
-    # Enable slock
-    slock.enable = true;
   };
 
-  # TODO: remove after switching to COSMIC
-  # X11, LightDM, AwesomeWM
-  services.xserver = {
-    # Enable X11
-    enable = true;
+  # KDE Plasma
+  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
+  services.desktopManager.plasma6.enable = true;
 
-    # Keymap
-    xkb.layout = "us";
-    xkb.variant = "";
-
-    # Enable lightdm
-    displayManager = {
-      lightdm.enable = true;
-    };
-
-    # Enable AwesomeWM
-    windowManager.awesome = {
-      enable = true;
-      luaModules = with pkgs.luaPackages; [
-        luarocks # is the package manager for Lua modules
-        luadbi-mysql # Database abstraction layer
-      ];
-    };
-  };
-
-  # Cosmic Desktop
-  # TODO: Start using Cosmic after bugs get fixed.
+  # COSMIC Desktop
+  # TODO: Switch to COSMIC
   # services.desktopManager.cosmic.enable = true;
   # services.displayManager.cosmic-greeter.enable = true;
 
@@ -254,8 +231,6 @@ in
   # Configure Bluetooth
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
-  # TODO: remove after switching to COSMIC
-  services.blueman.enable = true; # enable Blueman (graphical Bluetooth Manager)
 
   # Define system packages
   environment.systemPackages = with pkgs; [
@@ -300,7 +275,6 @@ in
     thunderbird
     lf
     rename
-    dmenu
     fzf
     rustup
     gdb
@@ -335,17 +309,8 @@ in
     signal-desktop
     element-desktop
 
-    # TODO: remove after switching to COSMIC
-    picom
-    networkmanagerapplet
-    kdePackages.spectacle
-    xorg.xmodmap
-    xorg.xrandr
-    arandr
-    autorandr
-    xclip
-    xsel
-    dunst
+    wl-clipboard-rs
+    # xsel
   ];
 
   fonts.packages = with pkgs; [
