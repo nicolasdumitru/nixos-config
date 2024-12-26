@@ -94,7 +94,7 @@ in
     uid = 1000;
     home = "/home/${userName}";
     isNormalUser = true;
-    shell = pkgs.zsh;
+    shell = pkgs.bashInteractive;
     extraGroups = [
       "wheel"
       "networkmanager"
