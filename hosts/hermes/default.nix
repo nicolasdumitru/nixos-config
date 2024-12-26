@@ -283,6 +283,7 @@ in
     cmake
     just
     git
+    stow
     gnutar
     gzip
     xz
