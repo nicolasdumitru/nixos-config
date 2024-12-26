@@ -138,21 +138,10 @@ in
     nvidiaBusId = "PCI:1:0:0";
   };
 
-  # Enable/set up programs:
-  programs = {
-    # ZSH
-    zsh = {
-      enable = true;
-      syntaxHighlighting.enable = true;
-      autosuggestions.enable = true;
-      enableCompletion = true;
-    };
-
-    # GnuPG agent
-    gnupg.agent = {
-      enable = true;
-      pinentryPackage = pkgs.pinentry-gnome3;
-    };
+  # GnuPG agent
+  programs.gnupg.agent = {
+    enable = true;
+    pinentryPackage = pkgs.pinentry-gnome3;
   };
 
   # KDE Plasma
