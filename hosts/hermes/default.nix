@@ -261,6 +261,9 @@ in
   # Define system packages
   environment.systemPackages = with pkgs; [
     bash
+    nushell
+    fish
+    starship
     coreutils-full
     eza
     bat
