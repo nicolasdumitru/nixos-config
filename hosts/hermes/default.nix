@@ -145,19 +145,19 @@ in
   };
 
   # KDE Plasma
-  services.displayManager.sddm.enable = true;
-  services.displayManager.sddm.wayland.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
-  environment.plasma6.excludePackages = with pkgs.kdePackages; [
-    konsole
-    kate
-  ];
+  # services.displayManager.sddm.enable = true;
+  # services.displayManager.sddm.wayland.enable = true;
+  # services.desktopManager.plasma6.enable = true;
+  #
+  # environment.plasma6.excludePackages = with pkgs.kdePackages; [
+  #   konsole
+  #   kate
+  # ];
 
   # COSMIC Desktop
   # TODO: Switch to COSMIC
-  # services.desktopManager.cosmic.enable = true;
-  # services.displayManager.cosmic-greeter.enable = true;
+  services.desktopManager.cosmic.enable = true;
+  services.displayManager.cosmic-greeter.enable = true;
 
   # Enable touchpad support
   services.libinput.enable = true;
@@ -303,8 +303,8 @@ in
     signal-desktop
     element-desktop
 
-    wl-clipboard-rs
-    # xsel
+    # wl-clipboard-rs
+    xsel
   ];
 
   fonts.packages = with pkgs; [
