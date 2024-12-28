@@ -6,8 +6,11 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Lix
+    # Note that this assumes you have a flake-input called nixpkgs,
+    # which is often the case. If you've named it something else,
+    # you'll need to change the `nixpkgs` below.
     lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-1.tar.gz";
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-2.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
