@@ -10,10 +10,11 @@ update:
 switch:
     nixos-rebuild --use-remote-sudo --flake ".#hermes" switch
 
-# Collect garbage
-gc period='3d': && switch
+# Delete Nix(OS) generations older than period
+collect-garbage period='3d': && switch
     nix-collect-garbage --delete-older-than {{period}}
     sudo nix-collect-garbage --delete-older-than {{period}}
+alias gc := collect-garbage
 
 # Format all Nix files
 format:
