@@ -1,3 +1,8 @@
+# The default recipe is always the first recipe in the justfile
+
+# The recipe to run when just is invoked without a recipe
+default: list
+
 # List available recipes
 list:
     @just --list
