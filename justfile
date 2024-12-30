@@ -15,5 +15,7 @@ gc period='3d': && switch
     nix-collect-garbage --delete-older-than {{period}}
     sudo nix-collect-garbage --delete-older-than {{period}}
 
+# Format all Nix files
 format:
-    nixfmt $(fd "." --full-path "$(git rev-parse --show-toplevel)")
+    nixfmt $(fd '\.nix' --full-path "$(git rev-parse --show-toplevel)")
+alias fmt := format
