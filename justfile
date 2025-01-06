@@ -11,12 +11,13 @@ list:
 update:
     nix flake update --commit-lock-file
 
-# Build and activate the new configuration
-switch:
-    nixos-rebuild --use-remote-sudo --flake ".#hermes" switch
+# Reconfigure the system to match this configuration flake
+rebuild operation=rebuild_op:
+    nixos-rebuild --use-remote-sudo --flake ".#hermes" {{operation}}
+rebuild_op := 'switch'
 
 # Delete Nix(OS) generations older than period
-collect-garbage period='3d': && switch
+collect-garbage period='3d' operation=rebuild_op: && (rebuild operation)
     nix-collect-garbage --delete-older-than {{period}}
     sudo nix-collect-garbage --delete-older-than {{period}}
 alias gc := collect-garbage
