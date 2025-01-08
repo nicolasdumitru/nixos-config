@@ -302,6 +302,7 @@ in
     usbutils
     signal-desktop
     element-desktop
+    deja-dup
 
     wl-clipboard-rs
     # xsel
