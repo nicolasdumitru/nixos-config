@@ -147,17 +147,16 @@ in
   # KDE Plasma
   services.displayManager.sddm.enable = true;
   services.displayManager.sddm.wayland.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
-  environment.plasma6.excludePackages = with pkgs.kdePackages; [
-    konsole
-    kate
-  ];
+  # services.desktopManager.plasma6.enable = true;
+  #
+  # environment.plasma6.excludePackages = with pkgs.kdePackages; [
+  #   konsole
+  #   kate
+  # ];
 
   # COSMIC Desktop
-  # TODO: Switch to COSMIC
-  # services.desktopManager.cosmic.enable = true;
-  # services.displayManager.cosmic-greeter.enable = true;
+  services.desktopManager.cosmic.enable = true;
+  # services.displayManager.cosmic-greeter.enable = true; TODO: Enable when fixed
 
   # Enable touchpad support
   services.libinput.enable = true;
@@ -303,9 +302,8 @@ in
     signal-desktop
     element-desktop
     deja-dup
-
-    wl-clipboard-rs
-    # xsel
+    # wl-clipboard-rs # TODO: Enable later (currently not supported by COSMIC)
+    xsel
   ];
 
   fonts.packages = with pkgs; [
