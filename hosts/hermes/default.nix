@@ -311,6 +311,7 @@ in
     signal-desktop
     element-desktop
     deja-dup
+    simple-scan
     # wl-clipboard-rs # TODO: Enable later (currently not supported by COSMIC)
     xsel
   ];
