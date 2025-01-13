@@ -98,6 +98,8 @@ in
     extraGroups = [
       "wheel"
       "networkmanager"
+      "scanner" # for SANE
+      "lp" # for SANE
     ];
   };
 
@@ -224,6 +226,13 @@ in
   # Configure Bluetooth
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
+
+  # Enable support for SANE scanners
+  hardware.sane.enable = true;
+  # TODO: Set up network scanning (see
+  # https://nixos.wiki/wiki/Scanners#Network_scanning). If pkgs.hplip doesn't
+  # work, try pkgs.hplipWithPlugin.
+  hardware.sane.extraBackends = [ pkgs.hplip ];
 
   # Define system packages
   environment.systemPackages = with pkgs; [
