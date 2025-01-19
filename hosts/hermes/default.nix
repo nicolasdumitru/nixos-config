@@ -298,7 +298,7 @@ in
     pandoc
     # libreoffice
     pulsemixer
-    btop
+    gnome-system-monitor
     nodejs
     transmission_4-gtk
     exfat
