@@ -312,6 +312,8 @@ in
     element-desktop
     deja-dup
     simple-scan
+    stockfish
+    en-croissant
     # wl-clipboard-rs # TODO: Enable later (currently not supported by COSMIC)
     xsel
   ];
