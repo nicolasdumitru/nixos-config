@@ -291,7 +291,7 @@ in
     mpc-cli
     ncmpcpp
     loupe
-    zathura
+    kdePackages.okular
     texliveFull
     texlab
     rubber
