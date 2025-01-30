@@ -283,6 +283,10 @@ in
     clang-tools
     bear
     lua-language-server
+    python3Full
+    python312Packages.numpy
+    pyright
+    black
     nil
     nixfmt-rfc-style
     shellcheck
