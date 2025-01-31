@@ -31,6 +31,8 @@
       lib = nixpkgs.lib;
     in
     {
+      nixosModules = import ./modules;
+
       # NixOS configuration entrypoint
       # Available through 'nixos-rebuild --flake .#your-hostname'
       nixosConfigurations = {
@@ -38,9 +40,17 @@
         hermes = lib.nixosSystem {
           system = "x86_64-linux";
 
+          specialArgs = {
+            inherit inputs outputs self;
+          };
+
           modules = [
             ./hosts/hermes
+
             lix-module.nixosModules.default
+
+            nixos-cosmic.nixosModules.default
+
             {
               nix.settings = {
                 # Settings can be checked after rebuilds using:
@@ -59,11 +69,7 @@
                 ];
               };
             }
-            nixos-cosmic.nixosModules.default
           ];
-          specialArgs = {
-            inherit inputs outputs;
-          };
         };
       };
     };

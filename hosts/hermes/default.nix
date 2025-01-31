@@ -1,6 +1,7 @@
 # This is your system's configuration file.
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
 {
+  self,
   inputs,
   lib,
   config,
@@ -22,6 +23,8 @@ in
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
+    self.nixosModules.desktop
+    self.nixosModules.development.default
   ];
 
   # Boot manager
@@ -146,45 +149,6 @@ in
     pinentryPackage = pkgs.pinentry-gnome3;
   };
 
-  # KDE Plasma
-  services.displayManager.sddm.enable = true;
-  services.displayManager.sddm.wayland.enable = true;
-  # services.desktopManager.plasma6.enable = true;
-  #
-  # environment.plasma6.excludePackages = with pkgs.kdePackages; [
-  #   konsole
-  #   kate
-  # ];
-
-  # COSMIC Desktop
-  services.desktopManager.cosmic.enable = true;
-  # services.displayManager.cosmic-greeter.enable = true; TODO: Enable when fixed
-
-  # Enable touchpad support
-  services.libinput.enable = true;
-
-  # Enable sound with PipeWire.
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    # Enable PulseAudio server emulation
-    pulse.enable = true;
-  };
-  # Disable PulseAudio
-  services.pulseaudio.enable = false;
-
-  # systemd-logind configuration
-  services.logind = {
-    # Laptop lid switch behavior
-    lidSwitch = "suspend";
-    lidSwitchExternalPower = "suspend";
-    lidSwitchDocked = "ignore";
-
-    extraConfig = "IdleAction=ignore";
-  };
-
   # Use systemd-coredump for core dumps
   systemd.coredump.enable = true;
 
@@ -223,10 +187,6 @@ in
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
 
-  # Configure Bluetooth
-  hardware.bluetooth.enable = true; # enables support for Bluetooth
-  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
-
   # Enable support for SANE scanners
   hardware.sane.enable = true;
   # TODO: Set up network scanning (see
@@ -252,17 +212,8 @@ in
     gawk
     gnused
     neovim
-    emacs
-    tree-sitter
     gcc
     glibc
-    clang
-    libcxx
-    gnumake
-    cmake
-    just
-    git
-    stow
     gnutar
     gzip
     xz
@@ -272,42 +223,18 @@ in
     wget
     rsync
     keepassxc
-    alacritty
-    chromium
-    thunderbird
     lf
     rename
     fzf
-    rustup
-    gdb
-    clang-tools
-    bear
-    lua-language-server
-    (python3.withPackages (
-      ps: with ps; [
-        numpy
-        torchWithCuda
-      ]
-    ))
-    pyright
-    black
-    nil
-    nixfmt-rfc-style
-    shellcheck
-    nodePackages.bash-language-server
     mpv
     mpc-cli
     ncmpcpp
-    loupe
     kdePackages.okular
     texliveFull
     texlab
     rubber
     pandoc
     # libreoffice
-    pulsemixer
-    gnome-system-monitor
-    nodejs
     transmission_4-gtk
     exfat
     exfatprogs
@@ -322,8 +249,6 @@ in
     simple-scan
     stockfish
     en-croissant
-    # wl-clipboard-rs # TODO: Enable later (currently not supported by COSMIC)
-    xsel
   ];
 
   fonts.packages = with pkgs; [
