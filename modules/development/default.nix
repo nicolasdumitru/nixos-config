@@ -10,6 +10,9 @@
     self.nixosModules.development.python
   ];
 
+  # Use systemd-coredump for core dumps
+  systemd.coredump.enable = true;
+
   environment.systemPackages = with pkgs; [
     alacritty
 

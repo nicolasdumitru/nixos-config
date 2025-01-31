@@ -149,9 +149,6 @@ in
     pinentryPackage = pkgs.pinentry-gnome3;
   };
 
-  # Use systemd-coredump for core dumps
-  systemd.coredump.enable = true;
-
   # Configure MPD
   services.mpd = {
     enable = true;
