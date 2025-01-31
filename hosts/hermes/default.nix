@@ -235,7 +235,6 @@ in
     rubber
     pandoc
     # libreoffice
-    transmission_4-gtk
     exfat
     exfatprogs
     libmtp
