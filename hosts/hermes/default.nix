@@ -25,6 +25,7 @@ in
     ./hardware-configuration.nix
     self.nixosModules.desktop
     self.nixosModules.development.default
+    self.nixosModules.documents
   ];
 
   # Boot manager
@@ -229,12 +230,6 @@ in
     mpv
     mpc-cli
     ncmpcpp
-    kdePackages.okular
-    texliveFull
-    texlab
-    rubber
-    pandoc
-    # libreoffice
     exfat
     exfatprogs
     libmtp
