@@ -42,6 +42,21 @@ in
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
+  # User
+  users.users.nick = {
+    name = userName;
+    uid = 1000;
+    home = "/home/${userName}";
+    isNormalUser = true;
+    shell = pkgs.bashInteractive;
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "scanner" # for SANE
+      "lp" # for SANE
+    ];
+  };
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -60,7 +75,7 @@ in
   }) config.nix.registry;
 
   nix.settings = {
-    # Enable flakes and new 'nix' command
+    # Enable flakes and new `nix` command
     experimental-features = "nix-command flakes";
     # Deduplicate and optimize nix store
     auto-optimise-store = true;
@@ -72,21 +87,6 @@ in
     dates = "weekly";
     persistent = true;
     options = "--delete-older-than 30d";
-  };
-
-  # User
-  users.users.nick = {
-    name = userName;
-    uid = 1000;
-    home = "/home/${userName}";
-    isNormalUser = true;
-    shell = pkgs.bashInteractive;
-    extraGroups = [
-      "wheel"
-      "networkmanager"
-      "scanner" # for SANE
-      "lp" # for SANE
-    ];
   };
 
   # Enable hardware acceleration
@@ -130,6 +130,7 @@ in
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
 
+  # TODO: Move this to a separate module
   # Enable support for SANE scanners
   hardware.sane.enable = true;
   # TODO: Set up network scanning (see
