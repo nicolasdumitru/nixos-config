@@ -1,5 +1,3 @@
-# This is your system's configuration file.
-# Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
 {
   self,
   inputs,
@@ -14,18 +12,19 @@ in
 {
   # You can import other NixOS modules here
   imports = [
-    # If you want to use modules from other flakes (such as nixos-hardware):
-    # inputs.hardware.nixosModules.common-cpu-amd
-    # inputs.hardware.nixosModules.common-ssd
-
-    # You can also split up your configuration and import pieces of it here:
-    # ./users.nix
-
-    # Import your generated (nixos-generate-config) hardware configuration
+    # Hardware configuration
     ./hardware-configuration.nix
+
+    self.nixosModules.core
+    self.nixosModules.shell
+    self.nixosModules.utils
+    self.nixosModules.file-utils
+
     self.nixosModules.desktop
     self.nixosModules.development.default
     self.nixosModules.documents
+
+    self.nixosModules.disks-filesystems
   ];
 
   # Boot manager
@@ -153,16 +152,6 @@ in
   # Use systemd-coredump for core dumps
   systemd.coredump.enable = true;
 
-  # Enable udisks2, GNOME Disks and GVfs
-  services.udisks2.enable = true;
-  programs.gnome-disks.enable = true;
-  services.gvfs = {
-    enable = true;
-    package = pkgs.gnome.gvfs;
-  };
-  # Udev rules for mounting Android phones
-  services.udev.packages = [ pkgs.libmtp ];
-
   # Configure MPD
   services.mpd = {
     enable = true;
@@ -197,66 +186,11 @@ in
 
   # Define system packages
   environment.systemPackages = with pkgs; [
-    bash
-    nushell
-    fish
-    starship
-    coreutils-full
-    eza
-    bat
-    diffutils
-    findutils
-    fd
-    gnugrep
-    ripgrep
-    ripgrep-all
-    gawk
-    gnused
-    neovim
-    gcc
-    glibc
-    gnutar
-    gzip
-    xz
-    zip
-    unzip
-    curl
-    wget
-    rsync
-    keepassxc
-    lf
-    rename
-    fzf
     mpv
     mpc-cli
     ncmpcpp
-    exfat
-    exfatprogs
-    libmtp
-    nautilus
-    lsof
-    lshw
-    usbutils
-    signal-desktop
-    element-desktop
-    deja-dup
-    simple-scan
-    stockfish
-    en-croissant
-  ];
 
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-    jetbrains-mono
-    noto-fonts
-    noto-fonts-cjk-sans
-    noto-fonts-emoji
-    liberation_ttf
-    fira-code
-    fira-code-symbols
-    mplus-outline-fonts.githubRelease
-    dina-font
-    proggyfonts
+    simple-scan
   ];
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
