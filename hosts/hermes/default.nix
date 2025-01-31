@@ -143,12 +143,6 @@ in
     nvidiaBusId = "PCI:1:0:0";
   };
 
-  # GnuPG agent
-  programs.gnupg.agent = {
-    enable = true;
-    pinentryPackage = pkgs.pinentry-gnome3;
-  };
-
   # Configure MPD
   services.mpd = {
     enable = true;
