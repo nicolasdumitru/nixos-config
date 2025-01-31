@@ -53,6 +53,7 @@
     thunderbird
     keepassxc
     loupe
+    kdePackages.elisa
 
     nautilus
     deja-dup

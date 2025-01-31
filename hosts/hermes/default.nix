@@ -143,27 +143,6 @@ in
     nvidiaBusId = "PCI:1:0:0";
   };
 
-  # Configure MPD
-  services.mpd = {
-    enable = true;
-    startWhenNeeded = true;
-    user = userName; # MPD must run under the same user as PipeWire
-    musicDirectory = "${config.users.users.nick.home}/store/music";
-    extraConfig = ''
-      audio_output {
-        type "pipewire"
-        name "PipeWire Sound Server"
-      }
-      auto_update "yes"
-      restore_paused "yes"
-    '';
-  };
-  systemd.services.mpd.environment = {
-    # User-id must match above user.
-    # MPD will look inside this directory for the PipeWire socket.
-    XDG_RUNTIME_DIR = "/run/user/${toString config.users.users.nick.uid}";
-  };
-
   # Enable Virtualbox
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
@@ -177,10 +156,6 @@ in
 
   # Define system packages
   environment.systemPackages = with pkgs; [
-    mpv
-    mpc-cli
-    ncmpcpp
-
     simple-scan
   ];
 
