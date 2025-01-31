@@ -5,11 +5,11 @@
 
 {
   # Default shell
-  users.defaultUserShell = pkgs.bash;
+  users.defaultUserShell = pkgs.bashInteractive;
 
   environment.systemPackages = with pkgs; [
     # Bash (many systems/programs depend on bash)
-    bash
+    bashInteractive
 
     # Core system utilities
     coreutils
