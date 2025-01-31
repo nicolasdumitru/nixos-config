@@ -283,8 +283,12 @@ in
     clang-tools
     bear
     lua-language-server
-    python3Full
-    python312Packages.numpy
+    (python3.withPackages (
+      ps: with ps; [
+        numpy
+        torchWithCuda
+      ]
+    ))
     pyright
     black
     nil
