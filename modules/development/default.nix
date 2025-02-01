@@ -19,6 +19,7 @@
     neovim
     emacs
     tree-sitter
+    zed-editor
 
     git
 
