@@ -49,7 +49,7 @@
 
   environment.systemPackages = with pkgs; [
     alacritty
-    chromium
+    brave
     thunderbird
     keepassxc
     loupe

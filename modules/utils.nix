@@ -10,7 +10,6 @@
     pinentryPackage = pkgs.pinentry-gnome3;
   };
 
-
   environment.systemPackages = with pkgs; [
     # Core Unix utilities
     coreutils
@@ -26,7 +25,7 @@
     fd # Fast find alternative
     eza # Modern ls replacement
     bat # Cat clone with syntax highlighting
-    
+
     # Encryption & signing
     gnupg
   ];
