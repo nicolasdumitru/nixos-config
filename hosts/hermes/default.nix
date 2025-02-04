@@ -126,10 +126,6 @@ in
     nvidiaBusId = "PCI:1:0:0";
   };
 
-  # Enable Virtualbox
-  virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
-
   # TODO: Move this to a separate module
   # Enable support for SANE scanners
   hardware.sane.enable = true;
