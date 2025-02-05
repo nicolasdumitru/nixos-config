@@ -44,18 +44,22 @@ in
   i18n.defaultLocale = "en_US.UTF-8";
 
   # User
-  users.users.nick = {
+  users.mutableUsers = true;
+  users.users."${userName}" = {
     name = userName;
     uid = 1000;
     home = "/home/${userName}";
     isNormalUser = true;
     shell = pkgs.bashInteractive;
     extraGroups = [
-      "wheel"
+      "wheel" # Grants sudo privileges
       "networkmanager"
       "scanner" # for SANE
       "lp" # for SANE
     ];
+    # The initial password is meant to be changed right away. It's purpose is to
+    # enable installing without a root password.
+    initialPassword = userName;
   };
 
   # Allow unfree packages
