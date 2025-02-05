@@ -16,6 +16,9 @@
 
     nixpkgs.follows = "nixos-cosmic/nixpkgs";
     nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -24,6 +27,7 @@
       nixpkgs,
       lix-module,
       nixos-cosmic,
+      disko,
       ...
     }@inputs:
     let
@@ -50,6 +54,8 @@
             lix-module.nixosModules.default
 
             nixos-cosmic.nixosModules.default
+
+            disko.nixosModules.disko
 
             {
               nix.settings = {

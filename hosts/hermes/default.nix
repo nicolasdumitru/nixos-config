@@ -14,6 +14,7 @@ in
   imports = [
     # Hardware configuration
     ./hardware-configuration.nix
+    ./disko-config.nix
 
     self.nixosModules.core
     self.nixosModules.shell
