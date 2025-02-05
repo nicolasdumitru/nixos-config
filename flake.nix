@@ -3,20 +3,22 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # Lix
-    # Note that this assumes you have a flake-input called nixpkgs,
-    # which is often the case. If you've named it something else,
-    # you'll need to change the `nixpkgs` below.
     lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-2.tar.gz";
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixpkgs.follows = "nixos-cosmic/nixpkgs";
-    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+    # NixOS COSMIC
+    nixos-cosmic = {
+      url = "github:lilyinstarlight/nixos-cosmic";
+      # A binary cache is built agains the current `nixos-unstable`
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
+    # disko
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
   };
