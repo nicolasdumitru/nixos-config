@@ -1,4 +1,5 @@
 {
+  nix-config = import ./nix-config.nix;
   core = import ./core.nix;
   shell = import ./shell.nix;
   utils = import ./utils.nix;
