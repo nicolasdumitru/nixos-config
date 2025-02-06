@@ -62,21 +62,33 @@ in
 
   # User
   users.mutableUsers = true;
+  users.enforceIdUniqueness = true; # Require unique UIDs/GIDs
   users.users."${userName}" = {
     name = userName;
-    uid = 1000;
-    home = "/home/${userName}";
     isNormalUser = true;
+
+    home = "/home/${userName}";
+    createHome = true;
+
+    useDefaultShell = false;
     shell = pkgs.bashInteractive;
+
+    group = userName; # UPG
     extraGroups = [
       "wheel" # Grants sudo privileges
       "networkmanager"
       "scanner" # for SANE
       "lp" # for SANE
     ];
+
     # The initial password is meant to be changed right away. It's purpose is to
     # enable installing without a root password.
     initialPassword = userName;
+  };
+  # UPG
+  users.groups."${userName}" = {
+    name = userName;
+    members = [ userName ];
   };
 
   # Automatic Nix garbage collection config
