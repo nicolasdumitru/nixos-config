@@ -12,9 +12,10 @@ update:
     nix flake update --commit-lock-file
 
 # Reconfigure the system to match this configuration flake
-rebuild operation=rebuild_op:
-    nixos-rebuild --use-remote-sudo --flake ".#hermes" {{operation}}
+rebuild operation=rebuild_op host=hostname:
+    nixos-rebuild --use-remote-sudo --flake ".#{{host}}" {{operation}}
 rebuild_op := 'switch'
+hostname := `hostname`
 
 # Delete Nix(OS) generations older than period
 collect-garbage period='3d' operation=rebuild_op: && (rebuild operation)
