@@ -83,6 +83,25 @@
             }
           ];
         };
+        atlas = nixpkgs-stable.lib.nixosSystem {
+          system = "x86_64-linux";
+
+          specialArgs = {
+            inherit inputs outputs self;
+          };
+
+          modules = [
+            ./hosts/atlas
+
+            disko-stable.nixosModules.disko
+
+            # Fix the nixpkgs registry conflict
+            {
+              nix.registry.nixpkgs.flake = nixpkgs-stable;
+              nix.registry.nixpkgs.to.path = nixpkgs-stable;
+            }
+          ];
+        };
       };
     };
 }
