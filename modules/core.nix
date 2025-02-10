@@ -33,5 +33,10 @@
     # Network utilities
     wget
     curl
+    openssh
+
+    # NixOS-specific (for the configuration)
+    git
+    just
   ];
 }
