@@ -3,6 +3,7 @@
 
   inputs = {
     # Nixpkgs
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # Lix
@@ -19,22 +20,25 @@
     };
 
     # disko
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    disko-stable.url = "github:nix-community/disko";
+    disko-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
+    disko-unstable.url = "github:nix-community/disko";
+    disko-unstable.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     {
       self,
       nixpkgs,
+      nixpkgs-stable,
       lix-module,
       nixos-cosmic,
-      disko,
+      disko-stable,
+      disko-unstable,
       ...
     }@inputs:
     let
       inherit (self) outputs;
-      lib = nixpkgs.lib;
     in
     {
       nixosModules = import ./modules;
@@ -43,7 +47,7 @@
       # Available through 'nixos-rebuild --flake .#your-hostname'
       nixosConfigurations = {
         # Personal laptop
-        hermes = lib.nixosSystem {
+        hermes = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
           specialArgs = {
@@ -57,7 +61,7 @@
 
             nixos-cosmic.nixosModules.default
 
-            disko.nixosModules.disko
+            disko-unstable.nixosModules.disko
 
             {
               nix.settings = {
