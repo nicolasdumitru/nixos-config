@@ -24,6 +24,12 @@
     disko-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
     disko-unstable.url = "github:nix-community/disko";
     disko-unstable.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Simple NixOS Mailserver
+    simple-nixos-mailserver = {
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-24.11";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
+    };
   };
 
   outputs =
@@ -35,6 +41,7 @@
       nixos-cosmic,
       disko-stable,
       disko-unstable,
+      simple-nixos-mailserver,
       ...
     }@inputs:
     let
@@ -94,6 +101,8 @@
             ./hosts/atlas
 
             disko-stable.nixosModules.disko
+
+            simple-nixos-mailserver.nixosModule
 
             # Fix the nixpkgs registry conflict
             {

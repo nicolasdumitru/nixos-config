@@ -1,5 +1,6 @@
 {
   self,
+  config,
   pkgs,
   ...
 }:
@@ -82,6 +83,29 @@ in
     };
     authorizedKeysInHomedir = true;
   };
+
+  # Simple NixOS Mailserver
+  mailserver = {
+    enable = true;
+    fqdn = "mail.ndumitru.com";
+    domains = [ "ndumitru.com" ];
+
+    # A list of all login accounts. To create the password hashes, use
+    # nix-shell -p mkpasswd --run 'mkpasswd -sm bcrypt'
+    loginAccounts = {
+      "nicolas@ndumitru.com" = {
+        # hashedPasswordFile = config.users.users."${userName}".home + "/mailserver/nicolas.hash";
+        hashedPasswordFile = "/home/nick/mailserver/nicolas.hash";
+        # aliases = ["postmaster@example.com"];
+      };
+    };
+
+    # Use Let's Encrypt certificates. This needs to set up a stripped down nginx
+    # and opens port 80.
+    certificateScheme = "acme-nginx";
+  };
+  security.acme.acceptTerms = true;
+  security.acme.defaults.email = "nicolas@ndumitru.com";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "24.11";
