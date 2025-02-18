@@ -17,6 +17,7 @@
   # COSMIC Desktop
   services.desktopManager.cosmic.enable = true;
   # services.displayManager.cosmic-greeter.enable = true; TODO: Enable when fixed
+  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1; # Wayland clipboard
 
   # systemd-logind configuration
   services.logind = {
@@ -66,8 +67,7 @@
 
     gnome-system-monitor
 
-    # wl-clipboard-rs # TODO: Enable later (currently not supported by COSMIC)
-    xsel
+    wl-clipboard-rs
   ];
 
   fonts.packages = with pkgs; [
