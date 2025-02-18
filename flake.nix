@@ -13,11 +13,8 @@
     };
 
     # NixOS COSMIC
-    nixos-cosmic = {
-      url = "github:lilyinstarlight/nixos-cosmic";
-      # A binary cache is built agains the current `nixos-unstable`
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+    nixpkgs.follows = "nixos-cosmic/nixpkgs";
 
     # disko
     disko-stable.url = "github:nix-community/disko";
