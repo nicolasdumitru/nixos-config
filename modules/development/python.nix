@@ -9,6 +9,7 @@
       ps: with ps; [
         numpy
         torchWithCuda
+        matplotlib
       ]
     ))
     pyright
