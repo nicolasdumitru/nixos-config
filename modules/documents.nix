@@ -16,6 +16,6 @@
 
     pandoc
 
-    # libreoffice
+    libreoffice
   ];
 }
