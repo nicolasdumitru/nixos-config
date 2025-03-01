@@ -28,7 +28,7 @@
 
     rustup
 
-    nil
+    nixd
     nixfmt-rfc-style
 
     lua-language-server
