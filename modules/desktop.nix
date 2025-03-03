@@ -67,6 +67,8 @@
 
     gnome-system-monitor
 
+    obsidian
+
     wl-clipboard-rs
   ];
 
