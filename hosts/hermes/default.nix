@@ -137,7 +137,13 @@ in
   # TODO: Set up network scanning (see
   # https://nixos.wiki/wiki/Scanners#Network_scanning). If pkgs.hplip doesn't
   # work, try pkgs.hplipWithPlugin.
-  hardware.sane.extraBackends = [ pkgs.hplip ];
+  hardware.sane.extraBackends = with pkgs; [ hplipWithPlugin ];
+
+  # Printing
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [ hplipWithPlugin ];
+  };
 
   # Define system packages
   environment.systemPackages = with pkgs; [
