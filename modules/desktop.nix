@@ -48,10 +48,13 @@
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
 
+  # Thunderbird
+  programs.thunderbird.enable = true;
+  programs.thunderbird.package = pkgs.thunderbird-latest;
+
   environment.systemPackages = with pkgs; [
     alacritty
     brave
-    thunderbird
     keepassxc
     loupe
     kdePackages.elisa
