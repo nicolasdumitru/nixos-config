@@ -62,7 +62,7 @@
     nautilus
     deja-dup
 
-    signal-desktop
+    signal-desktop-bin
     element-desktop
 
     stockfish
