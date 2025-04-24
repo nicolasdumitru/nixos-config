@@ -19,6 +19,9 @@
   # services.displayManager.cosmic-greeter.enable = true; TODO: Enable when fixed
   environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1; # Wayland clipboard
 
+  systemd.packages = [ pkgs.observatory ];
+  systemd.services.monitord.wantedBy = [ "multi-user.target" ];
+
   # systemd-logind configuration
   services.logind = {
     # Laptop lid switch behavior
@@ -61,7 +64,7 @@
 
     signal-desktop-bin
 
-    gnome-system-monitor
+    observatory # provided by COSMIC
 
     obsidian
 
