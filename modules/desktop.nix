@@ -78,6 +78,7 @@
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     jetbrains-mono
+    corefonts
     noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-emoji
