@@ -8,6 +8,7 @@
     (python3.withPackages (
       ps: with ps; [
         numpy
+        scipy
         torchWithCuda
         matplotlib
       ]
