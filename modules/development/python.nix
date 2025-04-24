@@ -11,8 +11,13 @@
         scipy
         torchWithCuda
         matplotlib
+
+        # Tooling
+        python-lsp-server
       ]
     ))
+
+    # Tooling
     pyright
     black
   ];
