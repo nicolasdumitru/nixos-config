@@ -59,14 +59,7 @@
     loupe
     kdePackages.elisa
 
-    nautilus
-    deja-dup
-
     signal-desktop-bin
-    element-desktop
-
-    stockfish
-    en-croissant
 
     gnome-system-monitor
 
