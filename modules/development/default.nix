@@ -17,7 +17,6 @@
     alacritty
 
     neovim
-    emacs
     tree-sitter
     zed-editor
 
