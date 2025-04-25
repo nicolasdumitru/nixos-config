@@ -31,4 +31,8 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # environment.variables = config.environment.variables // {
+  #   NIXPKGS_ALLOW_UNFREE = 1;
+  # };
+
 }

@@ -45,8 +45,26 @@ in
     self.nixosModules.disks-filesystems
   ];
 
-  # Boot manager
-  boot.loader.systemd-boot.enable = true;
+  # Boot
+  boot = {
+    # Bootloader
+    loader.systemd-boot.enable = true;
+
+    # Graphical boot
+    initrd.systemd.enable = true;
+    initrd.verbose = false;
+
+    plymouth = {
+      enable = true;
+      theme = "breeze"; # try breeze
+    };
+
+    consoleLogLevel = 4;
+    kernelParams = [
+      "quiet"
+      "splash"
+    ];
+  };
 
   # System Hostname
   networking.hostName = "hermes";
