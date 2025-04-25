@@ -31,8 +31,12 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # environment.variables = config.environment.variables // {
-  #   NIXPKGS_ALLOW_UNFREE = 1;
-  # };
+  # Allow unfree packages in ad hoc shell environments
+  # lib.mkMerge is used to avoid overwriting the attrset
+  environment.variables = lib.mkMerge [
+    {
+      NIXPKGS_ALLOW_UNFREE = 1;
+    }
+  ];
 
 }
