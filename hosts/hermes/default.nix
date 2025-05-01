@@ -1,6 +1,7 @@
 {
   self,
   config,
+  lib,
   pkgs,
   ...
 }:
@@ -41,6 +42,9 @@ in
     # Document viewers and editing tools
     self.nixosModules.documents
 
+    # Virtualization
+    # (self.nixosModules.virtualization { vboxUsers = [ userName ]; })
+
     # Disk management, mounting and filesystem tools
     self.nixosModules.disks-filesystems
   ];
@@ -60,7 +64,7 @@ in
     };
 
     consoleLogLevel = 4;
-    kernelParams = [
+    kernelParams = lib.mkBefore [
       "quiet"
       "splash"
     ];
