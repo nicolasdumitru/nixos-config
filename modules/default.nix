@@ -9,6 +9,7 @@
   development = {
     default = import ./development;
     c-cpp = import ./development/c-cpp.nix;
+    dotnet = import ./development/dotnet.nix;
     python = import ./development/python.nix;
   };
   documents = import ./documents.nix;

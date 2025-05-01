@@ -8,6 +8,7 @@
   imports = [
     self.nixosModules.development.c-cpp
     self.nixosModules.development.python
+    self.nixosModules.development.dotnet
   ];
 
   # Use systemd-coredump for core dumps
