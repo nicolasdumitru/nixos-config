@@ -4,7 +4,7 @@
 }:
 
 {
-  environment.systemPackages = with pkgs; [
+  system.extraDependencies = with pkgs; [
     (python3.withPackages (
       ps: with ps; [
         # Libraries
