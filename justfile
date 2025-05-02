@@ -22,7 +22,7 @@ hosts := justfile_directory() + "/hosts"
 
 # Reconfigure the system to match this configuration flake
 rebuild operation=rebuild_op host=hostname:
-    nixos-rebuild --use-remote-sudo --flake ".#{{host}}" {{operation}}
+    nixos-rebuild --use-remote-sudo --flake ".#{{host}}" {{operation}} --fallback
 rebuild_op := 'switch'
 hostname := `hostname`
 
