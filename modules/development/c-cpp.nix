@@ -4,21 +4,17 @@
 }:
 
 {
-
-  environment.systemPackages = with pkgs; [
-    gcc
-    glibc
-
+  system.extraDependencies = with pkgs; [
     clang
+    clangStdenv
     libcxx
 
-    gnumake
-    cmake
-
     clang-tools
-    bear
 
-    gdb
+    gcc
+    gccStdenv
+    glibc
+
+    gnumake
   ];
-
 }
