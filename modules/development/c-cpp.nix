@@ -6,15 +6,16 @@
 {
   system.extraDependencies = with pkgs; [
     clang
-    clangStdenv
     libcxx
-
-    clang-tools
+    clangStdenv
 
     gcc
-    gccStdenv
     glibc
+    gccStdenv
 
-    gnumake
+    meson
+    ninja
+
+    clang-tools
   ];
 }
