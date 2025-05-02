@@ -30,11 +30,5 @@
 
     nixd
     nixfmt-rfc-style
-
-    lua-language-server
-
-    shellcheck
-    nodePackages.bash-language-server
-    nodejs
   ];
 }
