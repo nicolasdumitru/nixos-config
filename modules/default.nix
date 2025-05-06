@@ -21,4 +21,5 @@
   virtualization = import ./virtualization.nix;
 
   printing = import ./printing.nix;
+  scanning = import ./scanning.nix;
 }

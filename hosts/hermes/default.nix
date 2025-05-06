@@ -51,6 +51,11 @@ in
     # Printing
     (self.nixosModules.printing { driverPackages = [ pkgs.hplipWithPlugin ]; })
 
+    # Scanning
+    (self.nixosModules.scanning {
+      scanUsers = [ userName ];
+      driverPackages = [ pkgs.hplipWithPlugin ];
+    })
   ];
 
   # Boot
@@ -103,8 +108,6 @@ in
     extraGroups = [
       "wheel" # Grants sudo privileges
       "networkmanager"
-      "scanner" # for SANE
-      "lp" # for SANE
     ];
 
     # The initial password is meant to be changed right away. It's purpose is to
@@ -156,19 +159,6 @@ in
     intelBusId = "PCI:0:2:0";
     nvidiaBusId = "PCI:1:0:0";
   };
-
-  # TODO: Move this to a separate module
-  # Enable support for SANE scanners
-  hardware.sane.enable = true;
-  # TODO: Set up network scanning (see
-  # https://nixos.wiki/wiki/Scanners#Network_scanning). If pkgs.hplip doesn't
-  # work, try pkgs.hplipWithPlugin.
-  hardware.sane.extraBackends = with pkgs; [ hplipWithPlugin ];
-
-  # Define system packages
-  environment.systemPackages = with pkgs; [
-    simple-scan
-  ];
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.05";
