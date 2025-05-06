@@ -42,11 +42,15 @@ in
     # Document viewers and editing tools
     self.nixosModules.documents
 
+    # Disk management, mounting and filesystem tools
+    self.nixosModules.disks-filesystems
+
     # Virtualization
     # (self.nixosModules.virtualization { vboxUsers = [ userName ]; })
 
-    # Disk management, mounting and filesystem tools
-    self.nixosModules.disks-filesystems
+    # Printing
+    (self.nixosModules.printing { driverPackages = [ pkgs.hplipWithPlugin ]; })
+
   ];
 
   # Boot
@@ -160,12 +164,6 @@ in
   # https://nixos.wiki/wiki/Scanners#Network_scanning). If pkgs.hplip doesn't
   # work, try pkgs.hplipWithPlugin.
   hardware.sane.extraBackends = with pkgs; [ hplipWithPlugin ];
-
-  # Printing
-  services.printing = {
-    enable = true;
-    drivers = with pkgs; [ hplipWithPlugin ];
-  };
 
   # Define system packages
   environment.systemPackages = with pkgs; [

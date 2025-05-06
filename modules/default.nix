@@ -17,7 +17,8 @@
 
   documents = import ./documents.nix;
 
+  disks-filesystems = import ./disks-filesystems.nix;
   virtualization = import ./virtualization.nix;
 
-  disks-filesystems = import ./disks-filesystems.nix;
+  printing = import ./printing.nix;
 }
