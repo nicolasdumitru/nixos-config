@@ -148,7 +148,7 @@ in
     nvidiaSettings = true;
 
     # Driver version.
-    package = config.boot.kernelPackages.nvidiaPackages.production;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
   hardware.nvidia.prime = {
