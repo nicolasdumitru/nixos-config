@@ -40,7 +40,7 @@ in
     self.nixosModules.development.default
 
     # Document viewers and editing tools
-    # self.nixosModules.documents
+    self.nixosModules.documents
 
     # Disk management, mounting and filesystem tools
     self.nixosModules.disks-filesystems
