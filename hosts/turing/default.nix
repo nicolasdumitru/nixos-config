@@ -79,6 +79,10 @@ in
     # ];
   };
 
+  # Kernel configuration
+  # Using latest kernel to fix specific bugs present in the nixos-unstable kernel
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   # System Hostname
   networking.hostName = "turing";
 
@@ -162,6 +166,13 @@ in
     # amdgpuBusId = "PCI:101@0:0:0";
     # nvidiaBusId = "PCI:100@0:0:0";
   };
+
+  # services.asusd = {
+  #   enable = true;
+  #   enableUserService = true;
+  # };
+
+  # services.supergfxd.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.05";
