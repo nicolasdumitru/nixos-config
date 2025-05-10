@@ -12,10 +12,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # NixOS COSMIC
-    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
-    nixpkgs.follows = "nixos-cosmic/nixpkgs";
-
     # disko
     disko-stable.url = "github:nix-community/disko";
     disko-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
@@ -29,7 +25,6 @@
       nixpkgs,
       nixpkgs-stable,
       lix-module,
-      nixos-cosmic,
       disko-stable,
       disko-unstable,
       ...
@@ -56,8 +51,6 @@
 
             lix-module.nixosModules.default
 
-            nixos-cosmic.nixosModules.default
-
             disko-unstable.nixosModules.disko
 
             {
@@ -68,12 +61,10 @@
                 #       to the lists (substituters & trusted keys) explicit
                 substituters = [
                   "https://nix-community.cachix.org"
-                  "https://cosmic.cachix.org/"
                   # "https://cuda-maintainers.cachix.org/"
                 ];
                 trusted-public-keys = [
                   "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-                  "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
                   # "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
                 ];
               };
@@ -93,8 +84,6 @@
 
             lix-module.nixosModules.default
 
-            nixos-cosmic.nixosModules.default
-
             disko-unstable.nixosModules.disko
 
             {
@@ -105,12 +94,10 @@
                 #       to the lists (substituters & trusted keys) explicit
                 substituters = [
                   "https://nix-community.cachix.org"
-                  "https://cosmic.cachix.org/"
                   # "https://cuda-maintainers.cachix.org/"
                 ];
                 trusted-public-keys = [
                   "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-                  "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
                   # "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
                 ];
               };

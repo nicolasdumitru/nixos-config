@@ -4,13 +4,14 @@
 }:
 
 {
-  # COSMIC Desktop
-  services.desktopManager.cosmic.enable = true;
-  services.displayManager.cosmic-greeter.enable = true;
-  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1; # Wayland clipboard
+  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
+  services.desktopManager.plasma6.enable = true;
 
-  systemd.packages = [ pkgs.observatory ];
-  systemd.services.monitord.wantedBy = [ "multi-user.target" ];
+  # COSMIC Desktop
+  # services.desktopManager.cosmic.enable = true;
+  # services.displayManager.cosmic-greeter.enable = true;
+  # environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1; # Wayland clipboard
 
   # systemd-logind configuration
   services.logind = {
@@ -53,8 +54,6 @@
     kdePackages.elisa
 
     signal-desktop-bin
-
-    observatory # provided by COSMIC
 
     obsidian
 
