@@ -7,7 +7,7 @@
 {
   imports = [
     self.nixosModules.development.c-cpp
-    self.nixosModules.development.dotnet
+    # self.nixosModules.development.dotnet
     self.nixosModules.development.rust
     self.nixosModules.development.python
   ];
@@ -26,7 +26,6 @@
 
     just
     stow
-
 
     nixd
     nixfmt-rfc-style
