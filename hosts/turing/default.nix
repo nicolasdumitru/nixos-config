@@ -63,20 +63,20 @@ in
     # Bootloader
     loader.systemd-boot.enable = true;
 
-    # # Graphical boot
-    # initrd.systemd.enable = true;
+    # Graphical boot
+    initrd.systemd.enable = true;
     # initrd.verbose = false;
 
-    # plymouth = {
-    #   enable = true;
-    #   theme = "breeze"; # try breeze
-    # };
+    plymouth = {
+      enable = true;
+      theme = "breeze";
+    };
 
-    # consoleLogLevel = 4;
-    # kernelParams = lib.mkBefore [
-    #   "quiet"
-    #   "splash"
-    # ];
+    consoleLogLevel = 4;
+    kernelParams = lib.mkBefore [
+      "quiet"
+      "splash"
+    ];
   };
 
   # Kernel configuration
