@@ -167,12 +167,15 @@ in
     # nvidiaBusId = "PCI:100@0:0:0";
   };
 
-  # services.asusd = {
-  #   enable = true;
-  #   enableUserService = true;
-  # };
+  # Asus
+  # Enable asusd
+  services.asusd = {
+    enable = true;
+    enableUserService = true;
+  };
 
-  # services.supergfxd.enable = true;
+  # Enable supergfxd
+  services.supergfxd.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.05";
