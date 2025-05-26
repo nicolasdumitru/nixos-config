@@ -17,6 +17,12 @@
     disko-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
     disko-unstable.url = "github:nix-community/disko";
     disko-unstable.inputs.nixpkgs.follows = "nixpkgs";
+
+    # rust-overlay
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -27,6 +33,7 @@
       lix-module,
       disko-stable,
       disko-unstable,
+      rust-overlay,
       ...
     }@inputs:
     let
@@ -49,7 +56,7 @@
           modules = [
             ./hosts/turing
 
-            lix-module.nixosModules.default
+            # lix-module.nixosModules.default
 
             disko-unstable.nixosModules.disko
 
