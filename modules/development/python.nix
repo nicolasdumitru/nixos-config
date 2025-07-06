@@ -12,10 +12,12 @@
         scipy
         pandas
         torchWithCuda
+        scikit-learn
         matplotlib
 
         # Tooling
         python-lsp-server
+        jupyter
       ]
     ))
 
