@@ -56,7 +56,7 @@
           modules = [
             ./hosts/turing
 
-            # lix-module.nixosModules.default
+            lix-module.nixosModules.default
 
             disko-unstable.nixosModules.disko
 
