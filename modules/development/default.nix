@@ -15,6 +15,11 @@
   # Use systemd-coredump for core dumps
   systemd.coredump.enable = true;
 
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
   environment.systemPackages = with pkgs; [
     alacritty
 
