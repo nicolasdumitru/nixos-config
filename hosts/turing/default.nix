@@ -87,7 +87,10 @@ in
   networking.hostName = "turing";
 
   # Enable networking
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
+    wifi.backend = "iwd";
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Bucharest";
