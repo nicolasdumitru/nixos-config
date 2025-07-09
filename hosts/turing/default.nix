@@ -62,10 +62,11 @@ in
   boot = {
     # Bootloader
     loader.systemd-boot.enable = true;
+    loader.timeout = 0;
 
     # Graphical boot
     initrd.systemd.enable = true;
-    # initrd.verbose = false;
+    initrd.verbose = false;
 
     plymouth = {
       enable = true;
