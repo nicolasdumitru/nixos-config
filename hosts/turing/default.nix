@@ -81,7 +81,6 @@ in
   };
 
   # Kernel configuration
-  # Using latest kernel to fix specific bugs present in the nixos-unstable kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # System Hostname
