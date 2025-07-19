@@ -31,8 +31,5 @@
 
     just
     stow
-
-    nixd
-    nixfmt-rfc-style
   ];
 }

@@ -33,6 +33,28 @@
       inherit (self) outputs;
     in
     {
+      devShells =
+        let
+          system = "x86_64-linux";
+          pkgs = import nixpkgs {
+            inherit system;
+            config = {
+              allowUnfree = true;
+            };
+          };
+        in
+        {
+          x86_64-linux = {
+            default = pkgs.mkShell {
+              buildInputs = with pkgs; [
+                nil
+                nixd
+                nixfmt-rfc-style
+              ];
+            };
+          };
+        };
+
       nixosModules = import ./modules;
 
       # NixOS configuration entrypoint
