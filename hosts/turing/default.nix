@@ -89,7 +89,8 @@ in
   # Enable networking
   networking.networkmanager = {
     enable = true;
-    wifi.backend = "iwd";
+    # TODO: Switch to iwd when possible
+    wifi.backend = "wpa_supplicant"; # Required for WPA/WPA2 Enterprise for now
   };
 
   # Set your time zone.
