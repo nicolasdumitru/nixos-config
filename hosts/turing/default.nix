@@ -131,7 +131,9 @@ in
   # Automatic Nix garbage collection config
   nix.gc.automatic = false;
 
-  # TODO: Setup hardware acceleration
+  # Power management
+  services.power-profiles-daemon.enable = true;
+
   # Enable hardware acceleration
   hardware.graphics.enable = true;
 
