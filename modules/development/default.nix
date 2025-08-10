@@ -28,6 +28,7 @@
     zed-editor
 
     git
+    git-lfs
 
     just
     stow
