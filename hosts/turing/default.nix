@@ -145,7 +145,7 @@ in
     modesetting.enable = true;
 
     # Nvidia power management.
-    powerManagement.enable = false;
+    powerManagement.enable = true;
 
     # Fine-grained power management. Turns off GPU when not in use.
     # Experimental and only works on modern Nvidia GPUs (Turing or newer).
