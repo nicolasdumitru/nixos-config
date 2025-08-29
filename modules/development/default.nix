@@ -23,9 +23,12 @@
     neovim
     tree-sitter
     zed-editor
+    vscode-fhs
 
     git
     git-lfs
+
+    conda
 
     just
     stow
