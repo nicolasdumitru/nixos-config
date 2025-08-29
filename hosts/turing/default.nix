@@ -93,6 +93,12 @@ in
     wifi.backend = "wpa_supplicant"; # Required for WPA/WPA2 Enterprise for now
   };
 
+  # Enable firewall
+  networking.firewall = {
+    enable = true;
+    package = pkgs.nftables;
+  };
+
   # Set your time zone.
   time.timeZone = "Europe/Bucharest";
 
