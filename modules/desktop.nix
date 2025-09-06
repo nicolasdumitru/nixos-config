@@ -14,13 +14,13 @@
   # environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1; # Wayland clipboard
 
   # systemd-logind configuration
-  services.logind = {
+  services.logind.settings.Login = {
     # Laptop lid switch behavior
-    lidSwitch = "suspend";
-    lidSwitchExternalPower = "suspend";
-    lidSwitchDocked = "ignore";
+    HandleLidSwitch = "suspend";
+    HandleLidSwitchExternalPower = "suspend";
+    HandleLidSwitchDocked = "ignore";
 
-    extraConfig = "IdleAction=ignore";
+    IdleAction = "ignore";
   };
 
   # Enable sound with PipeWire.
