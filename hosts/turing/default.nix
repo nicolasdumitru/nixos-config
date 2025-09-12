@@ -96,7 +96,7 @@ in
   # Enable firewall
   networking.firewall = {
     enable = true;
-    package = pkgs.nftables;
+    package = pkgs.iptables;
   };
 
   # Set your time zone.
