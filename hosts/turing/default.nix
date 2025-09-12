@@ -70,7 +70,7 @@ in
 
     plymouth = {
       enable = true;
-      theme = "breeze";
+      theme = "bgrt";
     };
 
     consoleLogLevel = 4;
