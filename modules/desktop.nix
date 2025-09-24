@@ -51,11 +51,13 @@
     brave
     keepassxc
     loupe
-    kdePackages.elisa
 
     signal-desktop-bin
 
     obsidian
+
+    kdePackages.elisa
+    spotify
 
     wl-clipboard-rs
   ];
