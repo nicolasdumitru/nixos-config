@@ -46,7 +46,7 @@ in
     self.nixosModules.disks-filesystems
 
     # Virtualization
-    # (self.nixosModules.virtualization { vboxUsers = [ userName ]; })
+    (self.nixosModules.virtualization { vboxUsers = [ userName ]; })
 
     # Printing
     # (self.nixosModules.printing { driverPackages = [ pkgs.hplipWithPlugin ]; })
