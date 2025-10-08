@@ -17,6 +17,8 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    bip39gen.url = "github:nicolasdumitru/bip39gen";
   };
 
   outputs =
@@ -27,6 +29,7 @@
       disko-stable,
       disko-unstable,
       rust-overlay,
+      bip39gen,
       ...
     }@inputs:
     let

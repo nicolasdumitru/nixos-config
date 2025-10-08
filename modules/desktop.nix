@@ -1,5 +1,6 @@
 {
   pkgs,
+  inputs,
   ...
 }:
 
@@ -60,6 +61,8 @@
     spotify
 
     wl-clipboard-rs
+
+    inputs.bip39gen.packages.x86_64-linux.default
   ];
 
   fonts.packages = with pkgs; [
