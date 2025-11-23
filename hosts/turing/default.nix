@@ -192,6 +192,9 @@ in
     # nvidiaBusId = "PCI:100@0:0:0";
   };
 
+  # Enable Nvidia GPU support inside Docker containers
+  hardware.nvidia-container-toolkit.enable = true;
+
   # Asus
   # Enable asusd
   services.asusd = {
