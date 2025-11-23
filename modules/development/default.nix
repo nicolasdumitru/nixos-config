@@ -37,6 +37,8 @@
 
     conda
 
+    codex
+
     just
     stow
   ];
