@@ -56,6 +56,8 @@
     signal-desktop-bin
 
     obsidian
+    kdePackages.okular
+    libreoffice
 
     kdePackages.elisa
     spotify

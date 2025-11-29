@@ -12,8 +12,6 @@
     rust = import ./development/rust.nix;
   };
 
-  documents = import ./documents.nix;
-
   disks-filesystems = import ./disks-filesystems.nix;
   virtualization = import ./virtualization.nix;
 
