@@ -31,6 +31,7 @@
     tree-sitter
     zed-editor
     vscode-fhs
+    code-cursor-fhs
 
     git
     git-lfs
