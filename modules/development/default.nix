@@ -39,6 +39,7 @@
     conda
 
     codex
+    gemini-cli
 
     just
     stow
