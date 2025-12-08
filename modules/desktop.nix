@@ -50,6 +50,8 @@
   programs.thunderbird.enable = true;
   programs.thunderbird.package = pkgs.thunderbird-latest;
 
+  programs.kdeconnect.enable = true;
+
   environment.systemPackages = with pkgs; [
     alacritty
     brave
