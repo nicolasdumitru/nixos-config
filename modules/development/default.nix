@@ -35,6 +35,7 @@
 
     git
     git-lfs
+    gh # GitHub CLI
 
     conda
 
