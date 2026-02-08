@@ -30,8 +30,8 @@
     neovim
     tree-sitter
     zed-editor
-    vscode-fhs
-    code-cursor-fhs
+    vscode
+    antigravity
 
     git
     git-lfs
