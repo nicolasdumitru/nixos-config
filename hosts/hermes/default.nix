@@ -37,10 +37,10 @@ in
     self.nixosModules.desktop
 
     # Development tools and programming languages
-    self.nixosModules.development.default
+    self.nixosModules.development
 
     # Document viewers and editing tools
-    self.nixosModules.documents
+    # self.nixosModules.documents
 
     # Disk management, mounting and filesystem tools
     self.nixosModules.disks-filesystems
@@ -49,13 +49,10 @@ in
     # (self.nixosModules.virtualization { vboxUsers = [ userName ]; })
 
     # Printing
-    (self.nixosModules.printing { driverPackages = [ pkgs.hplipWithPlugin ]; })
+    (self.nixosModules.printing)
 
     # Scanning
-    (self.nixosModules.scanning {
-      scanUsers = [ userName ];
-      driverPackages = [ pkgs.hplipWithPlugin ];
-    })
+    (self.nixosModules.scanning)
   ];
 
   # Boot
@@ -158,6 +155,13 @@ in
     # These have to match the Bus ID values of the system!
     intelBusId = "PCI:0:2:0";
     nvidiaBusId = "PCI:1:0:0";
+  };
+
+  modules.printing.drivers = [ pkgs.hplipWithPlugin ];
+
+  modules.scanning = {
+    users = [ userName ];
+    drivers = [ pkgs.hplipWithPlugin ];
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

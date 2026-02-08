@@ -1,25 +1,37 @@
 {
-  vboxUsers ? [ ],
-}: # Accept a list of usernames
-
-{
+  config,
   lib,
+  pkgs,
   ...
 }:
 
+with lib;
+let
+  cfg = config.modules.virtualization;
+in
 {
-  boot.kernelParams = lib.mkBefore [
-    "kvm.enable_virt_at_load=0"
-  ];
-
-  # Docker
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = true;
+  options.modules.virtualization = {
+    vboxUsers = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "Users to add to vboxusers group";
+    };
   };
 
-  # VirtualBox
-  virtualisation.virtualbox.host.enable = true;
-  # virtualisation.virtualbox.host.enableExtensionPack = true;
-  users.groups.vboxusers.members = vboxUsers;
+  config = {
+    boot.kernelParams = mkBefore [
+      "kvm.enable_virt_at_load=0"
+    ];
+
+    # Docker
+    virtualisation.docker = {
+      enable = true;
+      enableOnBoot = true;
+    };
+
+    # VirtualBox
+    virtualisation.virtualbox.host.enable = true;
+    # virtualisation.virtualbox.host.enableExtensionPack = true;
+    users.groups.vboxusers.members = cfg.vboxUsers;
+  };
 }

@@ -1,33 +1,48 @@
 {
-  scanUsers ? [ ],
-  driverPackages ? [ ],
-}:
-
-{
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
 }:
 
+with lib;
+let
+  cfg = config.modules.scanning;
+in
 {
-  hardware.sane = {
-    enable = true;
-    extraBackends = driverPackages;
+  options.modules.scanning = {
+    users = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "Users to add to scanner and lp groups";
+    };
+
+    drivers = mkOption {
+      type = types.listOf types.package; # or types.path if strings are used? usually packages
+      default = [ ];
+      description = "SANE backends to enable";
+    };
   };
 
-  users.users = lib.mkMerge (
-    map (user: {
-      ${user} = {
-        extraGroups = lib.mkAfter [
-          "scanner"
-          "lp"
-        ];
-      };
-    }) scanUsers
-  );
+  config = {
+    hardware.sane = {
+      enable = true;
+      extraBackends = cfg.drivers;
+    };
 
-  environment.systemPackages = with pkgs; [
-    simple-scan
-  ];
+    users.users = mkMerge (
+      map (user: {
+        ${user} = {
+          extraGroups = mkAfter [
+            "scanner"
+            "lp"
+          ];
+        };
+      }) cfg.users
+    );
+
+    environment.systemPackages = with pkgs; [
+      simple-scan
+    ];
+  };
 }

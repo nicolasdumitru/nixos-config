@@ -37,13 +37,14 @@ in
     self.nixosModules.desktop
 
     # Development tools and programming languages
-    self.nixosModules.development.default
+    self.nixosModules.development
 
     # Disk management, mounting and filesystem tools
     self.nixosModules.disks-filesystems
 
     # Virtualization
-    (self.nixosModules.virtualization { vboxUsers = [ userName ]; })
+    # Virtualization
+    self.nixosModules.virtualization
 
     # Printing
     # (self.nixosModules.printing { driverPackages = [ pkgs.hplipWithPlugin ]; })
@@ -201,6 +202,9 @@ in
 
   # Enable supergfxd
   services.supergfxd.enable = true;
+
+  # Virtualization
+  modules.virtualization.vboxUsers = [ userName ];
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.05";

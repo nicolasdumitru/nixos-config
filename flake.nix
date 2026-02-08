@@ -12,12 +12,16 @@
     disko-unstable.url = "github:nix-community/disko";
     disko-unstable.inputs.nixpkgs.follows = "nixpkgs";
 
+    # flake-utils
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
     # rust-overlay
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # bip39gen
     bip39gen.url = "github:nicolasdumitru/bip39gen";
   };
 
@@ -30,120 +34,130 @@
       disko-unstable,
       rust-overlay,
       bip39gen,
+      flake-parts,
       ...
     }@inputs:
-    let
-      inherit (self) outputs;
-    in
-    {
-      devShells =
-        let
-          system = "x86_64-linux";
-          pkgs = import nixpkgs {
-            inherit system;
-            config = {
-              allowUnfree = true;
-            };
-          };
-        in
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
+
+      perSystem =
         {
-          x86_64-linux = {
-            default = pkgs.mkShell {
-              buildInputs = with pkgs; [
+          config,
+          self',
+          inputs',
+          pkgs,
+          system,
+          ...
+        }:
+        {
+          devShells.default =
+            let
+              pkgs = import nixpkgs {
+                inherit system;
+                config.allowUnfree = true;
+              };
+            in
+            pkgs.mkShell {
+              packages = with pkgs; [
                 nil
                 nixd
-                nixfmt-rfc-style
+                nixfmt
+                nixfmt-tree
               ];
             };
-          };
+
+          formatter = pkgs.nixfmt-tree;
         };
 
-      nixosModules = import ./modules;
+      flake = {
+        nixosModules = import ./modules;
 
-      # NixOS configuration entrypoint
-      # Available through 'nixos-rebuild --flake .#your-hostname'
-      nixosConfigurations = {
-        # Personal laptop
-        turing = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+        nixosConfigurations = {
+          # Personal laptop
+          turing = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
 
-          specialArgs = {
-            inherit inputs outputs self;
+            specialArgs = {
+              inherit inputs self;
+              outputs = self.outputs;
+            };
+
+            modules = [
+              ./hosts/turing
+
+              disko-unstable.nixosModules.disko
+
+              {
+                nix.settings = {
+                  # Settings can be checked after rebuilds using:
+                  # `nix config show | rg <setting>`
+                  # TODO: The default is preserved, but make appending/prepending
+                  #       to the lists (substituters & trusted keys) explicit
+                  substituters = [
+                    "https://cache.nixos-cuda.org"
+                    "https://nix-community.cachix.org"
+                  ];
+                  trusted-public-keys = [
+                    "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+                    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+                  ];
+                };
+              }
+            ];
           };
 
-          modules = [
-            ./hosts/turing
+          hermes = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
 
-            disko-unstable.nixosModules.disko
+            specialArgs = {
+              inherit inputs self;
+              outputs = self.outputs;
+            };
 
-            {
-              nix.settings = {
-                # Settings can be checked after rebuilds using:
-                # `nix config show | rg <setting>`
-                # TODO: The default is preserved, but make appending/prepending
-                #       to the lists (substituters & trusted keys) explicit
-                substituters = [
-                  "https://cache.nixos-cuda.org"
-                  "https://nix-community.cachix.org"
-                ];
-                trusted-public-keys = [
-                  "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
-                  "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-                ];
-              };
-            }
-          ];
-        };
+            modules = [
+              ./hosts/hermes
 
-        hermes = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+              disko-unstable.nixosModules.disko
 
-          specialArgs = {
-            inherit inputs outputs self;
+              {
+                nix.settings = {
+                  # Settings can be checked after rebuilds using:
+                  # `nix config show | rg <setting>`
+                  # TODO: The default is preserved, but make appending/prepending
+                  #       to the lists (substituters & trusted keys) explicit
+                  substituters = [
+                    "https://nix-community.cachix.org"
+                    # "https://cuda-maintainers.cachix.org/"
+                  ];
+                  trusted-public-keys = [
+                    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+                    # "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+                  ];
+                };
+              }
+            ];
           };
 
-          modules = [
-            ./hosts/hermes
+          atlas = nixpkgs-stable.lib.nixosSystem {
+            system = "x86_64-linux";
 
-            disko-unstable.nixosModules.disko
+            specialArgs = {
+              inherit inputs self;
+              outputs = self.outputs;
+            };
 
-            {
-              nix.settings = {
-                # Settings can be checked after rebuilds using:
-                # `nix config show | rg <setting>`
-                # TODO: The default is preserved, but make appending/prepending
-                #       to the lists (substituters & trusted keys) explicit
-                substituters = [
-                  "https://nix-community.cachix.org"
-                  # "https://cuda-maintainers.cachix.org/"
-                ];
-                trusted-public-keys = [
-                  "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-                  # "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-                ];
-              };
-            }
-          ];
-        };
+            modules = [
+              ./hosts/atlas
 
-        atlas = nixpkgs-stable.lib.nixosSystem {
-          system = "x86_64-linux";
+              disko-stable.nixosModules.disko
 
-          specialArgs = {
-            inherit inputs outputs self;
+              # Fix the nixpkgs registry conflict
+              {
+                nix.registry.nixpkgs.flake = nixpkgs-stable;
+                nix.registry.nixpkgs.to.path = nixpkgs-stable;
+              }
+            ];
           };
-
-          modules = [
-            ./hosts/atlas
-
-            disko-stable.nixosModules.disko
-
-            # Fix the nixpkgs registry conflict
-            {
-              nix.registry.nixpkgs.flake = nixpkgs-stable;
-              nix.registry.nixpkgs.to.path = nixpkgs-stable;
-            }
-          ];
         };
       };
     };

@@ -7,10 +7,8 @@
 
   desktop = import ./desktop.nix;
 
-  development = {
-    default = import ./development;
-    rust = import ./development/rust.nix;
-  };
+  development = import ./development;
+  rust = import ./development/rust.nix;
 
   disks-filesystems = import ./disks-filesystems.nix;
   virtualization = import ./virtualization.nix;

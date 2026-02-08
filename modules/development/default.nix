@@ -6,7 +6,7 @@
 
 {
   imports = [
-    self.nixosModules.development.rust
+    self.nixosModules.rust
   ];
 
   # Use systemd-coredump for core dumps
