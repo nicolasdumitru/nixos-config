@@ -133,6 +133,7 @@ in
     extraGroups = [
       "wheel" # Grants sudo privileges
       "networkmanager"
+      "docker"
     ];
 
     # The initial password is meant to be changed right away. It's purpose is to

@@ -13,9 +13,13 @@
   ];
 
   # COSMIC Desktop
-  # services.desktopManager.cosmic.enable = true;
-  # services.displayManager.cosmic-greeter.enable = true;
+  # services.displayManager.cosmic-greeter.enable = true; # Enable the COSMIC login manager
+  # services.desktopManager.cosmic.enable = true; # Enable the COSMIC desktop environment
   # environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1; # Wayland clipboard
+  # environment.cosmic.excludePackages = with pkgs; [
+  #   cosmic-edit
+  # ];
+  # services.system76-scheduler.enable = true;
 
   # systemd-logind configuration
   services.logind.settings.Login = {
