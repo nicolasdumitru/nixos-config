@@ -23,6 +23,10 @@
 
     # bip39gen
     bip39gen.url = "github:nicolasdumitru/bip39gen";
+
+    # home-manager
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -35,6 +39,7 @@
       rust-overlay,
       bip39gen,
       flake-parts,
+      home-manager,
       ...
     }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -86,6 +91,13 @@
               ./hosts/turing
 
               disko-unstable.nixosModules.disko
+              home-manager.nixosModules.home-manager
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.users.nick = import ./home;
+                home-manager.extraSpecialArgs = { inherit inputs self; };
+              }
 
               {
                 nix.settings = {
