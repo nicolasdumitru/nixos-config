@@ -38,7 +38,6 @@
 
     conda
 
-    codex
     gemini-cli
 
     just
