@@ -62,7 +62,7 @@
 
     obsidian
     kdePackages.okular
-    libreoffice
+    onlyoffice-desktopeditors
 
     kdePackages.elisa
     spotify
@@ -78,6 +78,7 @@
     nerd-fonts.jetbrains-mono
     jetbrains-mono
     corefonts
+    vista-fonts
     noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-color-emoji
