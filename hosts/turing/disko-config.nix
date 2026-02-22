@@ -4,7 +4,7 @@ in
 {
   disko.devices.disk."${diskName}" = {
     type = "disk";
-    device = "/dev/nvme0n1";
+    device = "/dev/REQUIRED_ONLY_FOR_INSTALLATION";
     content = {
       type = "gpt";
       partitions.ESP = {
