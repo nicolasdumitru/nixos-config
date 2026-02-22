@@ -1,10 +1,17 @@
+{ lib, ... }:
 let
   diskName = "zephyrus-ssd";
+  configPath = /etc/nixos/disk-config.json;
+  hasConfig = builtins.pathExists configPath;
+  diskConfig = if hasConfig then builtins.fromJSON (builtins.readFile configPath) else null;
 in
 {
   disko.devices.disk."${diskName}" = {
     type = "disk";
-    device = "/dev/nvme0n1";
+    # During installation, this device path is used.
+    # For a running system (rebuilds), this value is largely ignored by disko's module system
+    # as it relies on the generated fileSystems config which uses labels/UUIDs.
+    device = if hasConfig then diskConfig.device else "/dev/disk/by-id/REQUIRED_ONLY_FOR_INSTALLATION";
     content = {
       type = "gpt";
       partitions.ESP = {
