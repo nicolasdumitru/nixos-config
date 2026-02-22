@@ -1,10 +1,10 @@
 let
-  diskName = "samsung970evo"; # Samsung SSD 970 EVO Plus 1TB
+  diskName = "F15-ssd";
 in
 {
   disko.devices.disk."${diskName}" = {
     type = "disk";
-    device = "/dev/nvme1n1";
+    device = "/dev/REQUIRED_ONLY_FOR_INSTALLATION";
     content = {
       type = "gpt";
       partitions.ESP = {
