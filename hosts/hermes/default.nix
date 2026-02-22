@@ -34,53 +34,65 @@ in
     self.nixosModules.file-utils
 
     # Desktop environment and GUI programs
-    self.nixosModules.desktop
-
-    # Development tools and programming languages
-    self.nixosModules.development
-
-    # Document viewers and editing tools
-    # self.nixosModules.documents
+    # self.nixosModules.desktop
 
     # Disk management, mounting and filesystem tools
     self.nixosModules.disks-filesystems
-
-    # Virtualization
-    # (self.nixosModules.virtualization { vboxUsers = [ userName ]; })
-
-    # Printing
-    (self.nixosModules.printing)
-
-    # Scanning
-    (self.nixosModules.scanning)
   ];
 
   # Boot
   boot = {
     # Bootloader
     loader.systemd-boot.enable = true;
+    # loader.timeout = 0;
 
-    # Graphical boot
-    initrd.systemd.enable = true;
-    initrd.verbose = false;
+    # # Graphical boot
+    # initrd.systemd.enable = true;
+    # initrd.verbose = false;
 
-    plymouth = {
-      enable = true;
-      theme = "breeze"; # try breeze
-    };
+    # plymouth = {
+    #   enable = true;
+    #   theme = "bgrt";
+    # };
 
-    consoleLogLevel = 4;
-    kernelParams = lib.mkBefore [
-      "quiet"
-      "splash"
-    ];
+    # consoleLogLevel = 4;
+    # kernelParams = lib.mkBefore [
+    #   "quiet"
+    #   "splash"
+    # ];
   };
+
+  # Kernel configuration
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # System Hostname
   networking.hostName = "hermes";
 
   # Enable networking
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
+    # TODO: Switch to iwd when possible
+    wifi.backend = "wpa_supplicant"; # Required for WPA/WPA2 Enterprise for now
+  };
+
+  # # Enable firewall
+  # networking.firewall = {
+  #   enable = true;
+  #   package = pkgs.iptables;
+  # };
+
+  # # Avahi enables mDNS resolution, allowing SSH connections using .local
+  # # hostnames instead of IP addresses.
+  # services.avahi = {
+  #   enable = true;
+  #   nssmdns4 = true;
+  #   nssmdns6 = true;
+  #   publish = {
+  #     enable = true;
+  #     addresses = true;
+  #     workstation = true;
+  #   };
+  # };
 
   # Set your time zone.
   time.timeZone = "Europe/Bucharest";
@@ -120,50 +132,61 @@ in
   # Automatic Nix garbage collection config
   nix.gc.automatic = false;
 
-  # Enable hardware acceleration
-  hardware.graphics.enable = true;
+  # Power management
+  services.power-profiles-daemon.enable = true;
 
-  # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = [ "nvidia" ];
+  # # Enable hardware acceleration
+  # hardware.graphics.enable = true;
 
-  hardware.nvidia = {
-    # Modesetting is required.
-    modesetting.enable = true;
+  # # Load nvidia driver for Xorg and Wayland
+  # services.xserver.videoDrivers = [ "nvidia" ];
 
-    # Nvidia power management.
-    powerManagement.enable = false;
+  # hardware.nvidia = {
+  #   # Modesetting is required.
+  #   modesetting.enable = true;
 
-    # Fine-grained power management. Turns off GPU when not in use.
-    # Experimental and only works on modern Nvidia GPUs (Turing or newer).
-    powerManagement.finegrained = false;
+  #   # Nvidia power management.
+  #   powerManagement.enable = true;
 
-    # Use the Nvidia open source kernel module.
-    open = true;
+  #   # Fine-grained power management. Turns off GPU when not in use.
+  #   # Experimental and only works on modern Nvidia GPUs (Turing or newer).
+  #   powerManagement.finegrained = false;
 
-    # Enable the Nvidia settings menu.
-    nvidiaSettings = true;
+  #   # Use the Nvidia open source kernel module.
+  #   open = false;
 
-    # Driver version.
-    package = config.boot.kernelPackages.nvidiaPackages.production;
-  };
+  #   # Enable the Nvidia settings menu.
+  #   nvidiaSettings = true;
 
-  hardware.nvidia.prime = {
-    offload = {
-      enable = true;
-      enableOffloadCmd = true;
-    };
-    # These have to match the Bus ID values of the system!
-    intelBusId = "PCI:0:2:0";
-    nvidiaBusId = "PCI:1:0:0";
-  };
+  #   # Driver version.
+  #   package = config.boot.kernelPackages.nvidiaPackages.stable;
+  # };
 
-  modules.printing.drivers = [ pkgs.hplipWithPlugin ];
+  # hardware.nvidia.prime = {
+  #   offload = {
+  #     enable = true;
+  #     enableOffloadCmd = true;
+  #   };
+  #   # WARNING: These have to match the Bus ID values of the system!
+  #   amdgpuBusId = "PCI:101:0:0";
+  #   nvidiaBusId = "PCI:100:0:0";
+  #   # amdgpuBusId = "PCI:101@0:0:0";
+  #   # nvidiaBusId = "PCI:100@0:0:0";
+  # };
 
-  modules.scanning = {
-    users = [ userName ];
-    drivers = [ pkgs.hplipWithPlugin ];
-  };
+  # # Enable Nvidia GPU support inside Docker containers
+  # hardware.nvidia-container-toolkit.enable = true;
+
+  # # Asus
+  # # Enable asusd
+  # services.asusd = {
+  #   enable = true;
+  #   enableUserService = true;
+  # };
+
+  # # Enable supergfxd
+  # services.supergfxd.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = "25.05";
+  system.stateVersion = "26.05";
 }
