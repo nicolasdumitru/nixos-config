@@ -70,6 +70,8 @@
     transmission_4-qt6
 
     wl-clipboard-rs
+    
+    kdePackages.qrca # Required for connecting to Wi-Fi using QR codes
 
     inputs.bip39gen.packages.x86_64-linux.default
   ];
