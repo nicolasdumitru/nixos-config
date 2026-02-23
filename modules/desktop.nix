@@ -66,6 +66,8 @@
 
     kdePackages.elisa
     spotify
+    
+    anki
 
     transmission_4-qt6
 
