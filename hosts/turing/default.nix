@@ -41,19 +41,6 @@ in
 
     # Disk management, mounting and filesystem tools
     self.nixosModules.disks-filesystems
-
-    # Virtualization
-    # Virtualization
-    self.nixosModules.virtualization
-
-    # Printing
-    # (self.nixosModules.printing { driverPackages = [ pkgs.hplipWithPlugin ]; })
-
-    # Scanning
-    # (self.nixosModules.scanning {
-    #   scanUsers = [ userName ];
-    #   driverPackages = [ pkgs.hplipWithPlugin ];
-    # })
   ];
 
   # Boot
@@ -190,9 +177,6 @@ in
     # nvidiaBusId = "PCI:100@0:0:0";
   };
 
-  # Enable Nvidia GPU support inside Docker containers
-  hardware.nvidia-container-toolkit.enable = true;
-
   # Asus
   # Enable asusd
   services.asusd = {
@@ -202,9 +186,6 @@ in
 
   # Enable supergfxd
   services.supergfxd.enable = true;
-
-  # Virtualization
-  modules.virtualization.vboxUsers = [ userName ];
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.05";
