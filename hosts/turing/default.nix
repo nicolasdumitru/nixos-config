@@ -181,10 +181,10 @@ in
   # Enable asusd
   services.asusd = {
     enable = true;
-    enableUserService = true;
   };
 
   # Enable supergfxd
+  # TODO: services.supergfxd.settings = ...;
   services.supergfxd.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
