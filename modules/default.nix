@@ -11,7 +11,7 @@
   rust = import ./development/rust.nix;
 
   disks-filesystems = import ./disks-filesystems.nix;
-  virtualization = import ./virtualization.nix;
+  # virtualization = import ./virtualization;
 
   printing = import ./printing.nix;
   scanning = import ./scanning.nix;
