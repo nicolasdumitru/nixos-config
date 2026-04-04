@@ -5,17 +5,18 @@
 }:
 
 {
-  services.displayManager.sddm.enable = true;
-  services.displayManager.sddm.wayland.enable = true;
-  services.desktopManager.plasma6.enable = true;
-  environment.plasma6.excludePackages = with pkgs.kdePackages; [
-    kate
-  ];
+  # services.displayManager.sddm.enable = true;
+  # services.displayManager.sddm.wayland.enable = true;
+  # services.desktopManager.plasma6.enable = true;
+  # environment.plasma6.excludePackages = with pkgs.kdePackages; [
+  #   kate
+  # ];
 
   # COSMIC Desktop
-  # services.desktopManager.cosmic.enable = true;
-  # services.displayManager.cosmic-greeter.enable = true;
-  # environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1; # Wayland clipboard
+  services.desktopManager.cosmic.enable = true;
+  services.displayManager.cosmic-greeter.enable = true;
+  services.system76-scheduler.enable = true;
+  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1; # Wayland clipboard
 
   # systemd-logind configuration
   services.logind.settings.Login = {
@@ -50,15 +51,16 @@
   programs.thunderbird.enable = true;
   programs.thunderbird.package = pkgs.thunderbird-latest;
 
-  programs.kdeconnect.enable = true;
+  programs.kdeconnect.enable = false;
 
   environment.systemPackages = with pkgs; [
     alacritty
+    ghostty
     brave
     keepassxc
     loupe
 
-    signal-desktop-bin
+    signal-desktop
 
     obsidian
     kdePackages.okular
@@ -66,13 +68,13 @@
 
     kdePackages.elisa
     spotify
-    
+
     anki
 
     transmission_4-qt6
 
     wl-clipboard-rs
-    
+
     kdePackages.qrca # Required for connecting to Wi-Fi using QR codes
 
     inputs.bip39gen.packages.x86_64-linux.default
