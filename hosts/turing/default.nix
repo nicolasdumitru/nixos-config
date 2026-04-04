@@ -41,6 +41,9 @@ in
 
     # Disk management, mounting and filesystem tools
     self.nixosModules.disks-filesystems
+
+    # Virtualization
+    # self.nixosModules.virtualization
   ];
 
   # Boot
@@ -62,11 +65,14 @@ in
     kernelParams = lib.mkBefore [
       "quiet"
       "splash"
+      "amd_pstate=active"
+      "mem_sleep_default=deep"
     ];
   };
 
   # Kernel configuration
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # https://wiki.nixos.org/wiki/Linux_kernel
+  boot.kernelPackages = pkgs.linuxPackages;
 
   # System Hostname
   networking.hostName = "turing";
@@ -136,7 +142,21 @@ in
   nix.gc.automatic = false;
 
   # Power management
-  services.power-profiles-daemon.enable = true;
+  ## Disable PPD
+  services.power-profiles-daemon.enable = lib.mkForce false;
+  ## Disable TLP
+  services.tlp.enable = lib.mkForce false;
+  powerManagement.powertop.enable = lib.mkForce false;
+
+  services.tuned = {
+    enable = true;
+    ppdSupport = true;
+    ppdSettings.profiles = {
+      balanced = "balanced";
+      performance = "throughput-performance";
+      power-saver = "powersave";
+    };
+  };
 
   # Enable hardware acceleration
   hardware.graphics.enable = true;
@@ -153,7 +173,9 @@ in
 
     # Fine-grained power management. Turns off GPU when not in use.
     # Experimental and only works on modern Nvidia GPUs (Turing or newer).
-    powerManagement.finegrained = false;
+    powerManagement.finegrained = true;
+
+    dynamicBoost.enable = true;
 
     # Use the Nvidia open source kernel module.
     open = true;
@@ -177,15 +199,47 @@ in
     # nvidiaBusId = "PCI:100@0:0:0";
   };
 
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu.vhostUserPackages = with pkgs; [ virtiofsd ];
+  };
+
+  virtualisation.spiceUSBRedirection.enable = true;
+
+  users.extraGroups.libvirtd.members = [ userName ];
+  users.extraGroups.kvm.members = [ userName ];
+
+  programs.virt-manager.enable = true;
+  #   };
+  # };
+
   # Asus
   # Enable asusd
   services.asusd = {
     enable = true;
   };
 
+  programs.mininet.enable = true;
+
   # Enable supergfxd
   # TODO: services.supergfxd.settings = ...;
-  services.supergfxd.enable = true;
+  # services.supergfxd.enable = true;
+
+  programs.wireshark.enable = true;
+  programs.wireshark.usbmon.enable = true;
+  programs.wireshark.dumpcap.enable = true;
+  users.extraGroups.wireshark.members = [ userName ];
+
+  environment.systemPackages = with pkgs; [
+    wireshark
+    netcat-gnu
+
+    #   dnsmasq # DNS & DHCP within the network (virt-manager)
+    # ];
+
+    # environment.systemPackages = with pkgs; [
+    cachix
+  ];
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.05";
