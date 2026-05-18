@@ -21,5 +21,8 @@
     lf # Terminal file manager
     fzf # Fuzzy finder
     rename # Bulk renamer
+    
+    # Text
+    dos2unix
   ];
 }
