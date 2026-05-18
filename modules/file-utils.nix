@@ -12,6 +12,7 @@
     xz
     zip
     unzip
+    p7zip
 
     # Synchronization
     rsync
