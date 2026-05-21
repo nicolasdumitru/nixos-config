@@ -25,7 +25,7 @@
   # ];
 
   environment.systemPackages = with pkgs; [
-    alacritty
+    ghostty
 
     neovim
     tree-sitter

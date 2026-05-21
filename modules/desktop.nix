@@ -54,7 +54,6 @@
   programs.kdeconnect.enable = false;
 
   environment.systemPackages = with pkgs; [
-    alacritty
     ghostty
     brave
     keepassxc
