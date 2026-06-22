@@ -11,6 +11,7 @@
   rust = import ./development/rust.nix;
 
   disks-filesystems = import ./disks-filesystems.nix;
+  ti-nspire = import ./ti-nspire.nix;
   # virtualization = import ./virtualization;
 
   printing = import ./printing.nix;
