@@ -38,5 +38,5 @@ update:
 
 # Format all Nix files
 format:
-    nixfmt $(fd '\.nix$' --full-path "$(git rev-parse --show-toplevel)")
+    nix fmt
 alias fmt := format
