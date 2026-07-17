@@ -42,6 +42,9 @@ in
     # Disk management, mounting and filesystem tools
     self.nixosModules.disks-filesystems
 
+    # TI-Nspire calculator support
+    self.nixosModules.ti-nspire
+
     # Virtualization
     # self.nixosModules.virtualization
   ];
@@ -229,6 +232,8 @@ in
   programs.wireshark.usbmon.enable = true;
   programs.wireshark.dumpcap.enable = true;
   users.extraGroups.wireshark.members = [ userName ];
+
+  modules.ti-nspire.enable = true;
 
   environment.systemPackages = with pkgs; [
     wireshark
