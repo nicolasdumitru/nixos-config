@@ -46,6 +46,11 @@
 
   programs.kdeconnect.enable = false;
 
+  # Steam
+  programs.steam = {
+    enable = true;
+  };
+
   environment.systemPackages = with pkgs; [
     ghostty
     brave
@@ -70,6 +75,8 @@
     kdePackages.qrca # Required for connecting to Wi-Fi using QR codes
 
     inputs.bip39gen.packages.x86_64-linux.default
+
+    discord
   ];
 
   fonts.packages = with pkgs; [
