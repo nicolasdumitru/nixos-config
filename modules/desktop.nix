@@ -54,8 +54,10 @@
   environment.systemPackages = with pkgs; [
     ghostty
     brave
-    keepassxc
     loupe
+
+    keepassxc
+    veracrypt
 
     signal-desktop
 
