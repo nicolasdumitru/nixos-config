@@ -66,7 +66,7 @@
     kdePackages.elisa
     spotify
 
-    transmission_4-qt6
+    transmission_4-gtk
 
     wl-clipboard-rs
 
