@@ -63,6 +63,8 @@
                 nixd
                 nixfmt
                 nixfmt-tree
+                lua-language-server
+                stylua
               ];
             };
 

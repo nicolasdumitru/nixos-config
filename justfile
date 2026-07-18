@@ -39,4 +39,5 @@ update:
 # Format all Nix files
 format:
     nix fmt
+    stylua --verify .
 alias fmt := format
