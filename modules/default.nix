@@ -1,6 +1,7 @@
 {
   nix-config = import ./nix-config.nix;
   core = import ./core.nix;
+  neovim = import ./neovim;
   shell = import ./shell.nix;
   utils = import ./utils.nix;
   file-utils = import ./file-utils.nix;

@@ -1,11 +1,19 @@
 {
+  self,
   pkgs,
   ...
 }:
 
 {
+  imports = [
+    self.nixosModules.neovim
+  ];
+
   # Default shell
   users.defaultUserShell = pkgs.bashInteractive;
+
+  # Primary text editor
+  modules.neovim.enable = true;
 
   environment.systemPackages = with pkgs; [
     # Bash (many systems/programs depend on bash)
@@ -14,9 +22,6 @@
     # Core system utilities
     coreutils
     util-linux
-
-    # Primary text editor
-    neovim
 
     # Fundamental development and system tools
     gcc # GNU C compiler

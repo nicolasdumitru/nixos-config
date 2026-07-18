@@ -6,6 +6,7 @@
 
 {
   imports = [
+    self.nixosModules.neovim
     self.nixosModules.rust
   ];
 
@@ -24,11 +25,12 @@
   #   # here, NOT in environment.systemPackages
   # ];
 
+  # Neovim
+  modules.neovim.enable = true;
+
   environment.systemPackages = with pkgs; [
     ghostty
 
-    neovim
-    tree-sitter
     zed-editor
     vscode
     antigravity
