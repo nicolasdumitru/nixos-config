@@ -66,8 +66,6 @@
     kdePackages.elisa
     spotify
 
-    anki
-
     transmission_4-qt6
 
     wl-clipboard-rs
