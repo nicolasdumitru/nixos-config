@@ -32,54 +32,37 @@ in
           start = [
             (nvim-treesitter.withPlugins (
               parsers: with parsers; [
+                asm
                 bash
+                bibtex
                 c
                 cpp
-                css
-                dockerfile
                 git_config
                 git_rebase
                 gitattributes
                 gitcommit
                 gitignore
-                go
-                gomod
-                gosum
-                gowork
-                html
-                javascript
-                json
+                haskell
+                just
+                latex
                 lua
+                make
                 markdown
                 markdown_inline
                 nix
                 python
-                regex
+                query
                 rust
-                toml
-                typescript
                 vim
                 vimdoc
-                yaml
               ]
             ))
 
+            flash-nvim
             plenary-nvim
             telescope-nvim
-
-            nvim-lspconfig
-            nvim-cmp
-            cmp-buffer
-            cmp-nvim-lsp
-            cmp_luasnip
-            luasnip
-            friendly-snippets
-
-            gitsigns-nvim
-            lualine-nvim
-            which-key-nvim
-            vim-sleuth
-            gruvbox-nvim
+            telescope-file-browser-nvim
+            nvim-web-devicons
           ];
         };
       };
