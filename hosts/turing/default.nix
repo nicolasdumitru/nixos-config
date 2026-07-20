@@ -95,16 +95,16 @@ in
 
   # Avahi enables mDNS resolution, allowing SSH connections using .local
   # hostnames instead of IP addresses.
-  # services.avahi = {
-  #   enable = false;
-  #   nssmdns4 = true;
-  #   nssmdns6 = true;
-  #   publish = {
-  #     enable = true;
-  #     addresses = true;
-  #     workstation = true;
-  #   };
-  # };
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    nssmdns6 = true;
+    publish = {
+      enable = true;
+      addresses = true;
+      workstation = true;
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Bucharest";
@@ -215,6 +215,8 @@ in
   users.extraGroups.libvirtd.members = [ userName ];
   users.extraGroups.kvm.members = [ userName ];
 
+  networking.firewall.trustedInterfaces = [ "virbr0" ];
+
   programs.virt-manager.enable = true;
   #   };
   # };
@@ -241,12 +243,20 @@ in
   environment.systemPackages = with pkgs; [
     wireshark
     netcat-gnu
+    iperf
 
-    #   dnsmasq # DNS & DHCP within the network (virt-manager)
+    dnsmasq # DNS & DHCP within the network (virt-manager)
     # ];
+
+    psmisc # fuser for PCom
 
     # environment.systemPackages = with pkgs; [
     cachix
+
+    # vulkan-tools
+    # mesa-demos
+    # nvtopPackages.nvidia
+    # nvtopPackages.amd
   ];
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

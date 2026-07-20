@@ -51,6 +51,8 @@
     enable = true;
   };
 
+  programs.gamemode.enable = true;
+
   environment.systemPackages = with pkgs; [
     ghostty
     brave
@@ -63,6 +65,7 @@
 
     obsidian
     kdePackages.okular
+    stirling-pdf-desktop
     onlyoffice-desktopeditors
 
     kdePackages.elisa
