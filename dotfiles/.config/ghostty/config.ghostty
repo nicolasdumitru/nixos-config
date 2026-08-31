@@ -1,0 +1,11 @@
+# theme = Dark Modern
+theme = Ghostty Default Style Dark
+# theme = Hardcore
+# theme = Nvim Dark
+window-colorspace = srgb
+cursor-style = block
+cursor-style-blink = true
+shell-integration-features = no-cursor
+font-feature = -calt, -liga, -dlig
+
+keybind = ctrl+backspace=text:\x17

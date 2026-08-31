@@ -1,0 +1,21 @@
+# Username configuration
+[username]
+style_user = "bright-white bold"
+style_root = "red bold"
+format = "[$user]($style)[@](yellow bold)"
+show_always = true
+
+# Hostname configuration
+[hostname]
+ssh_only = false
+format = "[$hostname]($style) "
+style = "cyan bold"
+
+# Directory configuration
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "white bold"
+
+# [gcloud]
+# disabled = true

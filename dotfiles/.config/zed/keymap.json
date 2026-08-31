@@ -1,0 +1,88 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "bindings": {
+      "alt-m": "workspace::ToggleZoom",
+      "shift-escape": null
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "shift shift": "file_finder::Toggle"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      // "j k": ["workspace::SendKeystrokes", "escape"]
+      "f3": "editor::Format"
+    }
+  },
+  {
+    "context": "vim_mode == normal",
+    "bindings": {
+      // tree-sitter related commands
+      "ctrl-k": "vim::SelectLargerSyntaxNode",
+      "ctrl-j": "vim::SelectSmallerSyntaxNode",
+      "] d": "editor::GoToDiagnostic",
+      "[ d": "editor::GoToPreviousDiagnostic",
+      "] c": "editor::GoToHunk",
+      // "[ c": "editor::GoToPrevHunk",
+      "g c": "vim::PushToggleComments",
+      "space f": "file_finder::Toggle"
+    }
+  },
+  {
+    "context": "vim_mode == visual",
+    "bindings": {
+      "ctrl-k": "vim::SelectLargerSyntaxNode",
+      "ctrl-j": "vim::SelectSmallerSyntaxNode"
+    }
+  },
+  {
+    "context": "vim_operator == a || vim_operator == i || vim_operator == cs",
+    "bindings": {
+      "w": "vim::Word",
+      "shift-w": ["vim::Word", { "ignore_punctuation": true }],
+      // Subword TextObject
+      // "w": "vim::Subword",
+      // "shift-w": ["vim::Subword", { "ignorePunctuation": true }],
+      "t": "vim::Tag",
+      "s": "vim::Sentence",
+      "p": "vim::Paragraph",
+      "'": "vim::Quotes",
+      "`": "vim::BackQuotes",
+      "\"": "vim::DoubleQuotes",
+      "q": "vim::AnyQuotes",
+      "|": "vim::VerticalBars",
+      "(": "vim::Parentheses",
+      ")": "vim::Parentheses",
+      "b": "vim::Parentheses",
+      "[": "vim::SquareBrackets",
+      "]": "vim::SquareBrackets",
+      "r": "vim::SquareBrackets",
+      "{": "vim::CurlyBrackets",
+      "}": "vim::CurlyBrackets",
+      "shift-b": "vim::CurlyBrackets",
+      "<": "vim::AngleBrackets",
+      ">": "vim::AngleBrackets",
+      "a": "vim::Argument",
+      "i": "vim::IndentObj",
+      "shift-i": ["vim::IndentObj", { "include_below": true }],
+      "f": "vim::Method",
+      "c": "vim::Class"
+    }
+  },
+  {
+    "bindings": {
+      "ctrl-p": "menu::SelectPrevious"
+    }
+  }
+]
