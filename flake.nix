@@ -1,49 +1,43 @@
 {
-  description = "Nick's NixOS";
+  description = "Nick's NixOS, Home Manager, and dotfiles configuration";
 
   inputs = {
-    # Nixpkgs
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # disko
-    disko-stable.url = "github:nix-community/disko";
-    disko-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
-    disko-unstable.url = "github:nix-community/disko";
-    disko-unstable.inputs.nixpkgs.follows = "nixpkgs";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    # flake-utils
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flake-parts.url = "github:hercules-ci/flake-parts";
 
-    # rust-overlay
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # bip39gen
     bip39gen.url = "github:nicolasdumitru/bip39gen";
   };
 
   outputs =
-    {
+    inputs@{
       self,
       nixpkgs,
-      nixpkgs-stable,
-      disko-stable,
-      disko-unstable,
-      rust-overlay,
-      bip39gen,
+      disko,
+      home-manager,
       flake-parts,
       ...
-    }@inputs:
+    }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
 
       perSystem =
         {
-          config,
-          self',
           inputs',
           pkgs,
           system,
@@ -52,13 +46,13 @@
         {
           devShells.default =
             let
-              pkgs = import nixpkgs {
+              developmentPkgs = import nixpkgs {
                 inherit system;
                 config.allowUnfree = true;
               };
             in
-            pkgs.mkShell {
-              packages = with pkgs; [
+            developmentPkgs.mkShell {
+              packages = with developmentPkgs; [
                 nil
                 nixd
                 nixfmt
@@ -69,95 +63,58 @@
             };
 
           formatter = pkgs.nixfmt-tree;
+
+          packages.disko-install = inputs'.disko.packages.disko-install;
+          apps.disko-install = {
+            type = "app";
+            program = "${inputs'.disko.packages.disko-install}/bin/disko-install";
+            meta.description = "Install a NixOS flake configuration using Disko";
+          };
         };
 
       flake = {
-        nixosModules = import ./modules;
+        # Compatibility exports for modules that were public before the move.
+        # Host/profile composition below deliberately uses explicit file imports.
+        nixosModules = {
+          nix-config = import ./nixos/features/nix-config.nix;
+          core = import ./nixos/profiles/base.nix;
+          neovim = import ./nixos/features/neovim.nix;
+          shell = import ./nixos/features/shell.nix;
+          utils = import ./nixos/features/cli-tools.nix;
+          file-utils = import ./nixos/features/cli-tools.nix;
+          desktop = import ./nixos/features/desktop.nix;
+          development = import ./nixos/features/development;
+          rust = import ./nixos/features/development/rust.nix;
+          disks-filesystems = import ./nixos/features/disks-filesystems.nix;
+          ti-nspire = import ./nixos/features/peripherals/ti-nspire.nix;
+          virtualization = import ./nixos/features/virtualization.nix;
+          printing = import ./nixos/features/peripherals/printing.nix;
+          scanning = import ./nixos/features/peripherals/scanning.nix;
+        };
 
         nixosConfigurations = {
-          # Personal laptop
           turing = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
-
             specialArgs = {
               inherit inputs self;
               outputs = self.outputs;
             };
-
             modules = [
               ./hosts/turing
-
-              disko-unstable.nixosModules.disko
-
-              {
-                nix.settings = {
-                  # Settings can be checked after rebuilds using:
-                  # `nix config show | rg <setting>`
-                  # TODO: The default is preserved, but make appending/prepending
-                  #       to the lists (substituters & trusted keys) explicit
-                  substituters = [
-                    "https://cache.nixos-cuda.org"
-                    "https://nix-community.cachix.org"
-                  ];
-                  trusted-public-keys = [
-                    "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
-                    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-                  ];
-                };
-              }
+              disko.nixosModules.disko
+              home-manager.nixosModules.home-manager
             ];
           };
 
-          hermes = nixpkgs.lib.nixosSystem {
+          turing-bootstrap = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
-
             specialArgs = {
               inherit inputs self;
               outputs = self.outputs;
             };
-
             modules = [
-              ./hosts/hermes
-
-              disko-unstable.nixosModules.disko
-
-              {
-                nix.settings = {
-                  # Settings can be checked after rebuilds using:
-                  # `nix config show | rg <setting>`
-                  # TODO: The default is preserved, but make appending/prepending
-                  #       to the lists (substituters & trusted keys) explicit
-                  substituters = [
-                    "https://nix-community.cachix.org"
-                    # "https://cuda-maintainers.cachix.org/"
-                  ];
-                  trusted-public-keys = [
-                    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-                    # "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-                  ];
-                };
-              }
-            ];
-          };
-
-          atlas = nixpkgs-stable.lib.nixosSystem {
-            system = "x86_64-linux";
-
-            specialArgs = {
-              inherit inputs self;
-              outputs = self.outputs;
-            };
-
-            modules = [
-              ./hosts/atlas
-
-              disko-stable.nixosModules.disko
-
-              # Fix the nixpkgs registry conflict
-              {
-                nix.registry.nixpkgs.flake = nixpkgs-stable;
-                nix.registry.nixpkgs.to.path = nixpkgs-stable;
-              }
+              ./hosts/turing/bootstrap.nix
+              disko.nixosModules.disko
             ];
           };
         };

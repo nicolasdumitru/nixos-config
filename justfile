@@ -1,43 +1,40 @@
-# The default recipe is always the first recipe in the justfile
-
-# The recipe to run when just is invoked without a recipe
+# The default recipe is always the first recipe in the justfile.
 default: list
 
-# List available recipes
+flake := "path:" + justfile_directory()
+
 list:
     @just --list
 
-# Install NixOS on a new machine
-install host:
-    sudo nix --experimental-features "nix-command flakes" \
-        run github:nix-community/disko/latest -- --mode destroy,format,mount \
-        {{hosts}}/{{host}}/disko-config.nix
-    sudo nixos-generate-config --no-filesystems --root /mnt
-    -cp -i \
-        /mnt/etc/nixos/hardware-configuration.nix \
-        {{hosts}}/{{host}}/hardware-configuration.nix
-    -git add {{hosts}}/{{host}}/hardware-configuration.nix
-    sudo nixos-install --flake ".#{{host}}" --no-root-password
-hosts := justfile_directory() + "/hosts"
+# Destructive: install the lightweight bootstrap system on an explicit disk.
+# Prefer a stable /dev/disk/by-id path for DEVICE.
+install host device:
+    sudo nix --option max-jobs 2 --option cores 2 run "{{flake}}#disko-install" -- \
+        --option max-jobs 2 --option cores 2 \
+        --write-efi-boot-entries \
+        --flake "{{flake}}#{{host}}-bootstrap" \
+        --disk system "{{device}}"
 
-# Reconfigure the system to match this configuration flake
+# Reconfigure the normal full system.
 rebuild operation=rebuild_op host=hostname:
-    nixos-rebuild --sudo --flake ".#{{host}}" {{operation}}
+    nixos-rebuild --sudo --flake "{{flake}}#{{host}}" {{operation}}
+
+# Reconfigure only the lightweight bootstrap system.
+rebuild-bootstrap operation=rebuild_op host=hostname:
+    nixos-rebuild --sudo --flake "{{flake}}#{{host}}-bootstrap" {{operation}}
+
 rebuild_op := 'switch'
 hostname := `hostname`
 
-# Delete Nix(OS) generations older than period
 collect-garbage period='3d' operation=rebuild_op: && (rebuild operation)
     nix-collect-garbage --delete-older-than {{period}}
     sudo nix-collect-garbage --delete-older-than {{period}}
 alias gc := collect-garbage
 
-# Update the lockfile and commit it
 update:
     nix flake update --commit-lock-file
 
-# Format all Nix files
 format:
     nix fmt
-    stylua --verify .
+    stylua --verify dotfiles/.config/nvim/init.lua
 alias fmt := format
