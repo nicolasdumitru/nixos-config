@@ -3,7 +3,7 @@
 {
   imports = [
     ./common.nix
-    ../../hardware/turing.nix
+    ../../hardware/rog-zephyrus-g16.nix
     ../../disko/turing.nix
     ../../nixos/profiles/laptop.nix
     ../../nixos/features/nvidia.nix

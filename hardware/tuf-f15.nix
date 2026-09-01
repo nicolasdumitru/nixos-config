@@ -1,4 +1,4 @@
-# Hardware knowledge retained from Hermes; this is not a complete OS host.
+# Hardware knowledge for the ASUS TUF F15; this is not a complete OS host.
 {
   config,
   lib,
