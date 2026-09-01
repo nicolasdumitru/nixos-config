@@ -1,4 +1,5 @@
 {
+  modules,
   pkgs,
   ...
 }:
@@ -7,7 +8,7 @@ let
   userName = "nick";
 in
 {
-  imports = [ ../features/nix-config.nix ];
+  imports = [ modules.nixos.features.nixConfig ];
 
   boot = {
     loader.systemd-boot.enable = true;

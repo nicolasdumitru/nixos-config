@@ -19,12 +19,15 @@ Disko layouts, Home Manager deployment, and application-native dotfiles.
   Desktop environment, audio, applications, and fonts are separate choices.
 - `lib/package-sets/` contains plain package-selection functions shared by thin
   NixOS and standalone Home Manager modules; it does not contain module policy.
+- `module-tree.nix` is the explicit repository hierarchy. Compositions import
+  entries such as `modules.nixos.features.development` instead of navigating the
+  filesystem with parent-directory paths.
 - `hardware/` contains physical boot/CPU facts. The ROG Zephyrus G16's
   AMD/NVIDIA PRIME bus IDs live in `hardware/rog-zephyrus-g16.nix`, not in the
   reusable NVIDIA feature.
-- `disko/` owns storage. The `turing` and `hermes` Disko compositions share the
-  GPT + EFI + LUKS + Btrfs layout while retaining their original LUKS names and
-  swap sizes.
+- `disko/` owns storage. The ROG Zephyrus G16 and ASUS TUF F15 compositions
+  share the GPT + EFI + LUKS + Btrfs layout while retaining their original LUKS
+  names and swap sizes.
 - `hosts/turing/` is the thin composition layer. The ASUS TUF F15 retains
   hardware and Disko knowledge only; it is not exposed as a complete NixOS
   configuration.

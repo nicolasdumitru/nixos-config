@@ -1,5 +1,6 @@
 {
   inputs,
+  modules,
   pkgs,
   ...
 }:
@@ -12,7 +13,7 @@
   };
   programs.nix-ld.enable = true;
 
-  environment.systemPackages = import ../../../lib/package-sets/development.nix {
+  environment.systemPackages = modules.packageSets.development {
     inherit inputs pkgs;
   };
 }

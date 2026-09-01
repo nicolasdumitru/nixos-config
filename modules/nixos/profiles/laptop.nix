@@ -1,10 +1,11 @@
 {
   lib,
+  modules,
   ...
 }:
 
 {
-  imports = [ ./base.nix ];
+  imports = [ modules.nixos.profiles.base ];
 
   boot = {
     plymouth = {

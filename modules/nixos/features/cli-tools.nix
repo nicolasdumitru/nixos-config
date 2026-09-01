@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+{
+  modules,
+  pkgs,
+  ...
+}:
 
 {
   programs.gnupg.agent = {
@@ -6,7 +10,7 @@
     pinentryPackage = pkgs.pinentry-gnome3;
   };
 
-  environment.systemPackages = import ../../../lib/package-sets/cli-tools.nix {
+  environment.systemPackages = modules.packageSets.cliTools {
     inherit pkgs;
   };
 }
