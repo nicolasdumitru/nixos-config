@@ -34,15 +34,42 @@
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
 
       perSystem =
         {
           inputs',
+          lib,
           pkgs,
           system,
           ...
         }:
+        let
+          portablePkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+          portableHome = home-manager.lib.homeManagerConfiguration {
+            pkgs = portablePkgs;
+            modules = [
+              ./modules/home-manager/dotfiles/common.nix
+              ./modules/home-manager/neovim-config.nix
+              ./modules/home-manager/neovim-packages.nix
+              ./modules/home-manager/cli-tools.nix
+              (import ./modules/home-manager/development.nix { inherit inputs; })
+              {
+                home.username = "portable-check";
+                home.homeDirectory =
+                  if lib.hasSuffix "-darwin" system then "/Users/portable-check" else "/home/portable-check";
+              }
+            ]
+            ++ lib.optional (lib.hasSuffix "-linux" system) ./modules/home-manager/dotfiles/linux.nix;
+          };
+        in
         {
           devShells.default =
             let
@@ -64,6 +91,10 @@
 
           formatter = pkgs.nixfmt-tree;
 
+          checks.portable-home = portableHome.activationPackage;
+
+        }
+        // lib.optionalAttrs (lib.hasSuffix "-linux" system) {
           packages.disko-install = inputs'.disko.packages.disko-install;
           apps.disko-install = {
             type = "app";
@@ -72,52 +103,71 @@
           };
         };
 
-      flake = {
-        # Compatibility exports for modules that were public before the move.
-        # Host/profile composition below deliberately uses explicit file imports.
-        nixosModules = {
-          nix-config = import ./nixos/features/nix-config.nix;
-          core = import ./nixos/profiles/base.nix;
-          neovim = import ./nixos/features/neovim.nix;
-          shell = import ./nixos/features/shell.nix;
-          utils = import ./nixos/features/cli-tools.nix;
-          file-utils = import ./nixos/features/cli-tools.nix;
-          desktop = import ./nixos/features/desktop.nix;
-          development = import ./nixos/features/development;
-          rust = import ./nixos/features/development/rust.nix;
-          disks-filesystems = import ./nixos/features/disks-filesystems.nix;
-          ti-nspire = import ./nixos/features/peripherals/ti-nspire.nix;
-          virtualization = import ./nixos/features/virtualization.nix;
-          printing = import ./nixos/features/peripherals/printing.nix;
-          scanning = import ./nixos/features/peripherals/scanning.nix;
-        };
-
-        nixosConfigurations = {
-          turing = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit inputs self;
-              outputs = self.outputs;
-            };
-            modules = [
-              ./hosts/turing
-              disko.nixosModules.disko
-              home-manager.nixosModules.home-manager
-            ];
+      flake =
+        let
+          withInputs = module: {
+            imports = [ module ];
+            _module.args.inputs = inputs;
+          };
+        in
+        {
+          homeModules = {
+            dotfiles-common = import ./modules/home-manager/dotfiles/common.nix;
+            dotfiles-linux = import ./modules/home-manager/dotfiles/linux.nix;
+            neovim-config = import ./modules/home-manager/neovim-config.nix;
+            neovim-packages = import ./modules/home-manager/neovim-packages.nix;
+            cli-tools = import ./modules/home-manager/cli-tools.nix;
+            development = import ./modules/home-manager/development.nix { inherit inputs; };
           };
 
-          turing-bootstrap = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit inputs self;
-              outputs = self.outputs;
+          # Compatibility exports remain available, while internal host/profile
+          # composition deliberately uses explicit file imports.
+          nixosModules = {
+            nix-config = withInputs ./modules/nixos/features/nix-config.nix;
+            core = withInputs ./modules/nixos/profiles/base.nix;
+            neovim = import ./modules/nixos/features/neovim.nix;
+            shell = import ./modules/nixos/features/shell.nix;
+            utils = import ./modules/nixos/features/cli-tools.nix;
+            file-utils = import ./modules/nixos/features/cli-tools.nix;
+            desktop = withInputs ./modules/nixos/features/desktop;
+            desktop-cosmic = import ./modules/nixos/features/desktop/cosmic.nix;
+            desktop-audio = import ./modules/nixos/features/desktop/audio.nix;
+            desktop-applications = withInputs ./modules/nixos/features/desktop/applications.nix;
+            desktop-fonts = import ./modules/nixos/features/desktop/fonts.nix;
+            development = withInputs ./modules/nixos/features/development.nix;
+            disks-filesystems = import ./modules/nixos/features/disks-filesystems.nix;
+            ti-nspire = import ./modules/nixos/features/peripherals/ti-nspire.nix;
+            virtualization = import ./modules/nixos/features/virtualization.nix;
+            printing = import ./modules/nixos/features/peripherals/printing.nix;
+            scanning = import ./modules/nixos/features/peripherals/scanning.nix;
+          };
+
+          nixosConfigurations = {
+            turing = nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              specialArgs = {
+                inherit inputs self;
+                outputs = self.outputs;
+              };
+              modules = [
+                ./hosts/turing
+                disko.nixosModules.disko
+                home-manager.nixosModules.home-manager
+              ];
             };
-            modules = [
-              ./hosts/turing/bootstrap.nix
-              disko.nixosModules.disko
-            ];
+
+            turing-bootstrap = nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              specialArgs = {
+                inherit inputs self;
+                outputs = self.outputs;
+              };
+              modules = [
+                ./hosts/turing/bootstrap.nix
+                disko.nixosModules.disko
+              ];
+            };
           };
         };
-      };
     };
 }

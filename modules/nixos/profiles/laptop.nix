@@ -4,19 +4,7 @@
 }:
 
 {
-  imports = [
-    ./base.nix
-    ../features/shell.nix
-    ../features/cli-tools.nix
-    ../features/desktop.nix
-    ../features/gaming.nix
-    ../features/development
-    ../features/neovim.nix
-    ../features/virtualization.nix
-    ../features/network-tools.nix
-    ../features/disks-filesystems.nix
-    ../features/peripherals/ti-nspire.nix
-  ];
+  imports = [ ./base.nix ];
 
   boot = {
     plymouth = {
@@ -60,20 +48,5 @@
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
-  };
-
-  modules.neovim.enable = true;
-  modules.ti-nspire.enable = true;
-
-  home-manager = {
-    useGlobalPkgs = true;
-    users.nick = {
-      imports = [
-        ../../home/common.nix
-        ../../home/linux.nix
-      ];
-      home.username = "nick";
-      home.homeDirectory = "/home/nick";
-    };
   };
 }
