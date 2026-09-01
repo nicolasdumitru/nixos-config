@@ -17,11 +17,13 @@ Disko layouts, Home Manager deployment, and application-native dotfiles.
   selects desktop, development, GPU, virtualization, and peripheral features.
 - `modules/nixos/features/` contains independently reusable NixOS capabilities.
   Desktop environment, audio, applications, and fonts are separate choices.
-- `lib/package-sets/` contains plain package-selection functions shared by thin
+- `modules/package-sets/` contains plain package-selection functions shared by thin
   NixOS and standalone Home Manager modules; it does not contain module policy.
-- `module-tree.nix` is the explicit repository hierarchy. Compositions import
-  entries such as `modules.nixos.features.development` instead of navigating the
-  filesystem with parent-directory paths.
+- Each module branch exposes its own hierarchy through `default.nix` (or a
+  local module-set file where `default.nix` is itself a NixOS module).
+  Compositions use entries such as `modules.nixos.features.development`,
+  `hardware.rog-zephyrus-g16`, and `disko.rog-zephyrus-g16` without
+  parent-directory paths.
 - `hardware/` contains physical boot/CPU facts. The ROG Zephyrus G16's
   AMD/NVIDIA PRIME bus IDs live in `hardware/rog-zephyrus-g16.nix`, not in the
   reusable NVIDIA feature.

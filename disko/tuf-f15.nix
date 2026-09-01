@@ -1,6 +1,6 @@
-{ modules, ... }:
+{ disko, ... }:
 
-modules.disko.layouts.luksBtrfs {
+disko.layouts.luksBtrfs {
   diskName = "F15-ssd";
   swapSize = "32G";
 }

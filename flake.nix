@@ -28,13 +28,16 @@
     inputs@{
       self,
       nixpkgs,
-      disko,
       home-manager,
       flake-parts,
       ...
     }:
     let
-      modules = import ./module-tree.nix { inherit inputs; };
+      disko = import ./disko;
+      dotfilesPath = ./dotfiles;
+      hardware = import ./hardware;
+      hosts = import ./hosts;
+      modules = import ./modules { inherit inputs; };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
@@ -71,7 +74,9 @@
               }
             ]
             ++ lib.optional (lib.hasSuffix "-linux" system) modules.homeManager.dotfiles.linux;
-            extraSpecialArgs = { inherit modules; };
+            extraSpecialArgs = {
+              inherit dotfilesPath modules;
+            };
           };
         in
         {
@@ -111,7 +116,9 @@
         let
           withContext = module: {
             imports = [ module ];
-            _module.args = { inherit inputs modules; };
+            _module.args = {
+              inherit dotfilesPath inputs modules;
+            };
           };
         in
         {
@@ -133,7 +140,7 @@
             shell = withContext modules.nixos.features.shell;
             utils = withContext modules.nixos.features.cliTools;
             file-utils = withContext modules.nixos.features.cliTools;
-            desktop = withContext modules.nixos.features.desktop.default;
+            desktop = withContext modules.nixos.features.desktop.all;
             desktop-cosmic = withContext modules.nixos.features.desktop.cosmic;
             desktop-audio = withContext modules.nixos.features.desktop.audio;
             desktop-applications = withContext modules.nixos.features.desktop.applications;
@@ -150,12 +157,20 @@
             turing = nixpkgs.lib.nixosSystem {
               system = "x86_64-linux";
               specialArgs = {
-                inherit inputs modules self;
+                inherit
+                  disko
+                  dotfilesPath
+                  hardware
+                  hosts
+                  inputs
+                  modules
+                  self
+                  ;
                 outputs = self.outputs;
               };
               modules = [
-                modules.hosts.turing.default
-                disko.nixosModules.disko
+                hosts.turing.default
+                inputs.disko.nixosModules.disko
                 home-manager.nixosModules.home-manager
               ];
             };
@@ -163,12 +178,20 @@
             turing-bootstrap = nixpkgs.lib.nixosSystem {
               system = "x86_64-linux";
               specialArgs = {
-                inherit inputs modules self;
+                inherit
+                  disko
+                  dotfilesPath
+                  hardware
+                  hosts
+                  inputs
+                  modules
+                  self
+                  ;
                 outputs = self.outputs;
               };
               modules = [
-                modules.hosts.turing.bootstrap
-                disko.nixosModules.disko
+                hosts.turing.bootstrap
+                inputs.disko.nixosModules.disko
               ];
             };
           };
