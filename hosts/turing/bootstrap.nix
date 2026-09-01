@@ -1,10 +1,16 @@
-{ modules, ... }:
+{
+  disko,
+  hardware,
+  hosts,
+  modules,
+  ...
+}:
 
 {
   imports = [
-    modules.hosts.turing.common
-    modules.hardware.rog-zephyrus-g16
-    modules.disko.rog-zephyrus-g16
+    hosts.turing.common
+    hardware.rog-zephyrus-g16
+    disko.rog-zephyrus-g16
     modules.nixos.profiles.bootstrap
   ];
 }

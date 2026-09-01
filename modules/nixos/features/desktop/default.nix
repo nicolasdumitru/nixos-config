@@ -1,10 +1,7 @@
-{ modules, ... }:
-
 {
-  imports = [
-    modules.nixos.features.desktop.audio
-    modules.nixos.features.desktop.applications
-    modules.nixos.features.desktop.cosmic
-    modules.nixos.features.desktop.fonts
-  ];
+  all = ./all.nix;
+  applications = ./applications.nix;
+  audio = ./audio.nix;
+  cosmic = ./cosmic.nix;
+  fonts = ./fonts.nix;
 }

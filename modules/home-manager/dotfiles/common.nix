@@ -1,7 +1,7 @@
-{ modules, ... }:
+{ dotfilesPath, ... }:
 
 let
-  dotfiles = modules.files.dotfiles;
+  dotfiles = dotfilesPath;
   managed = source: {
     inherit source;
     force = true;

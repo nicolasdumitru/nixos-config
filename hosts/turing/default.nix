@@ -1,10 +1,17 @@
-{ modules, ... }:
+{
+  disko,
+  dotfilesPath,
+  hardware,
+  hosts,
+  modules,
+  ...
+}:
 
 {
   imports = [
-    modules.hosts.turing.common
-    modules.hardware.rog-zephyrus-g16
-    modules.disko.rog-zephyrus-g16
+    hosts.turing.common
+    hardware.rog-zephyrus-g16
+    disko.rog-zephyrus-g16
     modules.nixos.profiles.laptop
     modules.nixos.features.asusLaptop
     modules.nixos.features.cliTools
@@ -27,7 +34,9 @@
 
   home-manager = {
     useGlobalPkgs = true;
-    extraSpecialArgs = { inherit modules; };
+    extraSpecialArgs = {
+      inherit dotfilesPath modules;
+    };
     users.nick = {
       imports = [
         modules.homeManager.dotfiles.common
