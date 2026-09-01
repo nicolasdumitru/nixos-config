@@ -1,7 +1,11 @@
-{ pkgs, ... }:
+{
+  modules,
+  pkgs,
+  ...
+}:
 
 let
-  neovim = import ../../lib/package-sets/neovim.nix { inherit pkgs; };
+  neovim = modules.packageSets.neovim { inherit pkgs; };
 in
 {
   home.packages = neovim.all;

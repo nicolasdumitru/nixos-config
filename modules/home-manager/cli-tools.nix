@@ -1,5 +1,9 @@
-{ pkgs, ... }:
+{
+  modules,
+  pkgs,
+  ...
+}:
 
 {
-  home.packages = import ../../lib/package-sets/cli-tools.nix { inherit pkgs; };
+  home.packages = modules.packageSets.cliTools { inherit pkgs; };
 }

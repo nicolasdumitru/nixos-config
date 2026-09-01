@@ -1,37 +1,38 @@
-{ ... }:
+{ modules, ... }:
 
 {
   imports = [
-    ./common.nix
-    ../../hardware/rog-zephyrus-g16.nix
-    ../../disko/turing.nix
-    ../../modules/nixos/profiles/laptop.nix
-    ../../modules/nixos/features/asus-laptop.nix
-    ../../modules/nixos/features/cli-tools.nix
-    ../../modules/nixos/features/desktop/audio.nix
-    ../../modules/nixos/features/desktop/applications.nix
-    ../../modules/nixos/features/desktop/cosmic.nix
-    ../../modules/nixos/features/desktop/fonts.nix
-    ../../modules/nixos/features/development.nix
-    ../../modules/nixos/features/disks-filesystems.nix
-    ../../modules/nixos/features/gaming.nix
-    ../../modules/nixos/features/neovim.nix
-    ../../modules/nixos/features/network-tools.nix
-    ../../modules/nixos/features/nvidia.nix
-    ../../modules/nixos/features/peripherals/ti-nspire.nix
-    ../../modules/nixos/features/shell.nix
-    ../../modules/nixos/features/virtualization.nix
+    modules.hosts.turing.common
+    modules.hardware.rog-zephyrus-g16
+    modules.disko.rog-zephyrus-g16
+    modules.nixos.profiles.laptop
+    modules.nixos.features.asusLaptop
+    modules.nixos.features.cliTools
+    modules.nixos.features.desktop.audio
+    modules.nixos.features.desktop.applications
+    modules.nixos.features.desktop.cosmic
+    modules.nixos.features.desktop.fonts
+    modules.nixos.features.development
+    modules.nixos.features.disksFilesystems
+    modules.nixos.features.gaming
+    modules.nixos.features.neovim
+    modules.nixos.features.networkTools
+    modules.nixos.features.nvidia
+    modules.nixos.features.peripherals.tiNspire
+    modules.nixos.features.shell
+    modules.nixos.features.virtualization
   ];
 
   modules.ti-nspire.enable = true;
 
   home-manager = {
     useGlobalPkgs = true;
+    extraSpecialArgs = { inherit modules; };
     users.nick = {
       imports = [
-        ../../modules/home-manager/dotfiles/common.nix
-        ../../modules/home-manager/dotfiles/linux.nix
-        ../../modules/home-manager/neovim-config.nix
+        modules.homeManager.dotfiles.common
+        modules.homeManager.dotfiles.linux
+        modules.homeManager.neovimConfig
       ];
       home.username = "nick";
       home.homeDirectory = "/home/nick";

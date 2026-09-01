@@ -1,6 +1,10 @@
 { inputs }:
 
-{ pkgs, ... }:
+{
+  modules,
+  pkgs,
+  ...
+}:
 
 {
   programs.direnv = {
@@ -8,7 +12,7 @@
     nix-direnv.enable = true;
   };
 
-  home.packages = import ../../lib/package-sets/development.nix {
+  home.packages = modules.packageSets.development {
     inherit inputs pkgs;
   };
 }
