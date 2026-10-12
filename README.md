@@ -9,16 +9,15 @@ Disko layouts, Home Manager deployment, and application-native dotfiles.
 - `dotfiles/` contains native Bash, TOML, JSON, inputrc, Lua, and application
   configuration. Edit these repository files rather than their immutable
   Home Manager links under `$HOME`.
-- `modules/home-manager/` contains portable configuration and standalone
-  package modules. Common dotfiles work on every Home Manager platform; MIME
-  and user-directory files remain isolated in the Linux module.
+- `modules/home-manager/` contains portable configuration and package modules
+  used by both integrated and standalone Home Manager. Common dotfiles work on
+  every Home Manager platform; MIME and user-directory files remain isolated in
+  the Linux module.
 - `modules/nixos/profiles/base.nix` provides the small common operating system.
   The laptop profile adds only laptop policy, while the Turing host explicitly
   selects desktop, development, GPU, virtualization, and peripheral features.
 - `modules/nixos/features/` contains independently reusable NixOS capabilities.
   Desktop environment, audio, applications, and fonts are separate choices.
-- `modules/package-sets/` contains plain package-selection functions shared by thin
-  NixOS and standalone Home Manager modules; it does not contain module policy.
 - Each module branch exposes its own hierarchy through `default.nix` (or a
   local module-set file where `default.nix` is itself a NixOS module).
   Compositions use entries such as `modules.nixos.features.development`,
@@ -39,14 +38,16 @@ the CUDA binary cache independently from NVIDIA driver support.
 
 ## Package policy
 
-On NixOS, packages remain in `environment.systemPackages` so command-line,
-development, and workstation tools are available to every user, including
-root. Integrated Home Manager deploys configuration files but does not duplicate
-these programs in `home.packages`. Standalone Home Manager modules install the
-same shared package sets per-user on generic Linux and Darwin.
+Home Manager owns the CLI, development, and Neovim package definitions and
+installs them through `home.packages`, both for Nick on Turing and for standalone
+homes on Linux and Darwin. Existing platform guards keep Linux-only development
+packages on Linux. NixOS retains base/bootstrap packages, other system feature
+packages, and system integration settings. Migrated packages are available to
+the configured user; other users, including root, only receive tools that remain
+independently installed system-wide.
 
 Neovim is constructed once as a portable Nix package with Nix-managed plugins
-and runtime tools. NixOS installs it system-wide; standalone Home Manager installs
+and runtime tools. Integrated and standalone Home Manager install
 the same derivations per-user. Its wrapper leaves XDG startup discovery enabled,
 so the native `dotfiles/.config/nvim/init.lua` is loaded normally on both.
 
@@ -66,9 +67,9 @@ modules = [
 ];
 ```
 
-Darwin uses the same composition without `dotfiles-linux`. On NixOS, the system
-imports the NixOS package modules and integrated Home Manager imports only the
-corresponding configuration modules.
+Darwin uses the same composition without `dotfiles-linux`. Turing uses this
+same set of Home Manager configuration and package modules alongside its NixOS
+system features.
 
 The pinned Nixpkgs 26.11 no longer supports `x86_64-darwin`, so this flake checks
 Apple Silicon Darwin. The modules themselves do not encode an architecture;

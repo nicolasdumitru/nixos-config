@@ -1,9 +1,28 @@
-{
-  modules,
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
 {
-  home.packages = modules.packageSets.cliTools { inherit pkgs; };
+  home.packages = with pkgs; [
+    diffutils
+    findutils
+    gnugrep
+    gnused
+    gawk
+    ripgrep
+    ripgrep-all
+    fd
+    eza
+    bat
+    gnupg
+    gnutar
+    gzip
+    xz
+    zip
+    unzip
+    p7zip
+    rsync
+    lf
+    fzf
+    rename
+    dos2unix
+  ];
 }
