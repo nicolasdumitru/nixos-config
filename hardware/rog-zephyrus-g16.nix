@@ -1,6 +1,5 @@
 # Generated hardware facts plus the machine-specific PRIME bus IDs.
 {
-  config,
   lib,
   modulesPath,
   ...
@@ -25,7 +24,7 @@
 
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.amd.updateMicrocode = true;
 
   # Physical PCI addresses: keep these out of the reusable NVIDIA feature.
   hardware.nvidia.prime = {
