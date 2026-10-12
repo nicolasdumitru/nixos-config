@@ -1,18 +1,45 @@
 { inputs }:
 
-{
-  modules,
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
+let
+  rustBin = inputs.rust-overlay.lib.mkRustBin { } pkgs;
+  rustToolchain = rustBin.stable.latest.default.override {
+    extensions = [
+      "rust-analyzer"
+      "rust-src"
+      "rust-docs"
+    ];
+  };
+
+  portable = with pkgs; [
+    gcc
+    binutils
+    vscode
+    antigravity-ide
+    git
+    git-lfs
+    gh
+    codex
+    antigravity-cli
+    just
+    rustToolchain
+  ];
+
+  linux =
+    with pkgs;
+    lib.optionals stdenv.hostPlatform.isLinux [
+      glibc
+      conda
+    ];
+in
 {
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
   };
 
-  home.packages = modules.packageSets.development {
-    inherit inputs pkgs;
-  };
+  home.packages = pkgs.lib.filter (pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform) (
+    portable ++ linux
+  );
 }

@@ -42,6 +42,9 @@
         modules.homeManager.dotfiles.common
         modules.homeManager.dotfiles.linux
         modules.homeManager.neovimConfig
+        modules.homeManager.neovimPackages
+        modules.homeManager.cliTools
+        modules.homeManager.development
       ];
       home.username = "nick";
       home.homeDirectory = "/home/nick";
