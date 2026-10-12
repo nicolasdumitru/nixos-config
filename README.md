@@ -46,6 +46,10 @@ packages, and system integration settings. Migrated packages are available to
 the configured user; other users, including root, only receive tools that remain
 independently installed system-wide.
 
+The Home Manager CLI module also manages the per-user GnuPG agent, using GNOME
+pinentry on Linux and macOS pinentry on Darwin. NixOS does not configure a second
+agent for Turing.
+
 Neovim is constructed once as a portable Nix package with Nix-managed plugins
 and runtime tools. Integrated and standalone Home Manager install
 the same derivations per-user. Its wrapper leaves XDG startup discovery enabled,

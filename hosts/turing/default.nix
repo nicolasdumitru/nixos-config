@@ -14,7 +14,6 @@
     disko.rog-zephyrus-g16
     modules.nixos.profiles.laptop
     modules.nixos.features.asusLaptop
-    modules.nixos.features.cliTools
     modules.nixos.features.desktop.audio
     modules.nixos.features.desktop.applications
     modules.nixos.features.desktop.cosmic
