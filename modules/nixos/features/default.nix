@@ -11,5 +11,6 @@
   nvidia = ./nvidia.nix;
   peripherals = import ./peripherals;
   shell = ./shell.nix;
+  sqlServer = ./sql-server.nix;
   virtualization = ./virtualization.nix;
 }
