@@ -90,6 +90,37 @@ sudo nixos-rebuild switch --flake .#turing
 Home Manager activates as part of the NixOS generation; do not run a separate
 `home-manager switch` on NixOS.
 
+## SQL Server on Turing
+
+The full Turing configuration runs Microsoft's SQL Server 2025 Enterprise
+Developer container under Podman. This edition is for development and testing.
+The configuration accepts Microsoft's EULA and binds only `127.0.0.1:1433`.
+Apply it with `just rebuild`.
+
+An administrator password is generated on first startup in the root-only
+`/var/lib/mssql-secrets/environment` file. View it locally with:
+
+```bash
+sudo cat /var/lib/mssql-secrets/environment
+```
+
+Connect to `127.0.0.1,1433` as `sa` using that password. For local clients,
+enable trust of the server's self-signed certificate. The bundled client can
+verify the server (it prompts for the password):
+
+```bash
+sudo podman exec -it mssql /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -C -Q 'SELECT @@VERSION;'
+```
+
+Check startup with `sudo journalctl -u podman-mssql -e`. Databases live in the
+rootful Podman volume `mssql-data` and survive container recreation and NixOS
+rebuilds. Do not delete this volume or the credentials file to reset the
+service. Changing the file does not change the password of an existing database;
+rotate it within SQL Server and update the file to match. Back up databases
+before updating the image. The `2025-latest` tag stays within SQL Server 2025;
+to fetch an updated image, run `sudo podman pull mcr.microsoft.com/mssql/server:2025-latest`
+and then `sudo systemctl restart podman-mssql`.
+
 ## Fresh bootstrap installation
 
 The install command destroys and repartitions the selected device. Verify it

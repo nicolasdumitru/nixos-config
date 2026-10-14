@@ -26,6 +26,7 @@
     modules.nixos.features.nvidia
     modules.nixos.features.peripherals.tiNspire
     modules.nixos.features.shell
+    modules.nixos.features.sqlServer
     modules.nixos.features.virtualization
   ];
 
