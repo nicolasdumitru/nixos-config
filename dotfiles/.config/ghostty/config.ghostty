@@ -9,3 +9,6 @@ shell-integration-features = no-cursor
 font-feature = -calt, -liga, -dlig
 
 keybind = ctrl+backspace=text:\x17
+
+background-opacity = 1.0
+background-blur = true
