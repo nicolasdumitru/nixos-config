@@ -1,9 +1,13 @@
 { pkgs, ... }:
 
 {
+  # Docker starts through its socket when needed, rather than at boot.
+  virtualisation.docker.enableOnBoot = false;
+
   virtualisation.oci-containers = {
-    backend = "podman";
+    backend = "docker";
     containers.mssql = {
+      autoStart = false;
       image = "mcr.microsoft.com/mssql/server:2025-latest";
       environment = {
         ACCEPT_EULA = "Y";
@@ -11,9 +15,12 @@
       };
       environmentFiles = [ "/var/lib/mssql-secrets/environment" ];
       ports = [ "127.0.0.1:1433:1433" ];
-      volumes = [ "mssql-data:/var/opt/mssql" ];
+      volumes = [ "/var/lib/mssql:/var/opt/mssql" ];
     };
   };
+
+  # Microsoft's container runs SQL Server as UID 10001.
+  systemd.tmpfiles.rules = [ "d /var/lib/mssql 0750 10001 0 -" ];
 
   # Generate once at runtime; neither the repository nor the Nix store contains
   # the SA password. Keep this file alongside the persistent database volume.
@@ -35,8 +42,11 @@
     '';
   };
 
-  systemd.services.podman-mssql = {
-    requires = [ "mssql-credentials.service" ];
+  systemd.services.docker-mssql = {
+    requires = [
+      "docker.service"
+      "mssql-credentials.service"
+    ];
     after = [ "mssql-credentials.service" ];
   };
 }
