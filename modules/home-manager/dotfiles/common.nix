@@ -27,7 +27,5 @@ in
     "ripgrep/ripgreprc" = managed (dotfiles + "/.config/ripgrep/ripgreprc");
     "starship.toml" = managed (dotfiles + "/.config/starship.toml");
     "wget/wgetrc" = managed (dotfiles + "/.config/wget/wgetrc");
-    "zed/keymap.json" = managed (dotfiles + "/.config/zed/keymap.json");
-    "zed/settings.json" = managed (dotfiles + "/.config/zed/settings.json");
   };
 }
