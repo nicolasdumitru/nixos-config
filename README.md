@@ -1,6 +1,6 @@
 # NixOS, Home Manager, and Dotfiles
 
-This repository contains the complete `turing` system configuration, a small
+This repository contains the complete `turing` and WSL `orpheus` system configurations, a small
 bootstrap configuration, reusable NixOS features, physical hardware facts,
 Disko layouts, Home Manager deployment, and application-native dotfiles.
 
@@ -90,6 +90,22 @@ sudo nixos-rebuild switch --flake .#turing
 Home Manager activates as part of the NixOS generation; do not run a separate
 `home-manager switch` on NixOS.
 
+## Orpheus (WSL)
+
+`hosts/orpheus/` builds an x86_64 NixOS-WSL host with `nick` as the default
+user and the same Home Manager modules as Turing. The WSL module is pinned
+in the flake; no `<nixos-wsl/modules>` channel import is needed.
+
+From the repository inside the existing NixOS-WSL installation, apply it with:
+
+```bash
+sudo nixos-rebuild switch --flake path:.#orpheus
+```
+
+After the first switch, terminate and reopen the distribution from Windows
+to start a session as `nick`. Existing files under `/home/nixos` are not moved
+to `/home/nick` automatically. Subsequent rebuilds can use `just rebuild`.
+
 ## SQL Server on Turing
 
 The full Turing configuration runs Microsoft's SQL Server 2025 Enterprise
@@ -171,7 +187,7 @@ of the deployment workflow.
 
 ## Compatibility baselines and shell assumptions
 
-`system.stateVersion` remains `25.05`. Home Manager was introduced with
+`system.stateVersion` remains `25.05` on Turing and `26.05` on Orpheus. Home Manager was introduced with
 `home.stateVersion = "26.05"`. Neither value should be changed during routine
 updates without reviewing the corresponding migration notes.
 
