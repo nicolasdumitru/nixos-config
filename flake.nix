@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -154,6 +159,18 @@
           };
 
           nixosConfigurations = {
+            orpheus = nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              specialArgs = {
+                inherit dotfilesPath inputs modules;
+              };
+              modules = [
+                hosts.orpheus.default
+                inputs.nixos-wsl.nixosModules.default
+                home-manager.nixosModules.home-manager
+              ];
+            };
+
             turing = nixpkgs.lib.nixosSystem {
               system = "x86_64-linux";
               specialArgs = {
