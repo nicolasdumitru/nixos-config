@@ -5,7 +5,6 @@
   development = ./development.nix;
   disksFilesystems = ./disks-filesystems.nix;
   gaming = ./gaming.nix;
-  neovim = ./neovim.nix;
   networkTools = ./network-tools.nix;
   nixConfig = ./nix-config.nix;
   nvidia = ./nvidia.nix;

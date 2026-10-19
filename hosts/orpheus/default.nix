@@ -8,7 +8,6 @@
 {
   imports = [
     modules.nixos.features.nixConfig
-    modules.nixos.features.neovim
     modules.nixos.features.shell
   ];
 
