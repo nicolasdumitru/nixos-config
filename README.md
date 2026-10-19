@@ -64,8 +64,7 @@ generic Linux home can compose:
 modules = [
   inputs.config.homeModules.dotfiles-common
   inputs.config.homeModules.dotfiles-linux
-  inputs.config.homeModules.neovim-config
-  inputs.config.homeModules.neovim-packages
+  inputs.config.homeModules.neovim
   inputs.config.homeModules.cli-tools
   inputs.config.homeModules.development
 ];
