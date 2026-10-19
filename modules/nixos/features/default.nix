@@ -1,6 +1,5 @@
 {
   asusLaptop = ./asus-laptop.nix;
-  cliTools = ./cli-tools.nix;
   desktop = import ./desktop;
   development = ./development.nix;
   disksFilesystems = ./disks-filesystems.nix;

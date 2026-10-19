@@ -118,99 +118,61 @@
           };
         };
 
-      flake =
-        let
-          withContext = module: {
-            imports = [ module ];
-            _module.args = {
+      flake = {
+        nixosConfigurations = {
+          orpheus = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {
               inherit dotfilesPath inputs modules;
             };
-          };
-        in
-        {
-          homeModules = {
-            dotfiles-common = withContext modules.homeManager.dotfiles.common;
-            dotfiles-linux = withContext modules.homeManager.dotfiles.linux;
-            neovim = withContext modules.homeManager.neovim;
-            cli-tools = withContext modules.homeManager.cliTools;
-            development = withContext modules.homeManager.development;
+            modules = [
+              hosts.orpheus.default
+              inputs.nixos-wsl.nixosModules.default
+              home-manager.nixosModules.home-manager
+            ];
           };
 
-          # Compatibility exports remain available, while internal host/profile
-          # composition deliberately uses explicit file imports.
-          nixosModules = {
-            nix-config = withContext modules.nixos.features.nixConfig;
-            core = withContext modules.nixos.profiles.base;
-            shell = withContext modules.nixos.features.shell;
-            utils = withContext modules.nixos.features.cliTools;
-            file-utils = withContext modules.nixos.features.cliTools;
-            desktop = withContext modules.nixos.features.desktop.all;
-            desktop-cosmic = withContext modules.nixos.features.desktop.cosmic;
-            desktop-audio = withContext modules.nixos.features.desktop.audio;
-            desktop-applications = withContext modules.nixos.features.desktop.applications;
-            desktop-fonts = withContext modules.nixos.features.desktop.fonts;
-            development = withContext modules.nixos.features.development;
-            disks-filesystems = withContext modules.nixos.features.disksFilesystems;
-            ti-nspire = withContext modules.nixos.features.peripherals.tiNspire;
-            virtualization = withContext modules.nixos.features.virtualization;
-            printing = withContext modules.nixos.features.peripherals.printing;
-            scanning = withContext modules.nixos.features.peripherals.scanning;
+          turing = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit
+                disko
+                dotfilesPath
+                hardware
+                hosts
+                inputs
+                modules
+                self
+                ;
+              outputs = self.outputs;
+            };
+            modules = [
+              hosts.turing.default
+              inputs.disko.nixosModules.disko
+              home-manager.nixosModules.home-manager
+            ];
           };
 
-          nixosConfigurations = {
-            orpheus = nixpkgs.lib.nixosSystem {
-              system = "x86_64-linux";
-              specialArgs = {
-                inherit dotfilesPath inputs modules;
-              };
-              modules = [
-                hosts.orpheus.default
-                inputs.nixos-wsl.nixosModules.default
-                home-manager.nixosModules.home-manager
-              ];
+          turing-bootstrap = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit
+                disko
+                dotfilesPath
+                hardware
+                hosts
+                inputs
+                modules
+                self
+                ;
+              outputs = self.outputs;
             };
-
-            turing = nixpkgs.lib.nixosSystem {
-              system = "x86_64-linux";
-              specialArgs = {
-                inherit
-                  disko
-                  dotfilesPath
-                  hardware
-                  hosts
-                  inputs
-                  modules
-                  self
-                  ;
-                outputs = self.outputs;
-              };
-              modules = [
-                hosts.turing.default
-                inputs.disko.nixosModules.disko
-                home-manager.nixosModules.home-manager
-              ];
-            };
-
-            turing-bootstrap = nixpkgs.lib.nixosSystem {
-              system = "x86_64-linux";
-              specialArgs = {
-                inherit
-                  disko
-                  dotfilesPath
-                  hardware
-                  hosts
-                  inputs
-                  modules
-                  self
-                  ;
-                outputs = self.outputs;
-              };
-              modules = [
-                hosts.turing.bootstrap
-                inputs.disko.nixosModules.disko
-              ];
-            };
+            modules = [
+              hosts.turing.bootstrap
+              inputs.disko.nixosModules.disko
+            ];
           };
         };
+      };
     };
 }
