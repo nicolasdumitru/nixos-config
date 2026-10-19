@@ -39,8 +39,7 @@
       imports = [
         modules.homeManager.dotfiles.common
         modules.homeManager.dotfiles.linux
-        modules.homeManager.neovimConfig
-        modules.homeManager.neovimPackages
+        modules.homeManager.neovim
         modules.homeManager.cliTools
         modules.homeManager.development
       ];

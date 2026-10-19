@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, dotfilesPath, ... }:
 
 let
   plugins = with pkgs.vimPlugins; [
@@ -59,5 +59,12 @@ in
   home.sessionVariables = {
     EDITOR = "nvim";
     VISUAL = "nvim";
+  };
+
+  # The package wrapper deliberately leaves startup discovery enabled, so this
+  # native file is the single source of truth for Neovim behavior.
+  xdg.configFile."nvim/init.lua" = {
+    source = dotfilesPath + "/.config/nvim/init.lua";
+    force = true;
   };
 }

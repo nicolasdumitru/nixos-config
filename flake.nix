@@ -68,8 +68,7 @@
             pkgs = portablePkgs;
             modules = [
               modules.homeManager.dotfiles.common
-              modules.homeManager.neovimConfig
-              modules.homeManager.neovimPackages
+              modules.homeManager.neovim
               modules.homeManager.cliTools
               modules.homeManager.development
               {
@@ -100,7 +99,7 @@
                 nixfmt-tree
                 lua-language-server
                 stylua
-                
+
                 just
               ];
             };
@@ -132,8 +131,7 @@
           homeModules = {
             dotfiles-common = withContext modules.homeManager.dotfiles.common;
             dotfiles-linux = withContext modules.homeManager.dotfiles.linux;
-            neovim-config = withContext modules.homeManager.neovimConfig;
-            neovim-packages = withContext modules.homeManager.neovimPackages;
+            neovim = withContext modules.homeManager.neovim;
             cli-tools = withContext modules.homeManager.cliTools;
             development = withContext modules.homeManager.development;
           };
