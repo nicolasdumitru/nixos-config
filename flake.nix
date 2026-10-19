@@ -143,7 +143,6 @@
           nixosModules = {
             nix-config = withContext modules.nixos.features.nixConfig;
             core = withContext modules.nixos.profiles.base;
-            neovim = withContext modules.nixos.features.neovim;
             shell = withContext modules.nixos.features.shell;
             utils = withContext modules.nixos.features.cliTools;
             file-utils = withContext modules.nixos.features.cliTools;
