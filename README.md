@@ -57,22 +57,22 @@ so the native `dotfiles/.config/nvim/init.lua` is loaded normally on both.
 
 ## Portable Home Manager composition
 
-The flake exports atomic modules rather than fabricated standalone hosts. A
-generic Linux home can compose:
+Hosts and the portable Home Manager check compose modules from the internal
+`modules.homeManager` registry:
 
 ```nix
-modules = [
-  inputs.config.homeModules.dotfiles-common
-  inputs.config.homeModules.dotfiles-linux
-  inputs.config.homeModules.neovim
-  inputs.config.homeModules.cli-tools
-  inputs.config.homeModules.development
+imports = [
+  modules.homeManager.dotfiles.common
+  modules.homeManager.dotfiles.linux
+  modules.homeManager.neovim
+  modules.homeManager.cliTools
+  modules.homeManager.development
 ];
 ```
 
-Darwin uses the same composition without `dotfiles-linux`. Turing uses this
-same set of Home Manager configuration and package modules alongside its NixOS
-system features.
+The portable check omits `dotfiles.linux` on Darwin. Turing and Orpheus use
+these modules for their integrated Home Manager configurations. The flake
+exposes system build targets and checks, but no public module exports.
 
 The pinned Nixpkgs 26.11 no longer supports `x86_64-darwin`, so this flake checks
 Apple Silicon Darwin. The modules themselves do not encode an architecture;
