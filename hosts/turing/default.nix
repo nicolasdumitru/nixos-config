@@ -20,7 +20,6 @@
     modules.nixos.features.desktop.fonts
     modules.nixos.features.development
     modules.nixos.features.disksFilesystems
-    modules.nixos.features.gaming
     modules.nixos.features.networkTools
     modules.nixos.features.nvidia
     modules.nixos.features.peripherals.tiNspire
