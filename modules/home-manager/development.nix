@@ -21,6 +21,7 @@ let
     git-lfs
     gh
     codex
+    claude-code
     antigravity-cli
     just
     rustToolchain
