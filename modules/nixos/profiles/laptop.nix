@@ -25,6 +25,8 @@
     HandleLidSwitchExternalPower = "suspend";
     HandleLidSwitchDocked = "ignore";
     IdleAction = "ignore";
+    HandlePowerKey = "ignore"; # short press: do nothing (it still wakes the laptop)
+    HandlePowerKeyLongPress = "poweroff";
   };
 
   services.libinput.enable = true;
