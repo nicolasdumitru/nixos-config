@@ -13,8 +13,6 @@ in
   boot = {
     loader.systemd-boot.enable = true;
     loader.timeout = 0;
-    initrd.systemd.enable = true;
-    initrd.verbose = false;
     kernelPackages = pkgs.linuxPackages;
   };
 
