@@ -20,7 +20,9 @@
     signal-desktop
     obsidian
     kdePackages.okular
-    onlyoffice-desktopeditors
+    # TODO: revert to normal when fixed
+    # gtk2 is marked broken in nixpkgs and the binary only links gtk3.
+    (onlyoffice-desktopeditors.override { gtk2 = gtk3; })
     kdePackages.elisa
     spotify
     transmission_4-gtk
