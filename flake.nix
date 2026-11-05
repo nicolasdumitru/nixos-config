@@ -26,6 +26,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    epicycle.url = "github:nicolasdumitru/epicycle";
     bip39gen.url = "github:nicolasdumitru/bip39gen";
   };
 

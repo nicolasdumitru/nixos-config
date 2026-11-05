@@ -26,6 +26,8 @@
     transmission_4-gtk
     wl-clipboard-rs
     kdePackages.qrca
+
+    inputs.epicycle.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.bip39gen.packages.${stdenv.hostPlatform.system}.default
   ];
 }
