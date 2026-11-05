@@ -7,6 +7,7 @@
 
 {
   imports = [
+    modules.nixos.features.desktop.fonts
     modules.nixos.features.nixConfig
     modules.nixos.features.shell
   ];
