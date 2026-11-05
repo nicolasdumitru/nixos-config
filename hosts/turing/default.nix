@@ -13,6 +13,7 @@
     hardware.rog-zephyrus-g16
     disko.rog-zephyrus-g16
     modules.nixos.profiles.laptop
+    modules.nixos.features.androidStudio
     modules.nixos.features.asusLaptop
     modules.nixos.features.desktop.audio
     modules.nixos.features.desktop.applications
@@ -28,6 +29,7 @@
     modules.nixos.features.virtualization
   ];
 
+  modules.android-studio.enable = true;
   modules.ti-nspire.enable = true;
 
   home-manager = {
