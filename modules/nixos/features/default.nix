@@ -1,4 +1,5 @@
 {
+  androidStudio = ./android-studio.nix;
   asusLaptop = ./asus-laptop.nix;
   desktop = import ./desktop;
   development = ./development.nix;
