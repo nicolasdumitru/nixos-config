@@ -11,6 +11,14 @@ umask 077
 # History configuration
 HISTFILE="$XDG_STATE_HOME"/bash_history
 
+# LS_COLORS and programmable completion (NixOS's /etc/bashrc is skipped via NOSYSBASHRC)
+if command -v dircolors 1>/dev/null 2>&1; then
+	eval "$(command dircolors -b)"
+fi
+if [[ -r /run/current-system/sw/share/bash-completion/bash_completion ]]; then
+	. /run/current-system/sw/share/bash-completion/bash_completion
+fi
+
 # file manager (quick navigation)
 fm () {
 	cd "$(command lf -print-last-dir "$@")" || return 1
@@ -45,4 +53,5 @@ bind 'set vi-cmd-mode-string \1\e[1 q\2'
 bind -m vi-command 'Control-l: clear-screen'
 bind -m vi-insert 'Control-l: clear-screen'
 eval "$(starship init bash)"
+eval "$(zoxide init bash)" # z / zi (interactive, via fzf)
 eval "$(direnv hook bash)" # must be the last line of the config

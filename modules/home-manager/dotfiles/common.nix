@@ -26,7 +26,6 @@ in
     "lf/lfrc" = managed (dotfiles + "/.config/lf/lfrc");
     "readline/inputrc" = managed (dotfiles + "/.config/readline/inputrc");
     "ripgrep/ripgreprc" = managed (dotfiles + "/.config/ripgrep/ripgreprc");
-    "starship.toml" = managed (dotfiles + "/.config/starship.toml");
     "wget/wgetrc" = managed (dotfiles + "/.config/wget/wgetrc");
     "zsh/.zprofile" = managed (dotfiles + "/.config/zsh/.zprofile");
     "zsh/.zshrc" = managed (dotfiles + "/.config/zsh/.zshrc");

@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  dotfilesPath,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   # Interactive behavior is owned by dotfiles/.config/zsh/.zshrc; this module
@@ -7,7 +12,6 @@
     zsh
     zsh-autosuggestions
     zsh-syntax-highlighting
-    starship
     direnv
   ];
 
@@ -16,4 +20,22 @@
     source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
   '';
+
+  # The shells' dotfiles run `zoxide init` themselves.
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = false;
+    enableZshIntegration = false;
+  };
+
+  # dotfiles/.config/starship.toml stays the source of truth (and stays usable
+  # as a plain dotfile); Home Manager regenerates it and validates it against
+  # starship's schema at build time. The shells' dotfiles run `starship init`
+  # themselves, so the Home Manager shell integrations stay off.
+  programs.starship = {
+    enable = true;
+    settings = lib.importTOML (dotfilesPath + "/.config/starship.toml");
+    enableBashIntegration = false;
+    enableZshIntegration = false;
+  };
 }

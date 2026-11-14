@@ -35,6 +35,10 @@ if command -v bat 1>/dev/null 2>&1; then
 	export MANROFFOPT="-c"
 fi
 
+# Make bash shells started from here skip NixOS's /etc/bashrc (a bash login
+# shell has already read it via /etc/profile by now). Harmless on other systems.
+export NOSYSBASHRC=1
+
 # Load bashrc
 if [ -f "$HOME/.bashrc" ]; then
 	. "$HOME/.bashrc"
