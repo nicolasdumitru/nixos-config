@@ -25,7 +25,8 @@ ff () {
 alias cp='command cp -i'
 alias mv='command mv -i'
 
-alias eza='command eza --long --header --classify --group-directories-first --git --icons --color=auto --icons=auto'
+alias eza='command eza --long --header --classify --group-directories-first --git --icons --color=auto --icons=auto --hyperlink=auto'
+alias ls='eza'
 
 # date
 alias timestamp='command date -u "+%Y-%m-%d-%H-%M-%S"'
