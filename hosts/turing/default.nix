@@ -44,6 +44,7 @@
         modules.homeManager.neovim
         modules.homeManager.cliTools
         modules.homeManager.development
+        modules.homeManager.zsh
       ];
       home.username = "nick";
       home.homeDirectory = "/home/nick";

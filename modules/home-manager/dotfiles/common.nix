@@ -17,6 +17,7 @@ in
     ".bash_profile" = managed (dotfiles + "/.bash_profile");
     ".bashrc" = managed (dotfiles + "/.bashrc");
     ".ideavimrc" = managed (dotfiles + "/.ideavimrc");
+    ".zshenv" = managed (dotfiles + "/.zshenv");
   };
 
   xdg.configFile = {
@@ -27,5 +28,7 @@ in
     "ripgrep/ripgreprc" = managed (dotfiles + "/.config/ripgrep/ripgreprc");
     "starship.toml" = managed (dotfiles + "/.config/starship.toml");
     "wget/wgetrc" = managed (dotfiles + "/.config/wget/wgetrc");
+    "zsh/.zprofile" = managed (dotfiles + "/.config/zsh/.zprofile");
+    "zsh/.zshrc" = managed (dotfiles + "/.config/zsh/.zshrc");
   };
 }

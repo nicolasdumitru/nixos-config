@@ -72,6 +72,7 @@
               modules.homeManager.neovim
               modules.homeManager.cliTools
               modules.homeManager.development
+              modules.homeManager.zsh
               {
                 home.username = "portable-check";
                 home.homeDirectory =

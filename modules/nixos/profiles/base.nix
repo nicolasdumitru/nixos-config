@@ -1,4 +1,5 @@
 {
+  lib,
   modules,
   pkgs,
   ...
@@ -39,7 +40,8 @@ in
       home = "/home/${userName}";
       createHome = true;
       useDefaultShell = false;
-      shell = pkgs.bashInteractive;
+      # Hosts importing the shell feature switch this to zsh.
+      shell = lib.mkDefault pkgs.bashInteractive;
       group = userName;
       extraGroups = [
         "wheel"
