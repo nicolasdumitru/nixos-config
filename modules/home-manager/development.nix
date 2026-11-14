@@ -17,13 +17,11 @@ let
     rustToolchain
     binutils
     vscode
-    antigravity-ide
     git
     git-lfs
     gh
     codex
     claude-code
-    antigravity-cli
     just
   ];
 
