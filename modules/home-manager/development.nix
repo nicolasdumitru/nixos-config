@@ -14,6 +14,7 @@ let
 
   portable = with pkgs; [
     gcc
+    rustToolchain
     binutils
     vscode
     antigravity-ide
@@ -24,7 +25,6 @@ let
     claude-code
     antigravity-cli
     just
-    rustToolchain
   ];
 
   linux =
