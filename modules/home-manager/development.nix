@@ -23,6 +23,7 @@ let
     codex
     claude-code
     just
+    cloc
   ];
 
   linux =
