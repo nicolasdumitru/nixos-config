@@ -30,5 +30,6 @@
     fzf
     rename
     dos2unix
+    psmisc # for `fuser` and `pstree`, among others
   ];
 }
