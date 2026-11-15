@@ -17,7 +17,6 @@ let
     rustToolchain
     binutils
     vscode
-    git
     git-lfs
     gh
     codex
@@ -37,6 +36,21 @@ in
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+  };
+
+  programs.git = {
+    enable = true;
+    settings = {
+      user = {
+        name = "nicolasdumitru";
+        email = "nicolas@ndumitru.com";
+      };
+      alias = {
+        st = "status";
+        a = "add";
+        l = "log --graph --all --stat";
+      };
+    };
   };
 
   home.packages = pkgs.lib.filter (pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform) (
