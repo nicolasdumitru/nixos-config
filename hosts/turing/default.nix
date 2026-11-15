@@ -1,4 +1,5 @@
 {
+  pkgs,
   disko,
   dotfilesPath,
   hardware,
@@ -29,9 +30,6 @@
     modules.nixos.features.virtualization
   ];
 
-  modules.android-studio.enable = true;
-  modules.ti-nspire.enable = true;
-
   home-manager = {
     useGlobalPkgs = true;
     extraSpecialArgs = {
@@ -50,6 +48,32 @@
       home.homeDirectory = "/home/nick";
     };
   };
+
+  environment.systemPackages = with pkgs; [
+    kopia
+    kopia-ui
+  ];
+
+  systemd.user.services.kopia-snapshot = {
+    description = "Kopia snapshot";
+    unitConfig.ConditionUser = "nick";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.kopia}/bin/kopia snapshot create --all";
+    };
+  };
+
+  systemd.user.timers.kopia-snapshot = {
+    wantedBy = [ "timers.target" ];
+    unitConfig.ConditionUser = "nick";
+    timerConfig = {
+      OnCalendar = "*-*-* 00/6:00:00";
+      Persistent = true;
+    };
+  };
+
+  modules.android-studio.enable = true;
+  modules.ti-nspire.enable = true;
 
   # Preserve the full workstation's caches without making CUDA a GPU-driver
   # requirement or enabling a CUDA workload.
