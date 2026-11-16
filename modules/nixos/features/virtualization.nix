@@ -19,6 +19,17 @@ in
     virtualisation.spiceUSBRedirection.enable = true;
     programs.virt-manager.enable = true;
 
+    # libvirt keeps its rules in its own nftables table, so the system firewall
+    # must separately let guests on the default NAT network reach the host's
+    # DHCP and DNS.
+    networking.firewall.interfaces.virbr0 = {
+      allowedUDPPorts = [
+        53
+        67
+      ];
+      allowedTCPPorts = [ 53 ];
+    };
+
     users.users.nick.extraGroups = [
       "libvirtd"
       "kvm"

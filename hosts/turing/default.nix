@@ -65,6 +65,13 @@
     };
   };
 
+  # Tailscale, to reach babbage. Sign in once with `sudo tailscale login`.
+  # Turing only starts connections, so nothing is opened in the firewall.
+  services.tailscale.enable = true;
+  # Manage its rules through nftables directly rather than the iptables
+  # compatibility layer.
+  systemd.services.tailscaled.serviceConfig.Environment = [ "TS_DEBUG_FIREWALL_MODE=nftables" ];
+
   environment.systemPackages = with pkgs; [
     kopia
     kopia-ui

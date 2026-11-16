@@ -26,10 +26,10 @@ in
       # Required for WPA/WPA2 Enterprise for now.
       wifi.backend = "wpa_supplicant";
     };
-    networking.firewall = {
-      enable = true;
-      package = pkgs.iptables;
-    };
+    # The firewall uses nftables. Programs that still call iptables (Docker) go
+    # through its nftables-backed compatibility commands.
+    networking.nftables.enable = true;
+    networking.firewall.enable = true;
 
     time.timeZone = "Europe/Bucharest";
     i18n.defaultLocale = "en_US.UTF-8";

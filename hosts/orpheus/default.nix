@@ -16,6 +16,11 @@
 
   networking.hostName = "orpheus";
 
+  # WSL runs no firewall of its own (NixOS-WSL disables the iptables one), so
+  # nftables is enabled without a ruleset to keep that unchanged.
+  networking.nftables.enable = true;
+  networking.firewall.enable = false;
+
   # NixOS-WSL creates the default user with sudo access.
   wsl = {
     enable = true;

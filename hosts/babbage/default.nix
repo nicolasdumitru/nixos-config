@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   disko,
   dotfilesPath,
@@ -30,6 +31,19 @@
     remote-unlock.enable = false;
     wake-on-lan.enable = true;
   };
+
+  # Tailscale, so the server is reachable from anywhere. Sign in once with
+  # `sudo tailscale login`.
+  services.tailscale = {
+    enable = true;
+    # Let other devices connect directly instead of through a relay.
+    openFirewall = true;
+  };
+  # Services on this machine are reachable from every device in the tailnet.
+  networking.firewall.trustedInterfaces = [ config.services.tailscale.interfaceName ];
+  # Manage its rules through nftables directly rather than the iptables
+  # compatibility layer.
+  systemd.services.tailscaled.serviceConfig.Environment = [ "TS_DEBUG_FIREWALL_MODE=nftables" ];
 
   # Emergency use as a normal laptop: pick "laptop" in the boot menu, or run
   # `sudo /run/current-system/specialisation/laptop/bin/switch-to-configuration test`.

@@ -37,6 +37,9 @@ Disko layouts, Home Manager deployment, and application-native dotfiles.
 - `hosts/` holds the thin composition layers: `turing` on the ROG Zephyrus G16,
   `babbage` on the ASUS TUF F15, and `orpheus` on WSL.
 
+Every host uses nftables. On the hosts with the base profile it backs the
+NixOS firewall; Orpheus enables it without a firewall, as WSL runs none.
+
 There is no CUDA workload configured. The full Turing configuration preserves
 the CUDA binary cache independently from NVIDIA driver support.
 
@@ -129,6 +132,14 @@ No SSH keys are stored in this repository yet. Until
 `modules.ssh-server.authorizedKeys` is set, the SSH server accepts only keys
 placed in `~/.ssh/authorized_keys` on the machine itself; passwords are never
 accepted.
+
+### Tailscale
+
+Babbage and Turing run Tailscale, each configured in its own host file. Sign
+each machine in once with `sudo tailscale login`. Babbage accepts direct
+connections and trusts everything arriving over the tailnet, so any device
+signed in to it can reach every port on Babbage. Turing only starts
+connections and opens nothing.
 
 ### Remote power-on
 
