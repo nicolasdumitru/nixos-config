@@ -36,5 +36,4 @@ update:
 
 format:
     nix fmt
-    stylua --verify dotfiles/.config/nvim/init.lua
 alias fmt := format

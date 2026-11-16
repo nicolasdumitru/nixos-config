@@ -61,6 +61,26 @@
           ...
         }:
         let
+          # One formatter for the whole tree: `nix fmt`, or `treefmt` in the
+          # development shell, formats Nix, Lua, and Python files.
+          treefmt = pkgs.nixfmt-tree.override {
+            runtimeInputs = [
+              pkgs.stylua
+              pkgs.black
+            ];
+            settings.formatter = {
+              stylua = {
+                command = "stylua";
+                options = [ "--verify" ];
+                includes = [ "*.lua" ];
+              };
+              black = {
+                command = "black";
+                includes = [ "*.py" ];
+              };
+            };
+          };
+
           portablePkgs = import nixpkgs {
             inherit system;
             config.allowUnfree = true;
@@ -102,15 +122,27 @@
                 nil
                 nixd
                 nixfmt
-                nixfmt-tree
+
+                python3
+                pyrefly
+                black
+
                 lua-language-server
                 stylua
 
                 just
+                treefmt
               ];
             };
 
-          formatter = pkgs.nixfmt-tree;
+          formatter = treefmt;
+
+          checks.formatting = pkgs.runCommand "formatting" { nativeBuildInputs = [ treefmt ]; } ''
+            cp -r ${self} tree
+            chmod -R u+w tree
+            treefmt --ci --tree-root tree
+            touch $out
+          '';
 
           checks.portable-home = portableHome.activationPackage;
 
