@@ -20,6 +20,7 @@
     modules.nixos.features.desktop.applications
     modules.nixos.features.desktop.cosmic
     modules.nixos.features.desktop.fonts
+    modules.nixos.features.desktop.gnome
     modules.nixos.features.development
     modules.nixos.features.disksFilesystems
     modules.nixos.features.networkTools
@@ -74,6 +75,7 @@
 
   modules.android-studio.enable = true;
   modules.ti-nspire.enable = true;
+  modules.greeter = "cosmic-greeter";
 
   # Preserve the full workstation's caches without making CUDA a GPU-driver
   # requirement or enabling a CUDA workload.
