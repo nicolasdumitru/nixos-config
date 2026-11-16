@@ -14,6 +14,9 @@
     "vmd"
     "nvme"
     "usbhid"
+    # TODO: confirm the wired network card's driver with `lspci -k` on the machine.
+    # Realtek is assumed. Unlocking the disk over SSH during boot needs it here.
+    "r8169"
   ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];

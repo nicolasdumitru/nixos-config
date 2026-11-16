@@ -126,6 +126,47 @@
 
       flake = {
         nixosConfigurations = {
+          babbage = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit
+                disko
+                dotfilesPath
+                hardware
+                hosts
+                inputs
+                modules
+                self
+                ;
+              outputs = self.outputs;
+            };
+            modules = [
+              hosts.babbage.default
+              inputs.disko.nixosModules.disko
+              home-manager.nixosModules.home-manager
+            ];
+          };
+
+          babbage-bootstrap = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit
+                disko
+                dotfilesPath
+                hardware
+                hosts
+                inputs
+                modules
+                self
+                ;
+              outputs = self.outputs;
+            };
+            modules = [
+              hosts.babbage.bootstrap
+              inputs.disko.nixosModules.disko
+            ];
+          };
+
           orpheus = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
             specialArgs = {

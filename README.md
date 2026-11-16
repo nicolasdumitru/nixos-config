@@ -1,7 +1,7 @@
 # NixOS, Home Manager, and Dotfiles
 
-This repository contains the complete `turing` and WSL `orpheus` system configurations, a small
-bootstrap configuration, reusable NixOS features, physical hardware facts,
+This repository contains the complete `turing`, `babbage`, and WSL `orpheus` system configurations, small
+bootstrap configurations, reusable NixOS features, physical hardware facts,
 Disko layouts, Home Manager deployment, and application-native dotfiles.
 
 ## Architecture
@@ -34,9 +34,8 @@ Disko layouts, Home Manager deployment, and application-native dotfiles.
 - `disko/` owns storage. The ROG Zephyrus G16 and ASUS TUF F15 compositions
   share the GPT + EFI + LUKS + Btrfs layout while retaining their original LUKS
   names and swap sizes.
-- `hosts/turing/` is the thin composition layer. The ASUS TUF F15 retains
-  hardware and Disko knowledge only; it is not exposed as a complete NixOS
-  configuration.
+- `hosts/` holds the thin composition layers: `turing` on the ROG Zephyrus G16,
+  `babbage` on the ASUS TUF F15, and `orpheus` on WSL.
 
 There is no CUDA workload configured. The full Turing configuration preserves
 the CUDA binary cache independently from NVIDIA driver support.
@@ -111,6 +110,69 @@ sudo nixos-rebuild switch --flake path:.#orpheus
 After the first switch, terminate and reopen the distribution from Windows
 to start a session as `nick`. Existing files under `/home/nixos` are not moved
 to `/home/nick` automatically. Subsequent rebuilds can use `just rebuild`.
+
+## Babbage (ASUS TUF F15 server)
+
+`hosts/babbage/` is a headless development server: the server profile (base
+system, key-only SSH, lid ignored), system development support, and the same
+Home Manager modules as Turing. It has no desktop.
+
+Install it like Turing, through its bootstrap configuration, then build the
+full system:
+
+```bash
+just install babbage /dev/disk/by-id/<target-device>
+just rebuild
+```
+
+No SSH keys are stored in this repository yet. Until
+`modules.ssh-server.authorizedKeys` is set, the SSH server accepts only keys
+placed in `~/.ssh/authorized_keys` on the machine itself; passwords are never
+accepted.
+
+### Remote power-on
+
+Wake-on-LAN is armed on the wired network card; it must also be enabled in the
+firmware setup. Another device on the same network sends the magic packet to
+the card's MAC address, for example with `wol <mac-address>`.
+
+### Remote unlock (not enabled yet)
+
+The disk is encrypted, so for now the passphrase is typed on the machine's own
+console at boot. `modules.remote-unlock` also accepts it over SSH, and is off
+until two things are done:
+
+- Add at least one public key to `modules.ssh-server.authorizedKeys`.
+- Confirm the wired network driver in `hardware/tuf-f15.nix` (`r8169` is
+  assumed) with `lspci -k` on the machine.
+
+Then generate the boot-time SSH host key on the machine, set
+`modules.remote-unlock.enable = true`, and rebuild:
+
+```bash
+sudo mkdir -p /etc/secrets/initrd
+sudo ssh-keygen -t ed25519 -N "" -f /etc/secrets/initrd/ssh_host_ed25519_key
+just rebuild
+```
+
+During boot the machine then takes a DHCP address on the wired network and
+waits for the passphrase on its console or over SSH on port 2222:
+
+```bash
+ssh -p 2222 root@<address>
+```
+
+That session is the passphrase prompt; boot continues once the disk unlocks.
+
+### Laptop mode
+
+The `laptop` specialisation turns the same installation into a normal laptop
+with the COSMIC desktop and the laptop profile. Choose it in the boot menu, or
+switch without rebooting:
+
+```bash
+sudo /run/current-system/specialisation/laptop/bin/switch-to-configuration test
+```
 
 ## SQL Server on Turing
 
