@@ -1,3 +1,0 @@
-{
-  tiNspire = ./ti-nspire.nix;
-}

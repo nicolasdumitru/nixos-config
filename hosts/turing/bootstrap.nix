@@ -11,6 +11,8 @@
     hosts.turing.common
     hardware.rog-zephyrus-g16
     disko.rog-zephyrus-g16
-    modules.nixos.profiles.bootstrap
+    modules.nixos
   ];
+
+  modules.profiles.bootstrap.enable = true;
 }

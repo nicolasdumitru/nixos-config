@@ -1,10 +1,12 @@
-{ modules, ... }:
+{ config, lib, ... }:
 
+let
+  cfg = config.modules.desktop.gnome;
+in
 {
-  imports = [
-    modules.nixos.features.desktop.greeter
-    modules.nixos.features.desktop.keyring
-  ];
+  options.modules.desktop.gnome.enable = lib.mkEnableOption "the GNOME desktop";
 
-  services.desktopManager.gnome.enable = true;
+  config = lib.mkIf cfg.enable {
+    services.desktopManager.gnome.enable = true;
+  };
 }

@@ -1,55 +1,63 @@
 {
+  config,
   lib,
-  modules,
   ...
 }:
 
+let
+  cfg = config.modules.profiles.laptop;
+in
 {
-  imports = [ modules.nixos.profiles.base ];
+  options.modules.profiles.laptop.enable =
+    lib.mkEnableOption "laptop policy (includes the base profile)";
 
-  boot = {
-    plymouth = {
+  config = lib.mkIf cfg.enable {
+    modules.profiles.base.enable = true;
+
+    boot = {
+      plymouth = {
+        enable = true;
+        theme = "bgrt";
+      };
+      consoleLogLevel = 4;
+      kernelParams = lib.mkBefore [
+        "quiet"
+        "splash"
+        "mem_sleep_default=deep"
+      ];
+    };
+
+    services.logind.settings.Login = {
+      HandleLidSwitch = "suspend";
+      HandleLidSwitchExternalPower = "suspend";
+      HandleLidSwitchDocked = "ignore";
+      IdleAction = "ignore";
+      HandlePowerKey = "ignore"; # short press: do nothing (it still wakes the laptop)
+      HandlePowerKeyLongPress = "poweroff";
+    };
+
+    services.libinput.enable = true;
+    hardware.bluetooth = {
       enable = true;
-      theme = "bgrt";
+      powerOnBoot = true;
     };
-    consoleLogLevel = 4;
-    kernelParams = lib.mkBefore [
-      "quiet"
-      "splash"
-      "mem_sleep_default=deep"
-    ];
-  };
 
-  services.logind.settings.Login = {
-    HandleLidSwitch = "suspend";
-    HandleLidSwitchExternalPower = "suspend";
-    HandleLidSwitchDocked = "ignore";
-    IdleAction = "ignore";
-    HandlePowerKey = "ignore"; # short press: do nothing (it still wakes the laptop)
-    HandlePowerKeyLongPress = "poweroff";
-  };
-
-  services.libinput.enable = true;
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
-
-  services.power-profiles-daemon.enable = lib.mkForce false;
-  services.tlp.enable = lib.mkForce false;
-  powerManagement.powertop.enable = lib.mkForce false;
-  services.tuned = {
-    enable = true;
-    ppdSupport = true;
-    ppdSettings.profiles = {
-      balanced = "balanced";
-      performance = "throughput-performance";
-      power-saver = "powersave";
+    services.power-profiles-daemon.enable = lib.mkForce false;
+    services.tlp.enable = lib.mkForce false;
+    powerManagement.powertop.enable = lib.mkForce false;
+    services.tuned = {
+      enable = true;
+      ppdSupport = true;
+      ppdSettings.profiles = {
+        balanced = "balanced";
+        performance = "throughput-performance";
+        power-saver = "powersave";
+      };
     };
-  };
 
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
+    hardware.graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
   };
 }

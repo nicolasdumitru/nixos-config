@@ -68,20 +68,24 @@
           portableHome = home-manager.lib.homeManagerConfiguration {
             pkgs = portablePkgs;
             modules = [
-              modules.homeManager.dotfiles.common
-              modules.homeManager.neovim
-              modules.homeManager.cliTools
-              modules.homeManager.development
-              modules.homeManager.zsh
+              modules.homeManager
               {
+                modules = {
+                  dotfiles.enable = true;
+                  neovim.enable = true;
+                  cli-tools.enable = true;
+                  development.enable = true;
+                  zsh.enable = true;
+                };
+
+                home.stateVersion = "26.05";
                 home.username = "portable-check";
                 home.homeDirectory =
                   if lib.hasSuffix "-darwin" system then "/Users/portable-check" else "/home/portable-check";
               }
-            ]
-            ++ lib.optional (lib.hasSuffix "-linux" system) modules.homeManager.dotfiles.linux;
+            ];
             extraSpecialArgs = {
-              inherit dotfilesPath modules;
+              inherit dotfilesPath;
             };
           };
         in

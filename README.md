@@ -9,20 +9,25 @@ Disko layouts, Home Manager deployment, and application-native dotfiles.
 - `dotfiles/` contains native Bash, TOML, JSON, inputrc, Lua, and application
   configuration. Edit these repository files rather than their immutable
   Home Manager links under `$HOME`.
-- `modules/home-manager/` contains portable configuration and package modules
-  used by both integrated and standalone Home Manager. Common dotfiles work on
-  every Home Manager platform; MIME and user-directory files remain isolated in
-  the Linux module.
-- `modules/nixos/profiles/base.nix` provides the small common operating system.
+- `modules/home-manager/` is one Home Manager module that declares options
+  under `modules.*` for the portable configuration and packages, used by both
+  integrated and standalone Home Manager. Nothing applies until a home enables
+  it. Common dotfiles work on every Home Manager platform; MIME and
+  user-directory files apply only on Linux.
+- `modules/nixos/` is one NixOS module that declares options under `modules.*`.
+  Hosts import it once and enable what they want; every feature is off by
+  default. `modules.profiles.base` provides the small common operating system.
   The laptop profile adds only laptop policy, while the Turing host explicitly
-  selects desktop, development, GPU, virtualization, and peripheral features.
-- `modules/nixos/features/` contains independently reusable NixOS capabilities.
-  Desktop environment, audio, applications, and fonts are separate choices.
-- Each module branch exposes its own hierarchy through `default.nix` (or a
-  local module-set file where `default.nix` is itself a NixOS module).
-  Compositions use entries such as `modules.nixos.features.development`,
-  `hardware.rog-zephyrus-g16`, and `disko.rog-zephyrus-g16` without
-  parent-directory paths.
+  enables desktop, development, GPU, virtualization, and peripheral features.
+- `modules/nixos/features/` contains one file per NixOS capability. Desktop
+  environments, audio, applications, and fonts are separate options. Any
+  desktop turns on the shared GNOME Keyring, and `modules.desktop.greeter`
+  selects the login screen.
+- `modules/default.nix`, `hardware/`, `disko/`, and `hosts/` expose their
+  entries through `default.nix` (or a local module-set file where
+  `default.nix` is itself a NixOS module). Compositions use entries such as
+  `modules.nixos`, `hardware.rog-zephyrus-g16`, and `disko.rog-zephyrus-g16`
+  without parent-directory paths.
 - `hardware/` contains physical boot/CPU facts. The ROG Zephyrus G16's
   AMD/NVIDIA PRIME bus IDs live in `hardware/rog-zephyrus-g16.nix`, not in the
   reusable NVIDIA feature.
@@ -57,21 +62,23 @@ so the native `dotfiles/.config/nvim/init.lua` is loaded normally on both.
 
 ## Portable Home Manager composition
 
-Hosts and the portable Home Manager check compose modules from the internal
-`modules.homeManager` registry:
+Hosts and the portable Home Manager check import the single
+`modules.homeManager` module and enable its options:
 
 ```nix
-imports = [
-  modules.homeManager.dotfiles.common
-  modules.homeManager.dotfiles.linux
-  modules.homeManager.neovim
-  modules.homeManager.cliTools
-  modules.homeManager.development
-];
+imports = [ modules.homeManager ];
+
+modules = {
+  dotfiles.enable = true;
+  neovim.enable = true;
+  cli-tools.enable = true;
+  development.enable = true;
+  zsh.enable = true;
+};
 ```
 
-The portable check omits `dotfiles.linux` on Darwin. Turing and Orpheus use
-these modules for their integrated Home Manager configurations. The flake
+The Linux-only dotfiles apply automatically on Linux. Turing and Orpheus use
+this module for their integrated Home Manager configurations. The flake
 exposes system build targets and checks, but no public module exports.
 
 The pinned Nixpkgs 26.11 no longer supports `x86_64-darwin`, so this flake checks

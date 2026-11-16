@@ -1,8 +1,15 @@
 { inputs }:
 
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
+  cfg = config.modules.development;
+
   rustBin = inputs.rust-overlay.lib.mkRustBin { } pkgs;
   rustToolchain = rustBin.stable.latest.default.override {
     extensions = [
@@ -33,27 +40,31 @@ let
     ];
 in
 {
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
+  options.modules.development.enable = lib.mkEnableOption "development tools";
 
-  programs.git = {
-    enable = true;
-    settings = {
-      user = {
-        name = "nicolasdumitru";
-        email = "nicolas@ndumitru.com";
-      };
-      alias = {
-        st = "status";
-        a = "add";
-        l = "log --graph --all --stat";
+  config = lib.mkIf cfg.enable {
+    programs.direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+
+    programs.git = {
+      enable = true;
+      settings = {
+        user = {
+          name = "nicolasdumitru";
+          email = "nicolas@ndumitru.com";
+        };
+        alias = {
+          st = "status";
+          a = "add";
+          l = "log --graph --all --stat";
+        };
       };
     };
-  };
 
-  home.packages = pkgs.lib.filter (pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform) (
-    portable ++ linux
-  );
+    home.packages = pkgs.lib.filter (pkgs.lib.meta.availableOn pkgs.stdenv.hostPlatform) (
+      portable ++ linux
+    );
+  };
 }

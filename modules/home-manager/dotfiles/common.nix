@@ -1,6 +1,12 @@
-{ dotfilesPath, ... }:
+{
+  config,
+  dotfilesPath,
+  lib,
+  ...
+}:
 
 let
+  cfg = config.modules.dotfiles;
   dotfiles = dotfilesPath;
   managed = source: {
     inherit source;
@@ -8,26 +14,25 @@ let
   };
 in
 {
-  # This is the Home Manager compatibility baseline from the initial migration.
-  # Do not update it with routine Home Manager upgrades; consult the release notes
-  # first because changing it can alter stateful defaults.
-  home.stateVersion = "26.05";
+  options.modules.dotfiles.enable = lib.mkEnableOption "the repository's dotfiles";
 
-  home.file = {
-    ".bash_profile" = managed (dotfiles + "/.bash_profile");
-    ".bashrc" = managed (dotfiles + "/.bashrc");
-    ".ideavimrc" = managed (dotfiles + "/.ideavimrc");
-    ".zshenv" = managed (dotfiles + "/.zshenv");
-  };
+  config = lib.mkIf cfg.enable {
+    home.file = {
+      ".bash_profile" = managed (dotfiles + "/.bash_profile");
+      ".bashrc" = managed (dotfiles + "/.bashrc");
+      ".ideavimrc" = managed (dotfiles + "/.ideavimrc");
+      ".zshenv" = managed (dotfiles + "/.zshenv");
+    };
 
-  xdg.configFile = {
-    "bat/config" = managed (dotfiles + "/.config/bat/config");
-    "ghostty/config.ghostty" = managed (dotfiles + "/.config/ghostty/config.ghostty");
-    "lf/lfrc" = managed (dotfiles + "/.config/lf/lfrc");
-    "readline/inputrc" = managed (dotfiles + "/.config/readline/inputrc");
-    "ripgrep/ripgreprc" = managed (dotfiles + "/.config/ripgrep/ripgreprc");
-    "wget/wgetrc" = managed (dotfiles + "/.config/wget/wgetrc");
-    "zsh/.zprofile" = managed (dotfiles + "/.config/zsh/.zprofile");
-    "zsh/.zshrc" = managed (dotfiles + "/.config/zsh/.zshrc");
+    xdg.configFile = {
+      "bat/config" = managed (dotfiles + "/.config/bat/config");
+      "ghostty/config.ghostty" = managed (dotfiles + "/.config/ghostty/config.ghostty");
+      "lf/lfrc" = managed (dotfiles + "/.config/lf/lfrc");
+      "readline/inputrc" = managed (dotfiles + "/.config/readline/inputrc");
+      "ripgrep/ripgreprc" = managed (dotfiles + "/.config/ripgrep/ripgreprc");
+      "wget/wgetrc" = managed (dotfiles + "/.config/wget/wgetrc");
+      "zsh/.zprofile" = managed (dotfiles + "/.config/zsh/.zprofile");
+      "zsh/.zshrc" = managed (dotfiles + "/.config/zsh/.zshrc");
+    };
   };
 }

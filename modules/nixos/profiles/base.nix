@@ -1,76 +1,81 @@
 {
+  config,
   lib,
-  modules,
   pkgs,
   ...
 }:
 
 let
+  cfg = config.modules.profiles.base;
   userName = "nick";
 in
 {
-  imports = [ modules.nixos.features.nixConfig ];
+  options.modules.profiles.base.enable = lib.mkEnableOption "the small common operating system";
 
-  boot = {
-    loader.systemd-boot.enable = true;
-    loader.timeout = 0;
-    kernelPackages = pkgs.linuxPackages;
-  };
+  config = lib.mkIf cfg.enable {
+    modules.nix-config.enable = true;
 
-  networking.networkmanager = {
-    enable = true;
-    # Required for WPA/WPA2 Enterprise for now.
-    wifi.backend = "wpa_supplicant";
-  };
-  networking.firewall = {
-    enable = true;
-    package = pkgs.iptables;
-  };
-
-  time.timeZone = "Europe/Bucharest";
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  users = {
-    mutableUsers = true;
-    enforceIdUniqueness = true;
-    defaultUserShell = pkgs.bashInteractive;
-    users.${userName} = {
-      name = userName;
-      isNormalUser = true;
-      home = "/home/${userName}";
-      createHome = true;
-      useDefaultShell = false;
-      # Hosts importing the shell feature switch this to zsh.
-      shell = lib.mkDefault pkgs.bashInteractive;
-      group = userName;
-      extraGroups = [
-        "wheel"
-        "networkmanager"
-      ];
-
-      # Change this immediately after a fresh installation.
-      initialPassword = userName;
+    boot = {
+      loader.systemd-boot.enable = true;
+      loader.timeout = 0;
+      kernelPackages = pkgs.linuxPackages;
     };
-    groups.${userName} = {
-      name = userName;
-      members = [ userName ];
+
+    networking.networkmanager = {
+      enable = true;
+      # Required for WPA/WPA2 Enterprise for now.
+      wifi.backend = "wpa_supplicant";
     };
+    networking.firewall = {
+      enable = true;
+      package = pkgs.iptables;
+    };
+
+    time.timeZone = "Europe/Bucharest";
+    i18n.defaultLocale = "en_US.UTF-8";
+
+    users = {
+      mutableUsers = true;
+      enforceIdUniqueness = true;
+      defaultUserShell = pkgs.bashInteractive;
+      users.${userName} = {
+        name = userName;
+        isNormalUser = true;
+        home = "/home/${userName}";
+        createHome = true;
+        useDefaultShell = false;
+        # Hosts enabling the shell feature switch this to zsh.
+        shell = lib.mkDefault pkgs.bashInteractive;
+        group = userName;
+        extraGroups = [
+          "wheel"
+          "networkmanager"
+        ];
+
+        # Change this immediately after a fresh installation.
+        initialPassword = userName;
+      };
+      groups.${userName} = {
+        name = userName;
+        members = [ userName ];
+      };
+    };
+
+    security.sudo.enable = true;
+    nix.gc.automatic = false;
+
+    environment.systemPackages = with pkgs; [
+      bashInteractive
+      coreutils
+      util-linux
+      htop
+      procps
+      inetutils
+      wget
+      curl
+      openssh
+      git
+      just
+    ];
   };
-
-  security.sudo.enable = true;
-  nix.gc.automatic = false;
-
-  environment.systemPackages = with pkgs; [
-    bashInteractive
-    coreutils
-    util-linux
-    htop
-    procps
-    inetutils
-    wget
-    curl
-    openssh
-    git
-    just
-  ];
 }

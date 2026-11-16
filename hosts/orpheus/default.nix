@@ -6,11 +6,13 @@
 }:
 
 {
-  imports = [
-    modules.nixos.features.desktop.fonts
-    modules.nixos.features.nixConfig
-    modules.nixos.features.shell
-  ];
+  imports = [ modules.nixos ];
+
+  modules = {
+    desktop.fonts.enable = true;
+    nix-config.enable = true;
+    shell.enable = true;
+  };
 
   networking.hostName = "orpheus";
 
@@ -34,19 +36,25 @@
   home-manager = {
     useGlobalPkgs = true;
     extraSpecialArgs = {
-      inherit dotfilesPath modules;
+      inherit dotfilesPath;
     };
     users.nick = {
-      imports = [
-        modules.homeManager.dotfiles.common
-        modules.homeManager.dotfiles.linux
-        modules.homeManager.neovim
-        modules.homeManager.cliTools
-        modules.homeManager.development
-        modules.homeManager.zsh
-      ];
+      imports = [ modules.homeManager ];
+
+      modules = {
+        dotfiles.enable = true;
+        neovim.enable = true;
+        cli-tools.enable = true;
+        development.enable = true;
+        zsh.enable = true;
+      };
+
       home.username = "nick";
       home.homeDirectory = "/home/nick";
+
+      # Home Manager compatibility baseline from the initial migration. Do not
+      # change it during routine upgrades.
+      home.stateVersion = "26.05";
     };
   };
 

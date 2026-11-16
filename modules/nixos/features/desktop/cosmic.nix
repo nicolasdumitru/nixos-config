@@ -1,12 +1,14 @@
-{ modules, ... }:
+{ config, lib, ... }:
 
+let
+  cfg = config.modules.desktop.cosmic;
+in
 {
-  imports = [
-    modules.nixos.features.desktop.greeter
-    modules.nixos.features.desktop.keyring
-  ];
+  options.modules.desktop.cosmic.enable = lib.mkEnableOption "the COSMIC desktop";
 
-  services.desktopManager.cosmic.enable = true;
-  services.system76-scheduler.enable = true;
-  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
+  config = lib.mkIf cfg.enable {
+    services.desktopManager.cosmic.enable = true;
+    services.system76-scheduler.enable = true;
+    environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
+  };
 }

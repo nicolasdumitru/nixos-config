@@ -13,40 +13,55 @@
     hosts.turing.common
     hardware.rog-zephyrus-g16
     disko.rog-zephyrus-g16
-    modules.nixos.profiles.laptop
-    modules.nixos.features.androidStudio
-    modules.nixos.features.asusLaptop
-    modules.nixos.features.desktop.audio
-    modules.nixos.features.desktop.applications
-    modules.nixos.features.desktop.cosmic
-    modules.nixos.features.desktop.fonts
-    modules.nixos.features.desktop.gnome
-    modules.nixos.features.development
-    modules.nixos.features.disksFilesystems
-    modules.nixos.features.networkTools
-    modules.nixos.features.nvidia
-    modules.nixos.features.peripherals.tiNspire
-    modules.nixos.features.shell
-    modules.nixos.features.sqlServer
-    modules.nixos.features.virtualization
+    modules.nixos
   ];
+
+  modules = {
+    profiles.laptop.enable = true;
+
+    desktop = {
+      audio.enable = true;
+      applications.enable = true;
+      cosmic.enable = true;
+      gnome.enable = true;
+      fonts.enable = true;
+      greeter = "cosmic-greeter";
+    };
+
+    android-studio.enable = true;
+    asus-laptop.enable = true;
+    development.enable = true;
+    disks-filesystems.enable = true;
+    network-tools.enable = true;
+    nvidia.enable = true;
+    shell.enable = true;
+    sql-server.enable = true;
+    ti-nspire.enable = true;
+    virtualization.enable = true;
+  };
 
   home-manager = {
     useGlobalPkgs = true;
     extraSpecialArgs = {
-      inherit dotfilesPath modules;
+      inherit dotfilesPath;
     };
     users.nick = {
-      imports = [
-        modules.homeManager.dotfiles.common
-        modules.homeManager.dotfiles.linux
-        modules.homeManager.neovim
-        modules.homeManager.cliTools
-        modules.homeManager.development
-        modules.homeManager.zsh
-      ];
+      imports = [ modules.homeManager ];
+
+      modules = {
+        dotfiles.enable = true;
+        neovim.enable = true;
+        cli-tools.enable = true;
+        development.enable = true;
+        zsh.enable = true;
+      };
+
       home.username = "nick";
       home.homeDirectory = "/home/nick";
+
+      # Home Manager compatibility baseline from the initial migration. Do not
+      # change it during routine upgrades.
+      home.stateVersion = "26.05";
     };
   };
 
@@ -72,10 +87,6 @@
       Persistent = true;
     };
   };
-
-  modules.android-studio.enable = true;
-  modules.ti-nspire.enable = true;
-  modules.greeter = "cosmic-greeter";
 
   # Preserve the full workstation's caches without making CUDA a GPU-driver
   # requirement or enabling a CUDA workload.

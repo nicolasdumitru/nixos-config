@@ -1,6 +1,14 @@
-{ pkgs, dotfilesPath, ... }:
+{
+  config,
+  dotfilesPath,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
+  cfg = config.modules.neovim;
+
   plugins = with pkgs.vimPlugins; [
     (nvim-treesitter.withPlugins (
       parsers: with parsers; [
@@ -55,16 +63,20 @@ let
   ];
 in
 {
-  home.packages = [ package ] ++ runtimePackages;
-  home.sessionVariables = {
-    EDITOR = "nvim";
-    VISUAL = "nvim";
-  };
+  options.modules.neovim.enable = lib.mkEnableOption "the configured Neovim";
 
-  # The package wrapper deliberately leaves startup discovery enabled, so this
-  # native file is the single source of truth for Neovim behavior.
-  xdg.configFile."nvim/init.lua" = {
-    source = dotfilesPath + "/.config/nvim/init.lua";
-    force = true;
+  config = lib.mkIf cfg.enable {
+    home.packages = [ package ] ++ runtimePackages;
+    home.sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+    };
+
+    # The package wrapper deliberately leaves startup discovery enabled, so this
+    # native file is the single source of truth for Neovim behavior.
+    xdg.configFile."nvim/init.lua" = {
+      source = dotfilesPath + "/.config/nvim/init.lua";
+      force = true;
+    };
   };
 }
