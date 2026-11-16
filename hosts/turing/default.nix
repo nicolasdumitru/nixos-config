@@ -32,6 +32,7 @@
     asus-laptop.enable = true;
     development.enable = true;
     disks-filesystems.enable = true;
+    gpu-monitor.enable = true;
     network-tools.enable = true;
     nvidia.enable = true;
     shell.enable = true;

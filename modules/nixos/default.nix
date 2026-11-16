@@ -16,6 +16,7 @@
     ./features/desktop/gnome.nix
     ./features/development.nix
     ./features/disks-filesystems.nix
+    ./features/gpu-monitor.nix
     ./features/network-tools.nix
     ./features/nvidia.nix
     ./features/remote-unlock.nix

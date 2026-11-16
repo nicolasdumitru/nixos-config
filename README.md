@@ -185,6 +185,21 @@ switch without rebooting:
 sudo /run/current-system/specialisation/laptop/bin/switch-to-configuration test
 ```
 
+## Discrete GPU monitor on Turing
+
+`modules.gpu-monitor` logs every time the NVIDIA GPU powers up, with the
+process that asked for it, every other process that requests it while it is
+on, and a summary of who requested it last when it powers down again:
+
+```bash
+journalctl -u gpu-monitor
+```
+
+When the GPU comes on while on battery, or is still on when the charger is
+unplugged, it also sends a desktop notification, at most once every five
+minutes. The monitor never queries the GPU, so it does not wake it. Tools such
+as `nvidia-smi` do, and show up in the log as the cause.
+
 ## SQL Server on Turing
 
 The full Turing configuration runs Microsoft's SQL Server 2025 Enterprise
