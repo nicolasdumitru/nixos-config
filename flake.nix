@@ -149,6 +149,15 @@
         }
         // lib.optionalAttrs (lib.hasSuffix "-linux" system) {
           packages.disko-install = inputs'.disko.packages.disko-install;
+          packages.burn = import ./scripts/python-script.nix { inherit lib pkgs; } {
+            name = "burn";
+            src = ./scripts/burn.py;
+            runtimeInputs = with pkgs; [
+              coreutils
+              diffutils
+              util-linux
+            ];
+          };
           packages.installer-iso-graphical =
             self.nixosConfigurations.lovelace-graphical.config.system.build.isoImage;
           packages.installer-iso-minimal =
