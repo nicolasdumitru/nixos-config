@@ -2,7 +2,8 @@
 
 Refuses anything that is not a whole USB or removable disk, and disks with
 mounted partitions. Asks for confirmation, writes the image, and verifies the
-copy by reading it back.
+copy by reading it back. Runs as root, so that the password is asked only once,
+before anything happens: `just burn` runs it with sudo.
 """
 
 import argparse
@@ -14,6 +15,9 @@ import sys
 from pathlib import Path
 
 VARIANTS = ("graphical", "minimal")
+
+# Bytes read or written at a time.
+BLOCK = 4 * 1024 * 1024
 
 
 class Refusal(Exception):
@@ -66,22 +70,15 @@ def check_device(device):
         )
 
 
-def build_iso(flake, variant):
-    """Build an installer ISO and return the image file."""
-    output = subprocess.run(
-        [
-            "nix",
-            "build",
-            "--no-link",
-            "--print-out-paths",
-            f"{flake}#installer-iso-{variant}",
-        ],
-        check=True,
-        stdout=subprocess.PIPE,
-        text=True,
-    ).stdout.strip()
-    (image,) = Path(output, "iso").glob("*.iso")
-    return image
+def built_iso(variant):
+    """The image `just iso` built for the variant, in result-<variant>/iso."""
+    images = sorted(Path(f"result-{variant}", "iso").glob("*.iso"))
+    if len(images) != 1:
+        raise Refusal(
+            f"no {variant} installer ISO found in result-{variant}/iso; "
+            f"build it first with `just iso {variant}`"
+        )
+    return images[0]
 
 
 def describe(device):
@@ -105,14 +102,13 @@ def confirm(device):
 
 def write(image, device):
     # Writes straight to the device and flushes it before dd exits, so the
-    # stick holds the image once this returns.
+    # stick holds the image once this returns. dd shows the progress.
     subprocess.run(
         [
-            "sudo",
             "dd",
             f"if={image}",
             f"of={device}",
-            "bs=4M",
+            f"bs={BLOCK}",
             "conv=fsync",
             "oflag=direct",
             "status=progress",
@@ -123,10 +119,30 @@ def write(image, device):
 
 
 def verify(image, device, size):
-    result = subprocess.run(
-        ["sudo", "cmp", f"--bytes={size}", "--", str(image), str(device)]
+    """Read the image back from the device and compare it with the file.
+
+    Reads with dd, which shows the progress, bypassing the kernel's cache so
+    that what is compared is what the device holds.
+    """
+    reader = subprocess.Popen(
+        [
+            "dd",
+            f"if={device}",
+            f"bs={BLOCK}",
+            f"count={size}",
+            "iflag=direct,count_bytes",
+            "status=progress",
+        ],
+        stdout=subprocess.PIPE,
     )
-    return result.returncode == 0
+    assert reader.stdout is not None
+    with reader, image.open("rb") as expected:
+        while chunk := reader.stdout.read(BLOCK):
+            if chunk != expected.read(len(chunk)):
+                reader.terminate()
+                return False
+        complete = expected.read(1) == b""
+    return complete and reader.returncode == 0
 
 
 def parse_args(argv):
@@ -140,12 +156,10 @@ def parse_args(argv):
         "iso",
         nargs="?",
         default="graphical",
-        help="graphical (default) or minimal to build that installer, or an image file",
-    )
-    parser.add_argument(
-        "--flake",
-        default=".",
-        help="the flake to build the installer from (default: the current directory)",
+        help=(
+            "graphical (default) or minimal for the installer `just iso` built "
+            "into result-<variant>/iso, or an image file"
+        ),
     )
     return parser.parse_args(argv)
 
@@ -155,12 +169,12 @@ def main(argv=None):
     device = args.device.resolve()
 
     try:
+        if os.geteuid() != 0:
+            raise Refusal("burn must run as root; use `just burn`")
         check_device(device)
-        image = (
-            build_iso(args.flake, args.iso) if args.iso in VARIANTS else Path(args.iso)
-        )
+        image = built_iso(args.iso) if args.iso in VARIANTS else Path(args.iso)
         if not image.is_file():
-            raise Refusal(f"{image} is not a file")
+            raise Refusal(f"invalid input: {args.iso}")
         size = image.stat().st_size
         (disk,) = lsblk(device, "SIZE", nodeps=True)
         if size > disk["size"]:
@@ -175,8 +189,9 @@ def main(argv=None):
         print("Aborted.")
         return 1
 
+    print("Writing...", flush=True)
     write(image, device)
-    print("Verifying...")
+    print("Verifying...", flush=True)
     if not verify(image, device, size):
         print(f"The copy on {device} does not match the image.", file=sys.stderr)
         return 1

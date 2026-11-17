@@ -296,9 +296,10 @@ for their `nixos` user:
 
 Build them with `just iso [graphical|minimal|both]` (graphical by default);
 each image lands in `result-<variant>/iso/`. `just burn <device> [graphical|minimal|<file>]`
-builds one and writes it to a USB stick, refusing internal disks and mounted
-sticks, asking for confirmation, and verifying the copy afterwards. Any image
-writer works too.
+writes one of those images, or any other image file, to a USB stick. It does
+not build anything: without the image it asks you to run `just iso` first. It
+refuses internal disks and mounted sticks, asks for confirmation, and verifies
+the copy afterwards. Any image writer works too.
 
 ## Home Manager ownership
 

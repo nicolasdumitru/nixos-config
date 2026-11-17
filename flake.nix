@@ -154,7 +154,6 @@
             src = ./scripts/burn.py;
             runtimeInputs = with pkgs; [
               coreutils
-              diffutils
               util-linux
             ];
           };

@@ -8,10 +8,12 @@ list:
 
 # Destructive: install the lightweight bootstrap system on an explicit disk.
 # Prefer a stable /dev/disk/by-id path for DEVICE.
+[doc("Destructive: install a host's bootstrap system on a disk")]
 install host device: (_install host device "")
 
 # Like `install`, for installation media without flakes enabled, such as the
 # official NixOS ISOs.
+[doc("Like install, from installation media without flakes enabled")]
 install-compat host device: (_install host device "--extra-experimental-features 'nix-command flakes'")
 
 [private]
@@ -36,6 +38,7 @@ _install host device nix_options:
 
 # Build an installer ISO: graphical (COSMIC), minimal (console), or both.
 # Each lands in ./result-<variant>/iso.
+[doc("Build an installer ISO: graphical (default), minimal, or both")]
 iso variant="graphical":
     #!/usr/bin/env bash
     set -euo pipefail
@@ -53,10 +56,12 @@ iso variant="graphical":
     done
 
 # Destructive: write the installer ISO to a USB stick, replacing everything on
-# it. ISO is an image file, or graphical (the default) or minimal to build that
-# installer first. Prefer a stable /dev/disk/by-id path for DEVICE.
+# it. ISO is graphical (the default) or minimal for the installer `just iso`
+# built, or an image file. Prefer a stable /dev/disk/by-id path for DEVICE.
+[doc("Destructive: write an installer ISO to a USB stick")]
 burn device iso="graphical":
-    nix run "{{flake}}#burn" -- --flake "{{flake}}" "{{device}}" "{{iso}}"
+    @case "{{iso}}" in graphical | minimal) ;; *) [ -f "{{iso}}" ] || { echo "invalid input: {{iso}}" >&2; exit 1; } ;; esac
+    sudo nix run "{{flake}}#burn" -- "{{device}}" "{{iso}}"
 
 # Reconfigure the normal full system.
 rebuild operation=rebuild_op host=hostname:
