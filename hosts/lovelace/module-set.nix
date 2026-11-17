@@ -1,3 +1,5 @@
 {
-  default = ./default.nix;
+  common = ./common.nix;
+  graphical = ./graphical.nix;
+  minimal = ./minimal.nix;
 }

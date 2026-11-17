@@ -286,11 +286,19 @@ sudo nixos-rebuild switch --flake .#turing-bootstrap
 
 ### Installer ISO
 
-`hosts/lovelace/` is the installer: the minimal NixOS installer with flakes
-enabled, Neovim, Git, `just`, and the same zsh, dotfiles, and command-line
-tools as the other hosts for its `nixos` user. Build it locally with
-`just iso` (the image lands in `result/iso/`), and write it to a USB stick with
-`dd` or any image writer.
+`hosts/lovelace/` holds two installers, both with flakes enabled, Neovim, Git,
+`just`, and the same zsh, dotfiles, and command-line tools as the other hosts
+for their `nixos` user:
+
+- `graphical` logs straight into the COSMIC desktop, set up as on Turing, with
+  the same applications, plus GParted and Firefox from the NixOS installer.
+- `minimal` is the console-only NixOS installer.
+
+Build them with `just iso [graphical|minimal|both]` (graphical by default);
+each image lands in `result-<variant>/iso/`. `just burn <device> [graphical|minimal|<file>]`
+builds one and writes it to a USB stick, refusing internal disks and mounted
+sticks, asking for confirmation, and verifying the copy afterwards. Any image
+writer works too.
 
 ## Home Manager ownership
 

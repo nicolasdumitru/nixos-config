@@ -149,7 +149,10 @@
         }
         // lib.optionalAttrs (lib.hasSuffix "-linux" system) {
           packages.disko-install = inputs'.disko.packages.disko-install;
-          packages.installer-iso = self.nixosConfigurations.lovelace.config.system.build.isoImage;
+          packages.installer-iso-graphical =
+            self.nixosConfigurations.lovelace-graphical.config.system.build.isoImage;
+          packages.installer-iso-minimal =
+            self.nixosConfigurations.lovelace-minimal.config.system.build.isoImage;
           apps.disko-install = {
             type = "app";
             program = "${inputs'.disko.packages.disko-install}/bin/disko-install";
@@ -200,13 +203,34 @@
             ];
           };
 
-          lovelace = nixpkgs.lib.nixosSystem {
+          lovelace-graphical = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
             specialArgs = {
-              inherit dotfilesPath inputs modules;
+              inherit
+                dotfilesPath
+                hosts
+                inputs
+                modules
+                ;
             };
             modules = [
-              hosts.lovelace.default
+              hosts.lovelace.graphical
+              home-manager.nixosModules.home-manager
+            ];
+          };
+
+          lovelace-minimal = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit
+                dotfilesPath
+                hosts
+                inputs
+                modules
+                ;
+            };
+            modules = [
+              hosts.lovelace.minimal
               home-manager.nixosModules.home-manager
             ];
           };

@@ -27,3 +27,25 @@ Options:
    the full systems fall back to nano.
 3. **Keep the current setup.** It works; the only cost is the
    context-dependent choice of build described above.
+
+## Carry the installer's network settings over in `just install`
+
+Installing should not require connecting to the network again on the new
+system. By default, `just install` should copy the installer's NetworkManager
+connections (`/etc/NetworkManager/system-connections/`) into the installed
+system, with a parameter to turn it off (for example `network=no`). Both
+installer ISOs and the official NixOS ISOs use NetworkManager.
+
+- disko-install already supports this: `--extra-files SOURCE DEST` copies a
+  file or directory into the new system before installing it, keeping
+  ownership and permissions (`cp -a`), so the connection files stay root-only.
+  The target disk is encrypted, so the copied Wi-Fi passwords are as protected
+  as anything else on it.
+- Wired connections work without any of this; it matters for Wi-Fi.
+- To check first: a network joined from a desktop network applet may be saved
+  with its password in the user's keyring rather than in the connection file.
+  Copying the file then carries the network over without its password. Test
+  how COSMIC's applet on the graphical installer saves it; if it uses the
+  keyring, have the recipe warn about copied networks without a saved
+  password. Networks joined with `nmtui` or `nmcli` keep the password in the
+  file.

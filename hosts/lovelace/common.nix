@@ -1,20 +1,15 @@
-# The installer ISO: the minimal NixOS installer with flakes enabled and the
-# same command-line environment as the other hosts. It is not installed
-# anywhere itself; it installs the other hosts with `just install`.
+# Shared by both installer ISOs: flakes enabled and the same command-line
+# environment as the other hosts. The installers are not installed anywhere
+# themselves; they install the other hosts with `just install`.
 {
   dotfilesPath,
-  lib,
   modules,
-  modulesPath,
   pkgs,
   ...
 }:
 
 {
-  imports = [
-    (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
-    modules.nixos
-  ];
+  imports = [ modules.nixos ];
 
   networking.hostName = "lovelace";
 
@@ -23,7 +18,6 @@
   # argument replaces, and the copy would be of no use anyway: hosts are
   # installed from this flake.
   installer.cloneConfig = false;
-  image.baseName = lib.mkForce "lovelace-${pkgs.stdenv.hostPlatform.system}";
 
   modules = {
     nix-config.enable = true;
