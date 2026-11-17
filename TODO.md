@@ -49,3 +49,44 @@ installer ISOs and the official NixOS ISOs use NetworkManager.
   keyring, have the recipe warn about copied networks without a saved
   password. Networks joined with `nmtui` or `nmcli` keep the password in the
   file.
+
+## Decide how to handle turing's macro keys
+
+On turing (ROG Zephyrus G16 GA605WV), the keyboard firmware sends Windows
+shortcuts instead of single keycodes for some keys. Seen with `evtest` on the
+internal keyboard ("Asus Keyboard", `0b05:19b6`):
+
+- Print and Fn+F6 send LeftMeta + **RightShift** + S (Win+Shift+S).
+- Fn+F9 sends LeftMeta + P (Win+P), with Meta held as long as the key is.
+- Fn+F10 (touchpad toggle) probably sends Ctrl+Meta+F24 as on similar models;
+  not checked.
+
+These are ordinary key presses, indistinguishable from typing the combination,
+so neither the kernel, hwdb nor COSMIC can turn them back into `KEY_SYSRQ` and
+the like. COSMIC can only bind shortcuts to the combinations. The COSMIC
+shortcuts already bind Super+Shift+S to the screenshot tool, so Print works
+there; Super+P is bound to KeePassXC, so Fn+F9 opens KeePassXC.
+
+As of November 2026, COSMIC has no plans to remap keys: the requests
+([cosmic-epoch#3232](https://github.com/pop-os/cosmic-epoch/issues/3232) for
+the Copilot key, which is the same kind of macro, and
+[cosmic-settings#383](https://github.com/pop-os/cosmic-settings/issues/383))
+have no maintainer response, and the Epoch 2/3 roadmap does not mention it.
+
+Options:
+
+1. **Keep using COSMIC shortcuts.** Nothing to install. Applications never see
+   a real Print key, and Fn+F9 can only do whatever Super+P does.
+2. **kanata** (Rust), in the `asus-laptop` module. Limit it to the internal
+   keyboard with `devices` (its `/dev/input/by-id/...` path) and use
+   `defoverrides` to map LeftMeta+RightShift+S to `sysrq`, and Super+P to
+   whatever Fn+F9 should be (which takes Super+P away from KeePassXC on the
+   laptop keyboard). Since it uses RightShift, the screenshot macro is rarely
+   typed by hand, so remapping it costs little. The NixOS `services.kanata`
+   module does not run it as root: `DynamicUser`, only the `input` and
+   `uinput` groups, no capabilities, `PrivateNetwork`, system-call filter.
+   - Trust: like any remapper, it reads every key on that keyboard and can
+     type through `/dev/uinput`, so a malicious release could type commands
+     into a terminal and get around the sandbox. That is no more than the
+     compositor or any program running as the user can already do; updates
+     come through nixpkgs review and the flake lock.
