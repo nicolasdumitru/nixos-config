@@ -141,6 +141,11 @@ connections and trusts everything arriving over the tailnet, so any device
 signed in to it can reach every port on Babbage. Turing only starts
 connections and opens nothing.
 
+Babbage also runs Tailscale SSH: from a device in the tailnet, `ssh nick@babbage`
+logs in with your Tailscale identity, without SSH keys. The tailnet policy
+decides who may log in; its default lets you reach your own devices, asking
+you to confirm in the browser from time to time.
+
 ### Remote power-on
 
 Wake-on-LAN is armed on the wired network card; it must also be enabled in the

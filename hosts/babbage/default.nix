@@ -38,6 +38,9 @@
     enable = true;
     # Let other devices connect directly instead of through a relay.
     openFirewall = true;
+    # Tailscale SSH: devices in the tailnet log in over SSH with their
+    # Tailscale identity, as allowed by the tailnet policy, without SSH keys.
+    extraSetFlags = [ "--ssh" ];
   };
   # Services on this machine are reachable from every device in the tailnet.
   networking.firewall.trustedInterfaces = [ config.services.tailscale.interfaceName ];
