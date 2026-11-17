@@ -12,6 +12,7 @@
 {
   imports = [
     hosts.babbage.common
+    hosts.babbage.seafile
     hardware.tuf-f15
     disko.tuf-f15
     modules.nixos

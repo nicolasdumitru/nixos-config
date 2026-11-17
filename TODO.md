@@ -90,3 +90,32 @@ Options:
      into a terminal and get around the sandbox. That is no more than the
      compositor or any program running as the user can already do; updates
      come through nixpkgs review and the flake lock.
+
+## Decide how babbage's encrypted disk is unlocked at boot
+
+Babbage's disk is encrypted, and `modules.remote-unlock` is off, so after
+every reboot babbage waits for the passphrase on its own console. Until then
+Tailscale is not running and babbage cannot be reached, which defeats
+powering it on remotely.
+
+Options:
+
+1. **Unlock over SSH during boot** (`modules.remote-unlock`, already written).
+   An SSH server in the initrd takes a DHCP address on the wired network and
+   asks for the passphrase on port 2222. Encryption stays as strong as now.
+   Needs, before it can be enabled:
+   - At least one public key in `modules.ssh-server.authorizedKeys`. Tailscale
+     SSH cannot help here: Tailscale is not running yet at that point of the
+     boot.
+   - The wired network card's driver in `hardware/tuf-f15.nix` (`r8169` is
+     assumed); check with `lspci -k` on babbage.
+   - A boot-time SSH host key generated on babbage (see the README).
+   - From outside the home network, a way to reach babbage's LAN address
+     during boot, such as another always-on device on the tailnet to hop
+     through.
+2. **Unlock automatically with the TPM** (`systemd-cryptenroll`). Babbage boots
+   unattended and joins the tailnet by itself, so remote power-on just works.
+   It protects a disk taken out of the machine, but someone who steals the
+   whole laptop gets a booted system, guarded only by the login password.
+3. **Keep unlocking at the console.** Nothing to set up; babbage is only
+   reachable after someone types the passphrase on it.

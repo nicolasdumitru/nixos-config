@@ -146,6 +146,37 @@ logs in with your Tailscale identity, without SSH keys. The tailnet policy
 decides who may log in; its default lets you reach your own devices, asking
 you to confirm in the browser from time to time.
 
+### Seafile
+
+Babbage's main job is Seafile, the file sync server for Turing, the iPhone,
+and Windows (`hosts/babbage/seafile.nix`). Seafile's server is no longer
+packaged in nixpkgs, so it runs upstream's official container images (Seafile,
+MariaDB, Redis) under Podman, pinned to exact versions. It is reachable only
+over the tailnet, with HTTPS from `tailscale serve`:
+
+<https://babbage.tailce49d3.ts.net>
+
+Everything lives in `/var/lib/seafile`: the files and Seafile's configuration
+in `data/`, the database in `mysql/`, and the passwords and keys, generated on
+the first start, in `secrets/` (root only). The containers keep no state of
+their own, so switching `virtualisation.oci-containers.backend` to `docker`
+recreates them on the same data.
+
+The tailnet must allow HTTPS certificates once: in the Tailscale admin console,
+DNS page, enable HTTPS Certificates. After the first start, log in on the web
+page as `admin@babbage.local` with the generated password, and create your own
+account for syncing:
+
+```bash
+sudo grep INIT_SEAFILE_ADMIN_PASSWORD /var/lib/seafile/secrets/seafile.env
+```
+
+The clients connect to the same address. Logs:
+
+```bash
+journalctl -u podman-seafile -u podman-seafile-mysql -u seafile-tailscale-serve
+```
+
 ### Remote power-on
 
 Wake-on-LAN is armed on the wired network card; it must also be enabled in the
