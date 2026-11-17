@@ -205,54 +205,6 @@ unplugged, it also sends a desktop notification, at most once every five
 minutes. The monitor never queries the GPU, so it does not wake it. Tools such
 as `nvidia-smi` do, and show up in the log as the cause.
 
-## SQL Server on Turing
-
-The full Turing configuration runs Microsoft's SQL Server 2025 Enterprise
-Developer container under Docker. This edition is for development and testing.
-The configuration accepts Microsoft's EULA and binds only `127.0.0.1:1433`.
-SQL Server does not start at boot. Docker itself is socket-activated on demand.
-
-### Daily use
-
-Manage SQL Server as a regular systemd service from any directory:
-
-```bash
-sudo systemctl start docker-mssql
-sudo systemctl stop docker-mssql
-systemctl status docker-mssql
-sudo journalctl -u docker-mssql --all -n 50 -f
-```
-
-Starting the service also starts Docker; the first startup downloads the image.
-Stopping it stops SQL Server; Docker remains available for other containers.
-If you also want to stop Docker, after stopping any other containers run
-`sudo systemctl stop docker.service docker.socket`. Starting SQL Server again
-will start both. SQL Server remains off after a reboot until explicitly started.
-
-An administrator password is generated on first startup in the root-only
-`/var/lib/mssql-secrets/environment` file. View it locally with:
-
-```bash
-sudo cat /var/lib/mssql-secrets/environment
-```
-
-Connect to `127.0.0.1,1433` as `sa` using that password. Existing VS Code
-connection profiles still work. Enable trust of the server's self-signed
-certificate. The bundled client can
-verify the server (it prompts for the password):
-
-```bash
-sudo docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -C -Q 'SELECT @@VERSION;'
-```
-
-Databases live in `/var/lib/mssql` and survive stopping the service, container
-recreation, and NixOS rebuilds. Do not delete this directory or the credentials file to reset the
-service. Changing the file does not change the password of an existing database;
-rotate it within SQL Server and update the file to match. Back up databases
-before updating the image. The `2025-latest` tag stays within SQL Server 2025;
-to fetch an updated image, run `sudo docker pull mcr.microsoft.com/mssql/server:2025-latest`
-and then stop and start SQL Server using the commands above.
-
 ## Fresh bootstrap installation
 
 The install command destroys and repartitions the selected device. Verify it

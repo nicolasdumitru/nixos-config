@@ -23,7 +23,6 @@
     ./features/remote-unlock.nix
     ./features/peripherals/ti-nspire.nix
     ./features/shell.nix
-    ./features/sql-server.nix
     ./features/ssh-server.nix
     ./features/virtualization.nix
     ./features/wake-on-lan.nix

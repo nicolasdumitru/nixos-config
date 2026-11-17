@@ -37,7 +37,6 @@
     network-tools.enable = true;
     nvidia.enable = true;
     shell.enable = true;
-    sql-server.enable = true;
     ti-nspire.enable = true;
     virtualization.enable = true;
   };
