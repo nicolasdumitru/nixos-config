@@ -2,3 +2,10 @@
 # Build output links from `nix build` and `just iso`.
 result
 result-*
+
+# Python: bytecode caches, test and type-checker caches, virtual environments.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.pyrefly/
+.venv/
