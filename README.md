@@ -253,8 +253,20 @@ and then stop and start SQL Server using the commands above.
 The install command destroys and repartitions the selected device. Verify it
 with `lsblk` and prefer a `/dev/disk/by-id/...` path.
 
+Boot the installer ISO built from this repository (below), clone the
+repository, and run:
+
 ```bash
 just install turing /dev/disk/by-id/<target-device>
+```
+
+The official NixOS ISOs ship with flakes disabled. From one of those, open a
+shell with the tools first, then use the compatibility recipe, which enables
+flakes for the installation only:
+
+```bash
+nix-shell -p git just
+just install-compat turing /dev/disk/by-id/<target-device>
 ```
 
 This installs `.#turing-bootstrap` with low Nix concurrency. After booting the
@@ -271,6 +283,14 @@ just rebuild-bootstrap
 # Equivalent:
 sudo nixos-rebuild switch --flake .#turing-bootstrap
 ```
+
+### Installer ISO
+
+`hosts/lovelace/` is the installer: the minimal NixOS installer with flakes
+enabled, Neovim, Git, `just`, and the same zsh, dotfiles, and command-line
+tools as the other hosts for its `nixos` user. Build it locally with
+`just iso` (the image lands in `result/iso/`), and write it to a USB stick with
+`dd` or any image writer.
 
 ## Home Manager ownership
 

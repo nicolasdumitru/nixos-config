@@ -1,1 +1,4 @@
 .direnv
+# Build output links from `nix build` and `just iso`.
+result
+result-*

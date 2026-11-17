@@ -14,6 +14,7 @@ in
 
   config = lib.mkIf cfg.enable {
     modules.nix-config.enable = true;
+    modules.editor.enable = true;
 
     boot = {
       loader.systemd-boot.enable = true;

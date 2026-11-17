@@ -10,6 +10,7 @@
 
   modules = {
     desktop.fonts.enable = true;
+    editor.enable = true;
     nix-config.enable = true;
     shell.enable = true;
   };
@@ -33,7 +34,6 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   environment.systemPackages = with pkgs; [
-    neovim
     git
     direnv
   ];
