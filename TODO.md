@@ -119,3 +119,27 @@ Options:
    whole laptop gets a booted system, guarded only by the login password.
 3. **Keep unlocking at the console.** Nothing to set up; babbage is only
    reachable after someone types the passphrase on it.
+
+## Back up Seafile's database and configuration from babbage
+
+Seafile on babbage keeps the synced files in its own block store, and turing's
+Kopia backups already cover them, as long as every Seafile library is also
+synced to turing (or another machine backed up with Kopia). Libraries used
+only from the iPhone or Windows would otherwise exist only on babbage.
+
+What exists only on babbage is Seafile's bookkeeping: accounts, the list of
+libraries, sharing, and Seafile's own file history and trash (in MariaDB), plus
+its configuration in `/var/lib/seafile/data/seafile/conf`. Losing it means
+recreating the accounts and libraries by hand and re-uploading from turing.
+
+Plan: a nightly systemd service on babbage that dumps the three databases
+(`ccnet_db`, `seafile_db`, `seahub_db`) with `mariadb-dump --single-transaction`
+inside the `seafile-mysql` container, then snapshots the dump and the
+configuration with Kopia into the same repository as the other machines. It is
+a few megabytes. Copying `/var/lib/seafile/mysql` directly is not a consistent
+backup while MariaDB runs.
+
+Backing up the block store itself (`/var/lib/seafile/data/seafile/seafile-data`)
+would mostly duplicate turing's backups without deduplicating against them:
+Seafile splits files into blocks at its own boundaries, so Kopia's chunks of
+those blocks do not match its chunks of the original files.
