@@ -27,6 +27,7 @@ in
       veracrypt
       signal-desktop
       obsidian
+      zed-editor
       kdePackages.okular
       onlyoffice-desktopeditors
       kdePackages.elisa
