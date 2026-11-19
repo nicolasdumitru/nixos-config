@@ -60,6 +60,17 @@ REPEAT_WINDOW = 600
 WAKE_COOLDOWN = 600
 REPEAT_COOLDOWN = 1800
 
+# How long a notification stays on screen, in milliseconds; 0 keeps it until
+# it is dismissed. Without one, COSMIC shows it for 3 seconds.
+NOTIFY_TIMEOUT = 15000
+
+# Ends every notification, which names programs only: process IDs and
+# command lines are in the log.
+LOG_HINT = (
+    "Process IDs and command lines are in the log. "
+    "To see it, run: journalctl -u gpu-monitor -e"
+)
+
 # Kernel functions behind expected wake-ups, which are only logged.
 KNOWN_KERNEL_CAUSES = {
     # The firmware tells the NVIDIA driver about every change of the battery
@@ -142,6 +153,22 @@ def command_line(pid):
     return [arg for arg in raw.decode(errors="replace").split("\0") if arg]
 
 
+def program_name(pid, args, comm):
+    """The program's name, from its executable rather than its arguments.
+
+    Chromium and Electron programs rewrite their command line into a single
+    argument containing spaces, so the first argument is not a path.
+    """
+    try:
+        name = (PROC / pid / "exe").readlink().name
+    except OSError:
+        name = Path(args[0].split()[0]).name if args else comm
+    # Nix wraps programs as `.name-wrapped`.
+    if name.startswith(".") and name.endswith("-wrapped"):
+        name = name[1 : -len("-wrapped")]
+    return name
+
+
 @dataclass
 class Requester:
     """A process that asked for the GPU while it was on, or to turn it on."""
@@ -161,12 +188,7 @@ class Requester:
     def identify(cls, comm, pid):
         kernel = is_kernel_thread(comm, pid)
         args = [] if kernel else command_line(pid)
-        if kernel:
-            program = "kernel"
-        elif args:
-            program = Path(args[0]).name
-        else:
-            program = comm
+        program = "kernel" if kernel else program_name(pid, args, comm)
         description = f"{comm} (pid {pid})"
         if args:
             description += ": " + " ".join(" ".join(args).split())[:200]
@@ -237,6 +259,26 @@ class Requesters:
     def names(self):
         return "; ".join(r.description for r in self.by_process.values())
 
+    def programs(self, recent_first=False):
+        """The programs that made requests, named for a notification."""
+        requesters = list(self.by_process.values())
+        if recent_first:
+            requesters.sort(key=lambda r: -r.last)
+        names = []
+        for requester in requesters:
+            name = "the kernel" if requester.kernel else requester.program
+            if name not in names:
+                names.append(name)
+        # The kernel also carries out the programs' requests; it is worth
+        # naming only when no program asked.
+        if len(names) > 1 and "the kernel" in names:
+            names.remove("the kernel")
+        if not names:
+            return "an unknown program"
+        if len(names) == 1:
+            return names[0]
+        return ", ".join(names[:-1]) + " and " + names[-1]
+
     def summary(self, now):
         """The most recent requesters first: they are what kept the GPU on."""
         recent = sorted(self.by_process.values(), key=lambda r: -r.last)
@@ -273,6 +315,7 @@ class Notifier:
         if last is not None and now - last < cooldown:
             log(f"not notifying ({kind}, {program}): sent {now - last:.0f}s ago")
             return
+        body = f"{body}\n\n{LOG_HINT}"
         self.last[(kind, program)] = now
         for bus in RUNTIME.glob("*/bus"):
             if not bus.is_socket():
@@ -283,6 +326,7 @@ class Notifier:
                     [
                         "notify-send",
                         "--urgency=critical",
+                        f"--expire-time={NOTIFY_TIMEOUT}",
                         "--app-name=GPU monitor",
                         "--icon=battery-caution",
                         title,
@@ -376,15 +420,18 @@ class Monitor:
         if len(wakes) < REPEAT_WAKES:
             return
         minutes = (now - wakes[0]) / 60
-        message = f"{len(wakes)} times in {minutes:.0f} min. Last: {waker.description}"
-        log(f"{waker.program} keeps waking the GPU: {message}")
+        log(
+            f"{waker.program} keeps waking the GPU: {len(wakes)} times in "
+            f"{minutes:.0f} min; last: {waker.description}"
+        )
         if battery:
             self.notifier.send(
                 "repeat",
                 waker.program,
                 REPEAT_COOLDOWN,
                 f"{waker.program} keeps waking the discrete GPU",
-                message,
+                f"It woke the GPU {len(wakes)} times in the last "
+                f"{max(minutes, 1):.0f} minutes.",
             )
 
     def follow(self, requesters, wakers, battery, started):
@@ -419,21 +466,21 @@ class Monitor:
                     "unplugged",
                     "",
                     0,
-                    "Discrete GPU is on while on battery",
-                    f"Still on after unplugging. Woken by: {wakers}",
+                    "Discrete GPU on after unplugging",
+                    f"In use by {requesters.programs(recent_first=True)}.",
                 )
             on_for = time.monotonic() - started
             if not long_on and on_for > LONG_ON:
                 long_on = True
-                users = requesters.summary(time.monotonic()) or "unknown"
-                log(f"GPU on for over {LONG_ON}s; used by: {users}")
+                users = requesters.summary(time.monotonic()) or "nothing seen"
+                log(f"GPU on for over {LONG_ON}s; requested by: {users}")
                 if battery and on_battery():
                     self.notifier.send(
                         "long",
                         "",
                         0,
-                        f"Discrete GPU on for over {LONG_ON}s on battery",
-                        f"Used by: {users}",
+                        f"Discrete GPU on for over {LONG_ON} seconds on battery",
+                        f"In use by {requesters.programs(recent_first=True)}.",
                     )
         if not following:
             self.pipe.drain()
@@ -468,12 +515,19 @@ class Monitor:
                 log(f"GPU on ({supply}); woken by: {wakers}")
             if battery and not known:
                 program = waker.program if waker else "unknown"
+                if waker:
+                    woken_by = f"Woken by {requesters.programs()}."
+                else:
+                    woken_by = (
+                        "It was already on when the monitor started, "
+                        "so what woke it is unknown."
+                    )
                 self.notifier.send(
                     "wake",
                     program,
                     WAKE_COOLDOWN,
-                    "Discrete GPU is on while on battery",
-                    f"Woken by: {wakers}",
+                    "Discrete GPU woken on battery",
+                    woken_by,
                 )
             if waker and not waker.kernel:
                 self.count_wake(waker, battery)
