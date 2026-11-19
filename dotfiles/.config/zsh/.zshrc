@@ -128,6 +128,17 @@ bindkey -M menuselect '^[[Z' reverse-menu-complete
 
 # === Prompt and hooks ===
 eval "$(starship init zsh)"
+# On <Enter>, redraw the prompt with the current time, so the submitted
+# command's prompt shows when it started (see env_var in starship.toml).
+zle-line-finish() {
+	export PROMPT_CMD_STARTED=${(%):-%D{%H:%M:%S}}
+	zle reset-prompt
+}
+zle -N zle-line-finish
+# Keep it out of the command's environment and the next prompt.
+__prompt_cmd_started_unset() { unset PROMPT_CMD_STARTED }
+add-zsh-hook preexec __prompt_cmd_started_unset
+add-zsh-hook precmd __prompt_cmd_started_unset
 eval "$(direnv hook zsh)"
 eval "$(zoxide init zsh)" # z / zi (interactive, via fzf); after compinit
 

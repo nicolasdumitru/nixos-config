@@ -19,3 +19,9 @@ style = "white bold"
 
 # [gcloud]
 # disabled = true
+
+# Start time of a submitted command. zsh sets this variable on <Enter> and
+# redraws the prompt, so each past prompt shows when its command started.
+[env_var.PROMPT_CMD_STARTED]
+format = "at [$env_value]($style) "
+style = "yellow"
