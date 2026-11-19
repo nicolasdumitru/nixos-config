@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
@@ -27,5 +28,8 @@ in
         enableOffloadCmd = true;
       };
     };
+
+    # `lspci`, to find the PRIME bus IDs.
+    environment.systemPackages = [ pkgs.pciutils ];
   };
 }
