@@ -25,4 +25,9 @@
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = true;
+
+  # TODO: before enabling `modules.nvidia` here, read the GPUs' bus IDs with
+  # `lspci` on the machine (converted to decimal, as in rog-zephyrus-g16.nix)
+  # and set `hardware.nvidia.prime.intelBusId` and `nvidiaBusId`.
+
 }

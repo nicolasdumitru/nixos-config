@@ -27,8 +27,9 @@
   hardware.cpu.amd.updateMicrocode = true;
 
   # Physical PCI addresses: keep these out of the reusable NVIDIA feature.
+  # `lspci` prints them in hexadecimal (65:00.0 and 66:00.0); these are decimal.
   hardware.nvidia.prime = {
-    amdgpuBusId = "PCI:101:0:0";
-    nvidiaBusId = "PCI:100:0:0";
+    amdgpuBusId = "PCI:102:0:0";
+    nvidiaBusId = "PCI:101:0:0";
   };
 }
