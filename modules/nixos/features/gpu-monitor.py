@@ -1,6 +1,10 @@
 """Log what powers up the NVIDIA GPU and what keeps it on.
 
-Sends a desktop notification when the GPU is on while on battery.
+Sends a desktop notification, while on battery, when:
+- something wakes the GPU (at most once per program every few minutes);
+- the GPU stays on longer than an idle wake-up keeps it on;
+- a program keeps waking it, which a program using the GPU for real does not
+  do: it wakes it once and keeps it busy.
 
 The kernel reports power management requests for a device through trace
 events, together with the process that made them: `rpm_resume` for each
@@ -9,6 +13,9 @@ that keeps the device on. The monitor sleeps on the wake-up requests, so it
 costs nothing while the GPU is off, and it never queries the GPU itself (which
 would wake it). While the GPU is on, it also follows the holds, and checks
 every two seconds whether the GPU has powered down again.
+
+Kernel threads have no command line to tell them apart, so for those the
+monitor also logs the kernel functions that made the request.
 """
 
 import os
@@ -17,13 +24,15 @@ import select
 import subprocess
 import sys
 import time
-from dataclasses import dataclass
+from collections import defaultdict, deque
+from dataclasses import dataclass, field
 from pathlib import Path
 
 TRACING = Path(os.environ.get("GPU_MONITOR_TRACING", "/sys/kernel/tracing"))
 PCI = Path(os.environ.get("GPU_MONITOR_PCI", "/sys/bus/pci/devices"))
 POWER = Path(os.environ.get("GPU_MONITOR_POWER", "/sys/class/power_supply"))
 RUNTIME = Path(os.environ.get("GPU_MONITOR_RUNTIME", "/run/user"))
+PROC = Path(os.environ.get("GPU_MONITOR_PROC", "/proc"))
 
 INSTANCE = TRACING / "instances" / "gpu-monitor"
 EVENTS = INSTANCE / "events" / "rpm"
@@ -32,19 +41,47 @@ EVENTS = INSTANCE / "events" / "rpm"
 POLL_INTERVAL = 2
 # Seconds without a request after which a burst of requests is over.
 BURST_QUIET = 1
-# Seconds between two notifications, so a GPU that keeps waking does not spam.
-NOTIFY_COOLDOWN = 300
 # Requests within one check interval above which following them would cost
 # more than it is worth; the GPU is plainly in heavy use by then.
 FLOOD = 5000
 # Processes listed when the GPU powers down.
 SUMMARY_SIZE = 8
+# Kernel functions logged for a request from a kernel thread.
+STACK_DEPTH = 16
+
+# Seconds the GPU stays on after a brief use: the driver keeps it on for
+# about 22 seconds after the last request.
+LONG_ON = 60
+# A program that wakes the GPU this many times within the window keeps waking
+# it, rather than using it.
+REPEAT_WAKES = 3
+REPEAT_WINDOW = 600
+# Seconds before the same notification is sent again for the same program.
+WAKE_COOLDOWN = 600
+REPEAT_COOLDOWN = 1800
+
+# Kernel functions behind expected wake-ups, which are only logged.
+KNOWN_KERNEL_CAUSES = {
+    # The firmware tells the NVIDIA driver about every change of the battery
+    # level (and other platform power events), and the driver wakes the GPU
+    # to pass it on to nvidia-powerd for Dynamic Boost.
+    "rm_acpi_nvpcf_notify": "firmware power event (battery level changed)",
+}
+
+# Set in /proc/<pid>/stat for kernel threads.
+PF_KTHREAD = 0x00200000
 
 # A trace line looks like:
 #   nvidia-smi-12345 [003] ..... 123.456: rpm_resume: 0000:65:00.0 flags-4 ...
+# and a stack trace, recorded after a `rpm_resume` line, like:
+#   kworker/3:1-219 [003] ..... 123.456: <stack trace>
+#    => rpm_resume
+#    => __pm_runtime_resume
 TRACE_LINE = re.compile(
     r"^\s*(?P<comm>.+)-(?P<pid>\d+)\s+\[\d+\].*rpm_(?:resume|usage): "
 )
+STACK_START = re.compile(r"^\s*.+-\d+\s+\[\d+\].*: <stack trace>")
+STACK_FRAME = re.compile(r"^\s*=> (?P<function>[^+\s]+)")
 
 
 def log(message):
@@ -85,25 +122,55 @@ def on_battery():
     return True
 
 
-def describe(comm, pid):
-    """Name the process, with its command line if it is still running."""
+def is_kernel_thread(comm, pid):
     try:
-        raw = Path(f"/proc/{pid}/cmdline").read_bytes()
+        stat = (PROC / pid / "stat").read_text()
     except OSError:
-        raw = b""
-    cmdline = " ".join(raw.decode(errors="replace").split())
-    if cmdline:
-        return f"{comm} (pid {pid}): {cmdline[:200]}"
-    return f"{comm} (pid {pid})"
+        # Gone already; kernel workers are the ones that come and go.
+        return comm.startswith("kworker/")
+    flags = int(stat.rsplit(")", 1)[1].split()[6])
+    return bool(flags & PF_KTHREAD)
+
+
+def command_line(pid):
+    try:
+        raw = (PROC / pid / "cmdline").read_bytes()
+    except OSError:
+        return []
+    # The arguments are separated by null bytes, which a notification's text
+    # cannot contain.
+    return [arg for arg in raw.decode(errors="replace").split("\0") if arg]
 
 
 @dataclass
 class Requester:
     """A process that asked for the GPU while it was on, or to turn it on."""
 
+    comm: str
+    pid: str
+    kernel: bool
+    # The program, the same across its runs: what repeated wake-ups count.
+    program: str
     description: str
     requests: int = 0
     last: float = 0.0
+    # Distinct chains of kernel functions that made the requests.
+    stacks: list = field(default_factory=list)
+
+    @classmethod
+    def identify(cls, comm, pid):
+        kernel = is_kernel_thread(comm, pid)
+        args = [] if kernel else command_line(pid)
+        if kernel:
+            program = "kernel"
+        elif args:
+            program = Path(args[0]).name
+        else:
+            program = comm
+        description = f"{comm} (pid {pid})"
+        if args:
+            description += ": " + " ".join(" ".join(args).split())[:200]
+        return cls(comm, pid, kernel, program, description)
 
 
 class Requesters:
@@ -111,9 +178,28 @@ class Requesters:
 
     def __init__(self):
         self.by_process = {}
+        self.first = None
+        self.last_added = None
+        # The requester whose stack trace is being read, if any.
+        self.stack_of = None
+        self.stack = []
 
     def add(self, line):
         """Record a trace line; return the requester if it is a new one."""
+        if self.stack_of is not None:
+            frame = STACK_FRAME.match(line)
+            if frame:
+                if len(self.stack) < STACK_DEPTH:
+                    self.stack.append(frame["function"])
+                return None
+            self.end_stack()
+
+        if STACK_START.match(line):
+            # Belongs to the request just before it.
+            self.stack_of = self.last_added
+            self.stack = []
+            return None
+
         match = TRACE_LINE.match(line)
         if not match:
             return None
@@ -121,11 +207,32 @@ class Requesters:
         requester = self.by_process.get(key)
         is_new = requester is None
         if is_new:
-            requester = Requester(describe(*key))
+            requester = Requester.identify(*key)
             self.by_process[key] = requester
+            if self.first is None:
+                self.first = requester
         requester.requests += 1
         requester.last = time.monotonic()
+        self.last_added = requester
         return requester if is_new else None
+
+    def end_stack(self):
+        requester = self.stack_of
+        stack = tuple(self.stack)
+        if requester and requester.kernel and stack and stack not in requester.stacks:
+            requester.stacks.append(stack)
+        self.stack_of = None
+
+    def known_cause(self):
+        """What made the first request, if it is an expected kernel request."""
+        self.end_stack()
+        if self.first is None or not self.first.kernel:
+            return None
+        for stack in self.first.stacks:
+            for function, cause in KNOWN_KERNEL_CAUSES.items():
+                if function in stack:
+                    return cause
+        return None
 
     def names(self):
         return "; ".join(r.description for r in self.by_process.values())
@@ -142,18 +249,31 @@ class Requesters:
             parts.append(f"and {len(recent) - SUMMARY_SIZE} more")
         return "; ".join(parts)
 
+    def kernel_stacks(self):
+        """Each distinct chain of kernel functions, innermost first."""
+        self.end_stack()
+        seen = set()
+        for requester in self.by_process.values():
+            for stack in requester.stacks:
+                if stack not in seen:
+                    seen.add(stack)
+                    yield requester, stack
+
 
 class Notifier:
-    """Sends a desktop notification to every logged-in user."""
+    """Sends desktop notifications to every logged-in user."""
 
     def __init__(self):
-        self.last = None
+        self.last = {}
 
-    def send(self, body):
+    def send(self, kind, program, cooldown, title, body):
+        """Notify, unless this was sent for this program within `cooldown`."""
         now = time.monotonic()
-        if self.last is not None and now - self.last < NOTIFY_COOLDOWN:
+        last = self.last.get((kind, program))
+        if last is not None and now - last < cooldown:
+            log(f"not notifying ({kind}, {program}): sent {now - last:.0f}s ago")
             return
-        self.last = now
+        self.last[(kind, program)] = now
         for bus in RUNTIME.glob("*/bus"):
             if not bus.is_socket():
                 continue
@@ -165,7 +285,7 @@ class Notifier:
                         "--urgency=critical",
                         "--app-name=GPU monitor",
                         "--icon=battery-caution",
-                        "Discrete GPU is on while on battery",
+                        title,
                         body,
                     ],
                     env={
@@ -178,7 +298,7 @@ class Notifier:
                     timeout=10,
                     check=False,
                 )
-            except (OSError, subprocess.SubprocessError) as error:
+            except (OSError, subprocess.SubprocessError, ValueError) as error:
                 log(f"could not notify uid {owner.st_uid}: {error}")
 
 
@@ -211,9 +331,12 @@ class Monitor:
     def __init__(self, devices):
         self.devices = devices
         self.notifier = Notifier()
+        # When each program woke the GPU, within the repeat window.
+        self.wakes = defaultdict(deque)
 
         INSTANCE.mkdir(exist_ok=True)
         names = " || ".join(f'name == "{d.name}"' for d in devices)
+        self.stack_trigger = f"stacktrace if {names}"
         for event in ("rpm_resume", "rpm_usage"):
             self.trace(event, False)
             (EVENTS / event / "filter").write_text(names)
@@ -221,6 +344,15 @@ class Monitor:
 
     def trace(self, event, enabled):
         (EVENTS / event / "enable").write_text("1" if enabled else "0")
+        if event == "rpm_resume":
+            # A trigger fires even while its event is off, so it is set only
+            # while the event is on.
+            trigger = EVENTS / event / "trigger"
+            try:
+                trigger.write_text(("" if enabled else "!") + self.stack_trigger)
+            except OSError:
+                # Already set, or already removed (as when restarting).
+                pass
 
     def wait_for_wakers(self):
         """Sleep until something asks for the GPU; return everything that did.
@@ -234,9 +366,31 @@ class Monitor:
             line = self.pipe.readline(timeout=BURST_QUIET)
         return wakers
 
-    def follow(self, requesters, wakers, battery):
+    def count_wake(self, waker, battery):
+        """Note a wake-up by a program; warn if it keeps waking the GPU."""
+        now = time.monotonic()
+        wakes = self.wakes[waker.program]
+        wakes.append(now)
+        while now - wakes[0] > REPEAT_WINDOW:
+            wakes.popleft()
+        if len(wakes) < REPEAT_WAKES:
+            return
+        minutes = (now - wakes[0]) / 60
+        message = f"{len(wakes)} times in {minutes:.0f} min. Last: {waker.description}"
+        log(f"{waker.program} keeps waking the GPU: {message}")
+        if battery:
+            self.notifier.send(
+                "repeat",
+                waker.program,
+                REPEAT_COOLDOWN,
+                f"{waker.program} keeps waking the discrete GPU",
+                message,
+            )
+
+    def follow(self, requesters, wakers, battery, started):
         """Follow the requests until the GPU powers down."""
         following = True
+        long_on = False
         while gpu_awake(self.devices):
             deadline = time.monotonic() + POLL_INTERVAL
             seen = 0
@@ -256,10 +410,31 @@ class Monitor:
                 log("GPU in heavy use; not following requests until it is off")
             time.sleep(max(deadline - time.monotonic(), 0))
 
-            if not battery and on_battery() and gpu_awake(self.devices):
+            if not gpu_awake(self.devices):
+                break
+            if not battery and on_battery():
                 battery = True
                 log(f"GPU still on after unplugging; woken by: {wakers}")
-                self.notifier.send(f"Still on after unplugging. Woken by: {wakers}")
+                self.notifier.send(
+                    "unplugged",
+                    "",
+                    0,
+                    "Discrete GPU is on while on battery",
+                    f"Still on after unplugging. Woken by: {wakers}",
+                )
+            on_for = time.monotonic() - started
+            if not long_on and on_for > LONG_ON:
+                long_on = True
+                users = requesters.summary(time.monotonic()) or "unknown"
+                log(f"GPU on for over {LONG_ON}s; used by: {users}")
+                if battery and on_battery():
+                    self.notifier.send(
+                        "long",
+                        "",
+                        0,
+                        f"Discrete GPU on for over {LONG_ON}s on battery",
+                        f"Used by: {users}",
+                    )
         if not following:
             self.pipe.drain()
 
@@ -283,17 +458,36 @@ class Monitor:
             started = time.monotonic()
             battery = on_battery()
             supply = "battery" if battery else "mains"
-            log(f"GPU on ({supply}); woken by: {wakers}")
-            if battery:
-                self.notifier.send(f"Woken by: {wakers}")
+            # The first request is what woke it; the others in the burst
+            # often only react to it powering up.
+            waker = requesters.first
+            known = requesters.known_cause()
+            if known:
+                log(f"GPU on ({supply}); woken by: {known} ({wakers})")
+            else:
+                log(f"GPU on ({supply}); woken by: {wakers}")
+            if battery and not known:
+                program = waker.program if waker else "unknown"
+                self.notifier.send(
+                    "wake",
+                    program,
+                    WAKE_COOLDOWN,
+                    "Discrete GPU is on while on battery",
+                    f"Woken by: {wakers}",
+                )
+            if waker and not waker.kernel:
+                self.count_wake(waker, battery)
 
             self.trace("rpm_usage", True)
-            self.follow(requesters, wakers, battery)
+            self.follow(requesters, wakers, battery, started)
             self.trace("rpm_usage", False)
 
             now = time.monotonic()
             summary = requesters.summary(now) or "nothing seen"
             log(f"GPU off after {now - started:.0f}s; requested by: {summary}")
+            if not known:
+                for requester, stack in requesters.kernel_stacks():
+                    log(f"kernel request by {requester.comm}: " + " < ".join(stack))
 
 
 def main():
