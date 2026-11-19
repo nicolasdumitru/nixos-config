@@ -9,6 +9,10 @@ shell-integration-features = no-cursor
 font-feature = -calt, -liga, -dlig
 
 keybind = ctrl+backspace=text:\x17
+# Vim-like jumps between prompts (overrides the default ctrl+shift+j, which
+# pastes the screen contents as a file). The ctrl+shift+arrow defaults remain.
+keybind = ctrl+shift+k=jump_to_prompt:-1
+keybind = ctrl+shift+j=jump_to_prompt:1
 
 background-opacity = 1.0
 background-blur = true
