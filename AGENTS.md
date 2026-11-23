@@ -9,7 +9,7 @@ If you change the formatter setup (the treefmt configuration or the `checks.form
 
 # Scripts and Utilities
 ## Python and shell
-Prefer writing Python 3 scripts instead of shell scripts. If you think the shell is more appropriate for a particular task, ask for permission to write a shell script.
+Prefer writing Python 3 scripts instead of shell scripts, especially when control flow constructs and error handling are relevant. If you think the shell is more appropriate for a particular task (such as when the task simply requires running a sequence of commands), ask for permission to write a shell script.
 
 ## Utilities
 Prefer to use more modern utilities unless you have good reason to use older utilities. Ask for permission to:
