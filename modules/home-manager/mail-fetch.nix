@@ -12,25 +12,27 @@ in
   options.modules.mail-fetch = {
     enable = lib.mkEnableOption "download-only mail fetching with isync";
 
+    # Deliberately without a default, so that it is always set explicitly and
+    # a change to the module can never stop or start fetching silently.
     automatic = lib.mkOption {
       type = lib.types.bool;
-      default = true;
       description = ''
         Whether to fetch at login and periodically. When off, mbsync and the
-        mail-fetch service stay available for fetching by hand.
+        mail-fetch service stay available for fetching by hand. Required when
+        the module is enabled.
       '';
     };
 
-    onCalendar = lib.mkOption {
+    frequency = lib.mkOption {
       type = lib.types.str;
-      default = "*:0/15";
+      default = "hourly";
       description = "How often to fetch automatically, as a systemd calendar expression.";
     };
   };
 
   # TODO: Support macOS. Run mbsync from a launchd agent (`launchd.agents`) at
-  # login and every 15 minutes, skipping it when there is no isyncrc, and add a
-  # password lookup command that uses the Keychain (`security
+  # login and at the configured frequency, skipping it when there is no
+  # isyncrc, and add a password lookup command that uses the Keychain (`security
   # find-generic-password -w`) on macOS and the keyring on Linux, so one
   # isyncrc works on both.
   config = lib.mkIf cfg.enable {
@@ -78,7 +80,7 @@ in
       Unit.Description = "Download mail at login and periodically";
       Timer = {
         OnStartupSec = "1min";
-        OnCalendar = cfg.onCalendar;
+        OnCalendar = cfg.frequency;
       };
       Install.WantedBy = [ "timers.target" ];
     };

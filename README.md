@@ -239,9 +239,10 @@ as `nvidia-smi` do, and show up in the log as the cause.
 ## Mail download/fetch
 
 `modules.mail-fetch` runs isync (`mbsync`) for every account one minute after
-login and every 15 minutes. It is Linux-only for now: a home that enables it on
-macOS fails to build. Accounts, passwords, and where mail is stored are not in
-this repository. They are in isync's own configuration file,
+login and every hour on the hour (`frequency`). If an hour passes while the
+laptop is suspended, that fetch runs on resume. It is Linux-only for now: a
+home that enables it on macOS fails to build. Accounts, passwords, and where
+mail is stored are not in this repository. They are in isync's own configuration file,
 `~/.config/isyncrc`; until it exists, the scheduled fetch is skipped. To keep
 the file elsewhere, for example with the mail it downloads, make
 `~/.config/isyncrc` a link to it:
@@ -258,8 +259,9 @@ The scheduled fetch only downloads. It runs
 switches override the file, so whatever the file says, nothing is changed on
 the servers. Running `mbsync` by hand follows the file alone.
 
-To fetch only by hand, set `modules.mail-fetch.automatic = false;`. That
-removes the timer; mbsync stays installed, and
+Enabling the module requires setting `automatic`, which has no default, so
+fetching never starts or stops because the module changed. With
+`automatic = false;` there is no timer; mbsync stays installed, and
 `systemctl --user start mail-fetch` still fetches with the switches above.
 
 ### Configuration file

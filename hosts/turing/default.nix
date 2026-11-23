@@ -54,7 +54,10 @@
         neovim.enable = true;
         cli-tools.enable = true;
         development.enable = true;
-        mail-fetch.enable = true;
+        mail-fetch = {
+          enable = true;
+          automatic = true;
+        };
         zsh.enable = true;
       };
 
