@@ -8,6 +8,7 @@
   imports = [
     ./dotfiles/common.nix
     ./dotfiles/linux.nix
+    ./mail-fetch.nix
     ./neovim.nix
     ./cli-tools.nix
     (import ./development.nix { inherit inputs; })

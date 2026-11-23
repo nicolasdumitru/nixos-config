@@ -236,6 +236,127 @@ unplugged, it also sends a desktop notification, at most once every five
 minutes. The monitor never queries the GPU, so it does not wake it. Tools such
 as `nvidia-smi` do, and show up in the log as the cause.
 
+## Mail download/fetch
+
+`modules.mail-fetch` runs isync (`mbsync`) for every account one minute after
+login and every 15 minutes. It is Linux-only for now: a home that enables it on
+macOS fails to build. Accounts, passwords, and where mail is stored are not in
+this repository. They are in isync's own configuration file,
+`~/.config/isyncrc`; until it exists, the scheduled fetch is skipped. To keep
+the file elsewhere, for example with the mail it downloads, make
+`~/.config/isyncrc` a link to it:
+
+```bash
+ln -s /path/to/mail/isyncrc ~/.config/isyncrc
+```
+
+Paths in the file must then be absolute or start with `~`: isync resolves
+relative paths from `~/.config`, where the link is.
+
+The scheduled fetch only downloads. It runs
+`mbsync --all --pull --create-near --remove-near --expunge-near`, and these
+switches override the file, so whatever the file says, nothing is changed on
+the servers. Running `mbsync` by hand follows the file alone.
+
+To fetch only by hand, set `modules.mail-fetch.automatic = false;`. That
+removes the timer; mbsync stays installed, and
+`systemctl --user start mail-fetch` still fetches with the switches above.
+
+### Configuration file
+
+Start from this, with your own addresses and mail location. Copy the Gmail
+section once per Gmail account, with a different name in each.
+
+```
+# Download only, also when mbsync is run by hand.
+Sync Pull
+Create Near
+Remove Near
+Expunge Near
+CopyArrivalDate yes
+
+# iCloud, including mail sent to its custom-domain aliases.
+IMAPAccount icloud
+Host imap.mail.me.com
+User someone@icloud.com
+PassCmd "secret-tool lookup service mbsync account someone@icloud.com"
+TLSType IMAPS
+
+IMAPStore icloud-remote
+Account icloud
+
+MaildirStore icloud-local
+Path /path/to/mail/someone@icloud.com/
+Inbox /path/to/mail/someone@icloud.com/INBOX
+SubFolders Verbatim
+Trash Removed
+
+Channel icloud
+Far :icloud-remote:
+Near :icloud-local:
+Patterns INBOX * "!Deleted Messages" !Junk !Drafts !Removed
+SyncState *
+
+# Gmail. All Mail holds everything outside Trash and Spam, including sent
+# mail, so the other Gmail folders would only download duplicates.
+IMAPAccount gmail-first
+Host imap.gmail.com
+User first@gmail.com
+PassCmd "secret-tool lookup service mbsync account first@gmail.com"
+TLSType IMAPS
+
+IMAPStore gmail-first-remote
+Account gmail-first
+
+MaildirStore gmail-first-local
+Path /path/to/mail/first@gmail.com/
+Inbox /path/to/mail/first@gmail.com/INBOX
+SubFolders Verbatim
+Trash Removed
+
+Channel gmail-first
+Far :gmail-first-remote:
+Near :gmail-first-local:
+Patterns INBOX "[Gmail]/All Mail" !Removed
+SyncState *
+```
+
+`Trash Removed` is what keeps deleted mail: mail that disappears from a server
+folder, whether deleted or moved to another folder, is moved to the account's
+local `Removed` folder instead of being deleted. Without that line it is
+deleted locally too. Nothing empties `Removed`; delete from it by hand when
+you want. `!Removed` keeps isync from looking for that folder on the server.
+
+Each account's folder must exist before the first fetch:
+`mkdir -p /path/to/mail/someone@icloud.com`.
+
+### Passwords
+
+Create an app-specific password for each account (iCloud: account.apple.com,
+Sign-In and Security; Gmail: myaccount.google.com/apppasswords, which needs
+2-Step Verification) and store it in the keyring under the name its `PassCmd`
+looks up. The command prompts for the password:
+
+```bash
+secret-tool store --label='mbsync first@gmail.com' service mbsync account first@gmail.com
+```
+
+For iCloud, log in with the `@icloud.com` address, not a custom-domain alias.
+
+### First download
+
+Check which folders will be downloaded, then run the first download, which can
+take a long time:
+
+```bash
+mbsync --list --all
+systemctl --user start mail-fetch
+journalctl --user -u mail-fetch
+```
+
+Gmail names its folders in the account's display language. If the list lacks
+`[Gmail]/All Mail`, use the name Gmail shows instead.
+
 ## Fresh bootstrap installation
 
 The install command destroys and repartitions the selected device. Verify it
