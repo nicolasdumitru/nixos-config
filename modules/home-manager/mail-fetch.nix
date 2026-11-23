@@ -7,6 +7,17 @@
 
 let
   cfg = config.modules.mail-fetch;
+
+  # Fetches with retries, and reports failed fetches; see the script.
+  mailFetch = import ../../scripts/python-script.nix { inherit lib pkgs; } {
+    name = "mail-fetch";
+    src = ./mail-fetch.py;
+    runtimeInputs = [
+      pkgs.isync
+      pkgs.libnotify
+      pkgs.systemd
+    ];
+  };
 in
 {
   options.modules.mail-fetch = {
@@ -54,26 +65,46 @@ in
       Unit = {
         Description = "Download mail with mbsync";
         ConditionPathExists = "%E/isyncrc";
-        # At login the network or the keyring may not be ready yet.
-        StartLimitIntervalSec = 600;
-        StartLimitBurst = 4;
+        OnFailure = [ "mail-fetch-failed.service" ];
       };
       Service = {
         Type = "oneshot";
-        # These switches override the configuration file: only pull changes,
-        # and only create, remove, or expunge on this machine. Whatever the
-        # file says, nothing is changed on the servers.
-        ExecStart = lib.concatStringsSep " " [
-          "${pkgs.isync}/bin/mbsync"
-          "--all"
-          "--pull"
-          "--create-near"
-          "--remove-near"
-          "--expunge-near"
-        ];
-        Restart = "on-failure";
-        RestartSec = 60;
+        ExecStart = "${mailFetch}/bin/mail-fetch fetch";
       };
+    };
+
+    # Notifies at most once per login: the marker lives in the runtime
+    # directory, which is removed when the user's last session ends.
+    systemd.user.services.mail-fetch-failed = {
+      Unit.Description = "Notify that mail could not be fetched";
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${mailFetch}/bin/mail-fetch notify-failure";
+      };
+    };
+
+    # Automatic fetching silently does nothing without a configuration file,
+    # so say so once at the start of each desktop session. A link whose target
+    # is gone counts as missing.
+    systemd.user.services.mail-fetch-config-check = lib.mkIf cfg.automatic {
+      Unit = {
+        Description = "Warn when automatic mail fetching has no isync configuration";
+        ConditionPathExists = "!%E/isyncrc";
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = lib.escapeShellArgs [
+          "${pkgs.libnotify}/bin/notify-send"
+          "--app-name=mail-fetch"
+          # Stay until dismissed; COSMIC otherwise hides it after 3 seconds.
+          "--expire-time=0"
+          "Mail is not being fetched"
+          "Automatic mail fetching is on, but %E/isyncrc does not exist."
+        ];
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
     };
 
     systemd.user.timers.mail-fetch = lib.mkIf cfg.automatic {

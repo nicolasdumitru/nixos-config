@@ -264,6 +264,16 @@ fetching never starts or stops because the module changed. With
 `automatic = false;` there is no timer; mbsync stays installed, and
 `systemctl --user start mail-fetch` still fetches with the switches above.
 
+A fetch tries up to four times, a minute apart, since the first attempt after
+login often runs before the network is up. Two desktop notifications report
+problems:
+
+- With `automatic` on, if `~/.config/isyncrc` is missing (or is a link to a
+  missing file), once at the start of each desktop session.
+- If all attempts of a fetch fail, once per login: the first failed fetch after
+  logging in notifies, with its last error lines, and later failures stay
+  silent until the next login. Details are in `journalctl --user -u mail-fetch`.
+
 ### Configuration file
 
 Start from this, with your own addresses and mail location. Copy the Gmail
